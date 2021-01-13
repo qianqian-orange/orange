@@ -1,24 +1,8 @@
-<template>
-  <widget
-    :data-source="dataSource"
-    draggable
-  />
-</template>
-
-<script>
 import Widget from './index'
 
 export default {
   name: 'DragWidget',
-  components: {
-    Widget,
-  },
-  props: {
-    dataSource: {
-      type: Object,
-      required: true,
-    },
-  },
+  extends: Widget,
   mounted() {
     this.addEventListener()
   },
@@ -46,4 +30,3 @@ export default {
     },
   },
 }
-</script>

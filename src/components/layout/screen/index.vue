@@ -52,12 +52,13 @@
       @drop="dropHandler"
       @dragover="dragoverHandler"
     >
-      <mark-line-widget
-        v-for="(widget, index) in widgetList"
-        :key="index"
+      <mouse-widget
+        v-for="widget in widgetList"
+        :key="widget.id"
         :data-source="widget"
         @bootstrap="bootstrap"
       />
+      <mark-line />
     </div>
   </div>
 </template>
@@ -74,14 +75,15 @@ import {
   ADD_WIDGET,
 } from '@/store/modules/canvas/mutation-types'
 import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
-import uid from '@/utils/uid'
-import Bus, { CANVAS_WIDGET_BOOTSTRAP } from '@/utils/bus'
-import MarkLineWidget from '@/components/widget/markLine'
+import uuid from '@/utils/uid'
+import MouseWidget from '@/components/widget/mouseWidget'
+import MarkLine from '@/components/widget/markLine/index.vue'
 
 export default {
   name: 'WorkspaceScreen',
   components: {
-    MarkLineWidget,
+    MouseWidget,
+    MarkLine,
   },
   data() {
     return {
@@ -101,7 +103,6 @@ export default {
   },
   mounted() {
     this.initData()
-    Bus.$on(CANVAS_WIDGET_BOOTSTRAP, this.bootstrap)
   },
   methods: {
     initData() {
@@ -131,7 +132,7 @@ export default {
         top: y + 'px',
         left: x + 'px',
       }
-      widget.id = `${widget.component}-${uid()}`
+      widget.id = `${widget.component}-${uuid()}`
       widget.display = 'visible'
       this.target = widget
       this[ADD_WIDGET](widget)
@@ -150,6 +151,7 @@ export default {
       }
     },
     bootstrap(vm) {
+      if (!this.target) return
       ;((widget) => {
         const el = document.querySelector(`#${widget.id}`)
         const parentNode = el.parentNode
@@ -195,6 +197,7 @@ export default {
 
   .canvas-container {
     position: relative;
+    z-index: 0;
     width: 100%;
     height: 100%;
   }

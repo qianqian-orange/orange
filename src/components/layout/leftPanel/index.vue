@@ -16,7 +16,10 @@
             :key="widget.id"
             class="widget-item"
           >
-            <drag-widget :data-source="widget" />
+            <drag-widget
+              :data-source="widget"
+              draggable
+            />
           </li>
         </ul>
       </a-tab-pane>

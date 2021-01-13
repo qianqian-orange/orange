@@ -10,7 +10,6 @@
     >
       {{ dataSource.text }}
     </component>
-    <slot name="markline" />
   </div>
 </template>
 
