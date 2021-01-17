@@ -1,3 +1,7 @@
+import {
+  getTarget,
+} from '@/lib/document'
+
 const ABSORB_INSTANCE = 3
 
 export const MARKLINE_DIRECTION = {
@@ -7,19 +11,19 @@ export const MARKLINE_DIRECTION = {
 
 export const MARKLINE_HANDLER = {
   [MARKLINE_DIRECTION.yAxis]: {
-    targetFilter: (widget) => ({
+    targetFilter: widget => ({
       top: widget.top,
       bottom: widget.top + widget.height,
       yl: widget.left,
-      yc: widget.left + Math.floor(widget.width / 2),
+      yc: widget.left + widget.width / 2,
       yr: widget.left + widget.width,
     }),
-    neighborFilter: (widget) => ({
+    neighborFilter: widget => ({
       top: widget.top,
       right: widget.left + widget.width,
       bottom: widget.top + widget.height,
       left: widget.left,
-      center: widget.left + Math.floor(widget.width / 2),
+      center: widget.left + widget.width / 2,
     }),
     setPlainLine: (line, data) => {
       line.style.top = data.startPoint + 'px'
@@ -38,21 +42,27 @@ export const MARKLINE_HANDLER = {
         interval: line.endPoint - line.startPoint,
       })))
     },
+    update(target, interval) {
+      const el = getTarget()
+      target.left += interval
+      el.style.left = target.left + 'px'
+      el.position.startX += interval
+    },
   },
   [MARKLINE_DIRECTION.xAxis]: {
-    targetFilter: (widget) => ({
+    targetFilter: widget => ({
       top: widget.left,
       bottom: widget.left + widget.width,
       xt: widget.top,
-      xc: widget.top + Math.floor(widget.height / 2),
+      xc: widget.top + widget.height / 2,
       xb: widget.top + widget.height,
     }),
-    neighborFilter: (widget) => ({
+    neighborFilter: widget => ({
       top: widget.left,
       right: widget.top,
       bottom: widget.left + widget.width,
       left: widget.top + widget.height,
-      center: widget.top + Math.floor(widget.height / 2),
+      center: widget.top + widget.height / 2,
     }),
     setPlainLine: (line, data) => {
       line.style.top = data.locatePoint + 'px'
@@ -71,6 +81,12 @@ export const MARKLINE_HANDLER = {
         interval: line.endPoint - line.startPoint,
       })))
     },
+    update(target, interval) {
+      const el = getTarget()
+      target.top += interval
+      el.style.top = target.top + 'px'
+      el.position.startY += interval
+    },
   },
 }
 
@@ -79,12 +95,12 @@ export const MARKLINE = {
   [MARKLINE_DIRECTION.xAxis]: ['xt', 'xc', 'xb'],
 }
 
-export function rect(data) {
+export function rect(style) {
   return {
-    width: data.width,
-    height: data.height,
-    top: parseInt(data.style.top, 10),
-    left: parseInt(data.style.left, 10),
+    width: parseInt(style.width, 10),
+    height: parseInt(style.height),
+    top: parseInt(style.top, 10),
+    left: parseInt(style.left, 10),
   }
 }
 
@@ -187,14 +203,14 @@ export default class MarkLine {
     }
   }
 
-  adsorb(isAdsorb, cb) {
+  adsorb(isAdsorb, update) {
     const locatePoint = this.target[this.identification]
     for (let i = 0; i < this.neighbors.length; i += 1) {
       let interval
       if (Math.abs(interval = this.neighbors[i].left - locatePoint) <= ABSORB_INSTANCE ||
         Math.abs(interval = this.neighbors[i].center - locatePoint) <= ABSORB_INSTANCE ||
         Math.abs(interval = this.neighbors[i].right - locatePoint) <= ABSORB_INSTANCE) {
-        if (!isAdsorb) cb(interval)
+        if (!isAdsorb) update(interval)
         return true
       }
     }

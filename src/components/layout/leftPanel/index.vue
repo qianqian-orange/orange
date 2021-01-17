@@ -66,8 +66,16 @@ export default {
         const el = document.querySelector(`#${id}`)
         this[UPDATE_WIDGET_DATA]({
           id,
-          width: el.offsetWidth,
-          height: el.offsetHeight,
+          update: (widget) => {
+            const width = el.offsetWidth + 'px'
+            const height = el.offsetHeight + 'px'
+            widget.style.component = {
+              width: width,
+              height: height,
+              minWidth: width,
+              minHeight: height,
+            }
+          },
         })
       })
     },
@@ -81,7 +89,7 @@ export default {
     &-left-panel {
       width: 251px;
       color: @textPrimaryColor;
-      background-color: @panelBgColor;
+      background-color: @black;
     }
 
     .widget-list {

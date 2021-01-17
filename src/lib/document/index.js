@@ -1,10 +1,13 @@
 let target = null
+// 判断是否有触发mousemove事件
+let move = false
 
 export const mousemoveQueue = []
 export const mouseupQueue = []
 
 function mousemove(evt) {
   if (!target) return
+  move = true
   const {
     startX,
     startY,
@@ -21,7 +24,8 @@ function mousemove(evt) {
 function mouseup(evt) {
   // 由于事件冒泡会导致此方法被调用，当target为null时不做处理
   if (!target) return
-  mouseupQueue.forEach(fn => fn(target, evt))
+  mouseupQueue.forEach(fn => fn(target, move, evt))
+  move = false
   target = null
 }
 

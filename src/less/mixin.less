@@ -1,0 +1,10 @@
+.expand-click(@size) {
+  &::before {
+    content: "";
+    position: absolute;
+    top: @size;
+    right: @size;
+    bottom: @size;
+    left: @size;
+  }
+}

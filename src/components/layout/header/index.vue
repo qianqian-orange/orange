@@ -52,8 +52,8 @@ export default {
       box-sizing: border-box;
       height: 52px;
       padding-left: 248px;
-      border-bottom: 1px solid @dark;
-      background-color: @headerBgColor;
+      border-bottom: 1px solid @deepBlack;
+      background-color: @lightBlack;
     }
 
     .toolbar {
@@ -72,7 +72,7 @@ export default {
 
         &:hover {
           color: @greyWhite;
-          background-color: @shallowDark;
+          background-color: @black;
           cursor: pointer;
         }
 

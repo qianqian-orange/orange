@@ -59,6 +59,7 @@
         @bootstrap="bootstrap"
       />
       <mark-line />
+      <resizer />
     </div>
   </div>
 </template>
@@ -72,18 +73,21 @@ import {
 } from 'vuex'
 import {
   UPDATE_CANVAS_DATE,
+  UPDATE_CANVAS_WIDGET_DATA,
   ADD_WIDGET,
 } from '@/store/modules/canvas/mutation-types'
 import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
 import uuid from '@/utils/uid'
 import MouseWidget from '@/components/widget/mouseWidget'
-import MarkLine from '@/components/widget/markLine/index.vue'
+import MarkLine from '@/components/widget/markLine'
+import Resizer from '@/components/widget/resizer'
 
 export default {
   name: 'WorkspaceScreen',
   components: {
     MouseWidget,
     MarkLine,
+    Resizer,
   },
   data() {
     return {
@@ -95,7 +99,7 @@ export default {
       widgetListMap: state => state.widgetListMap,
     }),
     ...mapState('canvas', {
-      canvasData: state => state,
+      canvas: state => state,
     }),
     ...mapGetters('canvas', [
       'widgetList',
@@ -107,10 +111,9 @@ export default {
   methods: {
     initData() {
       const canvasEl = this.$refs['canvas-container']
-      this[UPDATE_CANVAS_DATE]({
-        el: canvasEl,
-        width: canvasEl.offsetWidth,
-        height: canvasEl.offsetHeight,
+      this[UPDATE_CANVAS_DATE]((canvas) => {
+        canvas.width = canvasEl.offsetWidth
+        canvas.height = canvasEl.offsetHeight
       })
     },
     dropHandler(evt) {
@@ -121,19 +124,18 @@ export default {
         offsetY,
       } = JSON.parse(evt.dataTransfer.getData('dataSource'))
       const widget = lodash.cloneDeep(this.widgetListMap[id])
+      widget.id = `${widget.component}-${uuid()}`
       const { x, y } = this.calcPosition(
         evt.offsetX - offsetX,
         evt.offsetY - offsetY,
         { width: widget.width, height: widget.height },
-        { width: this.canvasData.width, height: this.canvasData.height },
+        { width: this.canvas.width, height: this.canvas.height },
       )
-      widget.style = {
+      widget.style.container = {
         position: 'absolute',
         top: y + 'px',
         left: x + 'px',
       }
-      widget.id = `${widget.component}-${uuid()}`
-      widget.display = 'visible'
       this.target = widget
       this[ADD_WIDGET](widget)
     },
@@ -152,27 +154,35 @@ export default {
     },
     bootstrap(vm) {
       if (!this.target) return
-      ;((widget) => {
-        const el = document.querySelector(`#${widget.id}`)
-        const parentNode = el.parentNode
-        this[ADD_SNAPSHOT]({
-          undo: () => {
-            widget.display = 'none'
-            parentNode.removeChild(el)
-          },
-          redo: () => {
-            widget.display = 'visible'
-            parentNode.appendChild(el)
-          },
-          free: () => {
-            widget = null
-            vm.$destroy()
-          },
-        })
-      })(this.target)
+      const id = this.target.id
+      const el = document.querySelector(`#${id}`)
+      const parentNode = el.parentNode
+      this[ADD_SNAPSHOT]({
+        undo: () => {
+          this[UPDATE_CANVAS_WIDGET_DATA]({
+            id,
+            update: (widget) => {
+              widget.display = 'none'
+            },
+          })
+          parentNode.removeChild(el)
+        },
+        redo: () => {
+          this[UPDATE_CANVAS_WIDGET_DATA]({
+            id,
+            update: (widget) => {
+              widget.display = 'visible'
+            },
+          })
+          parentNode.appendChild(el)
+        },
+        free: () => {
+          vm.$destroy()
+        },
+      })
       this.target = null
     },
-    ...mapMutations('canvas', [UPDATE_CANVAS_DATE, ADD_WIDGET]),
+    ...mapMutations('canvas', [UPDATE_CANVAS_DATE, UPDATE_CANVAS_WIDGET_DATA, ADD_WIDGET]),
     ...mapMutations('snapshot', [ADD_SNAPSHOT]),
   },
 }

@@ -46,7 +46,7 @@ export default {
 
     &-right-panel {
       width: 230px;
-      background-color: @panelBgColor;
+      background-color: @black;
     }
   }
 </style>

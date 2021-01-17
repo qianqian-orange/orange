@@ -2,11 +2,12 @@
   <div
     :id="dataSource.id"
     class="glass"
-    :style="dataSource.style"
+    :style="dataSource.style.container"
   >
     <component
       :is="dataSource.component"
       v-bind="dataSource.prop"
+      :style="dataSource.style.component"
     >
       {{ dataSource.text }}
     </component>

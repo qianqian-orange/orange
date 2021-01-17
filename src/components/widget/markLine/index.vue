@@ -25,16 +25,23 @@ import {
 import {
   mousemoveQueue,
   mouseupQueue,
-  getTarget,
 } from '@/lib/document'
 import MarkLine, {
   rect,
   MARKLINE,
   MARKLINE_DIRECTION,
   MARKLINE_HANDLER,
-} from './index'
+} from './markLine'
 
 const markline = new MarkLine()
+const cache = {
+  [MARKLINE_DIRECTION.yAxis]: {
+    neighbors: null,
+  },
+  [MARKLINE_DIRECTION.xAxis]: {
+    neighbors: null,
+  },
+}
 
 export default {
   name: 'MarkLine',
@@ -68,9 +75,9 @@ export default {
   },
   mounted() {
     mousemoveQueue.push(({ id, style }) => {
-      const { width, height } = this.widgetListMap[id]
+      const { width, height } = this.widgetListMap[id].style.component
       const widgetList = this.widgetList.filter(widget => widget.id !== id)
-      this.target = rect({ width, height, style })
+      this.target = rect({ width, height, top: style.top, left: style.left })
       // 将距离标线清空重新收集
       this.distanceLines.length = 0
       let direction = MARKLINE_DIRECTION.yAxis
@@ -89,10 +96,16 @@ export default {
       })
     })
     mouseupQueue.push(() => {
+      // 将普通标线隐藏
       Object.keys(this.plainLine).forEach((identification) => {
         this.plainLine[identification].visible = false
       })
+      // 将距离标线清空
       this.distanceLines.length = 0
+      // 重置缓存数据
+      Object.keys(cache).forEach((key) => {
+        cache[key].neighbors = null
+      })
     })
   },
   methods: {
@@ -104,27 +117,22 @@ export default {
       neighborFilter,
       setPlainLine,
       setDistanceLine,
+      update,
     }) {
-      markline.neighbors = widgetList.map(widget => neighborFilter(rect(widget)))
+      markline.neighbors = cache[direction].neighbors ||
+        (cache[direction].neighbors = widgetList.map(({ style }) => neighborFilter(rect({
+          width: style.component.width,
+          height: style.component.height,
+          top: style.container.top,
+          left: style.container.left,
+        }))))
       lines.forEach((identification) => {
         const line = this.plainLine[identification]
         markline.target = targetFilter(this.target)
         markline.identification = identification
         // 先判断吸附逻辑在判断标线逻辑
         line.isAdsorb = markline.adsorb(line.isAdsorb, (interval) => {
-          const el = getTarget()
-          switch (direction) {
-            case MARKLINE_DIRECTION.yAxis:
-              this.target.left += interval
-              el.style.left = this.target.left + 'px'
-              el.position.startX += interval
-              break
-            case MARKLINE_DIRECTION.xAxis:
-              this.target.top += interval
-              el.style.top = this.target.top + 'px'
-              el.position.startY += interval
-              break
-          }
+          update(this.target, interval)
           // 这里注意需要更新target值
           markline.target = targetFilter(this.target)
         })
@@ -152,16 +160,16 @@ export default {
     }
 
     &.plain {
-      background-color: @markLineBlue;
+      background-color: @lightBlue;
     }
 
     &.distance {
-      background-color: @markLinePurple;
+      background-color: @purple;
 
       &::before {
         content: attr(data-distance);
         position: absolute;
-        color: @markLinePurple;
+        color: @purple;
         font-size: 12px;
       }
     }

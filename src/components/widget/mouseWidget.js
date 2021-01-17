@@ -4,6 +4,7 @@ import {
   setTarget,
   mouseupQueue,
 } from '@/lib/document'
+import Bus, { CANVAS_WIDGET_RESIZE } from '@/utils/bus'
 import { UPDATE_CANVAS_WIDGET_DATA } from '@/store/modules/canvas/mutation-types'
 import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
 
@@ -19,28 +20,42 @@ export default {
     this.removeEventListener()
   },
   methods: {
-    mouseup(target) {
+    mouseup(target, move) {
       if (target.id !== this.dataSource.id) return
+      // 显示resizer
+      Bus.$emit(CANVAS_WIDGET_RESIZE)
+      // 更新widget信息和添加快照
       const {
         id,
         style: { top, left },
         position: { startX, startY },
       } = target
+      // 如果没有移动过那么不添加快照
+      if (!move) return
       this[UPDATE_CANVAS_WIDGET_DATA]({
         id,
-        style: { top, left },
+        update: ({ style: { container } }) => {
+          container.top = top
+          container.left = left
+        },
       })
       this[ADD_SNAPSHOT]({
         undo: () => {
           this[UPDATE_CANVAS_WIDGET_DATA]({
             id,
-            style: { top: startY + 'px', left: startX + 'px' },
+            update: ({ style: { container } }) => {
+              container.top = startY + 'px'
+              container.left = startX + 'px'
+            },
           })
         },
         redo: () => {
           this[UPDATE_CANVAS_WIDGET_DATA]({
             id,
-            style: { top, left },
+            update: ({ style: { container } }) => {
+              container.top = top
+              container.left = left
+            },
           })
         },
         free: () => {
@@ -59,6 +74,7 @@ export default {
           clientY: evt.clientY,
         }
         setTarget(target)
+        Bus.$emit(CANVAS_WIDGET_RESIZE)
       }
       el.addEventListener('mousedown', this.mousedown)
     },

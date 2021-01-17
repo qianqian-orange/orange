@@ -3,18 +3,12 @@ import {
 } from './mutation-types'
 
 const getters = {
-  widgetList: ({ widgetListMap }) => Object.keys(widgetListMap).map(key => ({
-    ...widgetListMap[key],
-    id: key,
-  })),
+  widgetList: ({ widgetListMap }) => Object.keys(widgetListMap).map(key => widgetListMap[key]),
 }
 
 const mutations = {
-  [UPDATE_WIDGET_DATA]({ widgetListMap }, payload) {
-    const widget = widgetListMap[payload.id]
-    Object.keys(payload).forEach((key) => {
-      widget[key] = payload[key]
-    })
+  [UPDATE_WIDGET_DATA]({ widgetListMap }, { id, update }) {
+    update(widgetListMap[id])
   },
 }
 
@@ -23,23 +17,31 @@ export default {
   state: () => ({
     widgetListMap: {
       'primary-button': {
+        id: 'primary-button',
+        display: 'visible',
         component: 'a-button',
         prop: {
           type: 'primary',
         },
         text: '按钮',
-        width: 0,
-        height: 0,
+        style: {
+          container: {},
+          component: {},
+        },
       },
       'search-primary-button': {
+        id: 'search-primary-button',
+        display: 'visible',
         component: 'a-button',
         prop: {
           type: 'primary',
           icon: 'search',
         },
         text: '搜索',
-        width: 0,
-        height: 0,
+        style: {
+          container: {},
+          component: {},
+        },
       },
     },
   }),
