@@ -21,14 +21,13 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-import Bus, { CANVAS_WIDGET_RESIZE } from '@/utils/bus'
-import {
-  getTarget,
-  mousemoveQueue,
-} from '@/lib/document'
-import { UPDATE_CANVAS_WIDGET_DATA } from '@/store/modules/canvas/mutation-types'
-import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
+import { mapActions } from 'vuex'
+import Bus, {
+  CANVAS_WIDGET_RESIZE,
+  DOCUMENT_MOUSE_DOWN,
+  DOCUMENT_MOUSE_MOVE,
+} from '@/utils/bus'
+import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import Resizer from './resizer'
 
 let target = null
@@ -45,28 +44,33 @@ export default {
     }
   },
   mounted() {
+    Bus.$on(DOCUMENT_MOUSE_DOWN, this.documentMousedown)
     // 移动组件的时候把resizer隐藏掉
-    mousemoveQueue.push(() => {
-      this.visible = false
-    })
+    Bus.$on(DOCUMENT_MOUSE_MOVE, this.documentMousemove)
     Bus.$on(CANVAS_WIDGET_RESIZE, this.setData)
     this.addEventListener()
   },
   beforeDestroy() {
+    Bus.$off(DOCUMENT_MOUSE_DOWN, this.documentMousedown)
+    Bus.$off(DOCUMENT_MOUSE_MOVE, this.documentMousemove)
+    Bus.$off(CANVAS_WIDGET_RESIZE, this.setData)
     this.removeEventListener()
   },
   methods: {
-    setData() {
-      target = getTarget()
+    setData(el) {
+      target = el
       this.visible = true
       resizer.setEl(target)
       this.lines = resizer.getLines()
       this.circulars = resizer.getCirculars()
     },
-    mousedown(evt) {
+    documentMousedown(evt) {
       if (!target) return
       const el = evt.target
       if (el.id !== target.id && el.dataset.identification !== this.identification) this.visible = false
+    },
+    documentMousemove() {
+      this.visible = false
     },
     mousemove(evt) {
       resizer.run(evt, () => {
@@ -75,9 +79,10 @@ export default {
       })
     },
     mouseup(evt) {
+      if (!target) return
       const id = target.id
       resizer.end(evt, ({ prev, current }) => {
-        this[UPDATE_CANVAS_WIDGET_DATA]({
+        this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
           id,
           update: ({ style: { container, component } }) => {
             container.top = current.top
@@ -85,49 +90,30 @@ export default {
             component.width = current.width
             component.height = current.height
           },
-        })
-        this[ADD_SNAPSHOT]({
-          undo: () => {
-            this[UPDATE_CANVAS_WIDGET_DATA]({
-              id,
-              update: ({ style: { container, component } }) => {
-                container.top = prev.top
-                container.left = prev.left
-                component.width = prev.width
-                component.height = prev.height
-              },
-            })
-          },
-          redo: () => {
-            this[UPDATE_CANVAS_WIDGET_DATA]({
-              id,
-              update: ({ style: { container, component } }) => {
-                container.top = current.top
-                container.left = current.left
-                component.width = current.width
-                component.height = current.height
-              },
-            })
-          },
-          free: () => {
-            prev = null
-            current = null
+          snapshot: {
+            undo: ({ style: { container, component } }) => {
+              container.top = prev.top
+              container.left = prev.left
+              component.width = prev.width
+              component.height = prev.height
+            },
+            free: () => {
+              prev = null
+              current = null
+            },
           },
         })
       })
     },
     addEventListener() {
-      document.addEventListener('mousedown', this.mousedown)
       document.addEventListener('mousemove', this.mousemove)
       document.addEventListener('mouseup', this.mouseup)
     },
     removeEventListener() {
-      document.removeEventListener('mousedown', this.mousedown)
       document.removeEventListener('mousemove', this.mousemove)
       document.removeEventListener('mouseup', this.mouseup)
     },
-    ...mapMutations('canvas', [UPDATE_CANVAS_WIDGET_DATA]),
-    ...mapMutations('snapshot', [ADD_SNAPSHOT]),
+    ...mapActions('canvas', [ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]),
   },
 }
 </script>

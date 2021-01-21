@@ -242,7 +242,7 @@ export default class Resizer {
         }
       })
     }
-    return compose(queue.reverse())
+    return compose(...queue.reverse())
   }
 
   start(evt) {

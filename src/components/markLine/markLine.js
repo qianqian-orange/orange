@@ -1,6 +1,4 @@
-import {
-  getTarget,
-} from '@/lib/document'
+import { getTarget } from '@/lib/document'
 
 const ABSORB_INSTANCE = 3
 

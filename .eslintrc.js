@@ -19,5 +19,6 @@ module.exports = {
     }],
     'vue/no-deprecated-destroyed-lifecycle': 0,
     'vue/require-explicit-emits': 0,
+    'vue/no-deprecated-dollar-listeners-api': 0,
   },
 }

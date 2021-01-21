@@ -18,14 +18,13 @@
 </template>
 
 <script>
-import {
-  mapState,
-  mapGetters,
-} from 'vuex'
-import {
-  mousemoveQueue,
-  mouseupQueue,
-} from '@/lib/document'
+import { mapState } from 'vuex'
+import { getTarget } from '@/lib/document'
+import Bus, {
+  DOCUMENT_MOUSE_MOVE,
+  DOCUMENT_MOUSE_UP,
+} from '@/utils/bus'
+import { keys } from '@/utils/object'
 import MarkLine, {
   rect,
   MARKLINE,
@@ -67,17 +66,27 @@ export default {
   },
   computed: {
     ...mapState('canvas', {
-      widgetListMap: state => state.widgetListMap,
+      mouseWidgetList: state => state.mouseWidgetList,
     }),
-    ...mapGetters('canvas', [
-      'widgetList',
-    ]),
   },
   mounted() {
-    mousemoveQueue.push(({ id, style }) => {
-      const { width, height } = this.widgetListMap[id].style.component
-      const widgetList = this.widgetList.filter(widget => widget.id !== id)
-      this.target = rect({ width, height, top: style.top, left: style.left })
+    Bus.$on(DOCUMENT_MOUSE_MOVE, this.mousemove)
+    Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
+  },
+  beforeDestroy() {
+    Bus.$off(DOCUMENT_MOUSE_MOVE, this.mousemove)
+    Bus.$off(DOCUMENT_MOUSE_UP, this.mouseup)
+  },
+  methods: {
+    mousemove({ id, style }) {
+      const { offsetWidth, offsetHeight } = getTarget()
+      const widgetList = this.mouseWidgetList.filter(widget => widget.id !== id)
+      this.target = rect({
+        width: offsetWidth + 'px',
+        height: offsetHeight + 'px',
+        top: style.top,
+        left: style.left,
+      })
       // 将距离标线清空重新收集
       this.distanceLines.length = 0
       let direction = MARKLINE_DIRECTION.yAxis
@@ -94,21 +103,15 @@ export default {
         lines: MARKLINE[direction],
         direction,
       })
-    })
-    mouseupQueue.push(() => {
+    },
+    mouseup() {
       // 将普通标线隐藏
-      Object.keys(this.plainLine).forEach((identification) => {
-        this.plainLine[identification].visible = false
-      })
+      keys(this.plainLine, (obj) => { obj.visible = false })
       // 将距离标线清空
       this.distanceLines.length = 0
       // 重置缓存数据
-      Object.keys(cache).forEach((key) => {
-        cache[key].neighbors = null
-      })
-    })
-  },
-  methods: {
+      keys(cache, (obj) => { obj.neighbors = null })
+    },
     core({
       widgetList,
       lines,

@@ -1,3 +1,4 @@
+import { noop } from '@/utils'
 import {
   ADD_SNAPSHOT,
   UNDO,
@@ -18,7 +19,7 @@ const mutations = {
       return
     }
     state.snapshots.splice(state.step, deleteCount, snapshot)
-      .forEach(({ free }) => {
+      .forEach(({ free = noop }) => {
         // 将闭包变量释放，防止内存泄漏
         free()
       })

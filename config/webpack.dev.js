@@ -18,5 +18,5 @@ module.exports = merge(baseConfig, {
     // proxy: {},
     // historyApiFallback: {}
   },
-  devtool: '#cheap-module-eval-source-map',
+  devtool: '#source-map',
 })

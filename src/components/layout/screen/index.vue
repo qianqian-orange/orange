@@ -49,17 +49,18 @@
     <div
       ref="canvas-container"
       class="canvas-container"
-      @drop="dropHandler"
-      @dragover="dragoverHandler"
+      :data-identification="identification"
+      @drop="drop"
+      @dragover="dragover"
     >
-      <mouse-widget
-        v-for="widget in widgetList"
-        :key="widget.id"
-        :data-source="widget"
-        @bootstrap="bootstrap"
-      />
       <mark-line />
       <resizer />
+      <hover-menu />
+      <mouse-widget
+        v-for="widget in canvas.mouseWidgetList"
+        :key="widget.id"
+        :data-source="widget"
+      />
     </div>
   </div>
 </template>
@@ -68,19 +69,17 @@
 import lodash from 'lodash'
 import {
   mapState,
-  mapGetters,
+  mapActions,
   mapMutations,
 } from 'vuex'
-import {
-  UPDATE_CANVAS_DATE,
-  UPDATE_CANVAS_WIDGET_DATA,
-  ADD_WIDGET,
-} from '@/store/modules/canvas/mutation-types'
-import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
 import uuid from '@/utils/uid'
+import { UPDATE_CANVAS_DATE } from '@/store/modules/canvas/mutation-types'
+import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
 import MouseWidget from '@/components/widget/mouseWidget'
-import MarkLine from '@/components/widget/markLine'
-import Resizer from '@/components/widget/resizer'
+import MarkLine from '@/components/markLine'
+import Resizer from '@/components/resizer'
+import HoverMenu from '@/components/menu/hoverMenu'
+import menu from './mixins/menu'
 
 export default {
   name: 'WorkspaceScreen',
@@ -88,10 +87,13 @@ export default {
     MouseWidget,
     MarkLine,
     Resizer,
+    HoverMenu,
   },
+  mixins: [menu],
   data() {
     return {
       target: null,
+      identification: 'canvas',
     }
   },
   computed: {
@@ -101,9 +103,6 @@ export default {
     ...mapState('canvas', {
       canvas: state => state,
     }),
-    ...mapGetters('canvas', [
-      'widgetList',
-    ]),
   },
   mounted() {
     this.initData()
@@ -116,7 +115,7 @@ export default {
         canvas.height = canvasEl.offsetHeight
       })
     },
-    dropHandler(evt) {
+    drop(evt) {
       evt.preventDefault()
       const {
         id,
@@ -139,7 +138,7 @@ export default {
       this.target = widget
       this[ADD_WIDGET](widget)
     },
-    dragoverHandler(evt) {
+    dragover(evt) {
       evt.preventDefault()
     },
     calcPosition(x, y, size, rect) {
@@ -152,38 +151,12 @@ export default {
         y,
       }
     },
-    bootstrap(vm) {
-      if (!this.target) return
-      const id = this.target.id
-      const el = document.querySelector(`#${id}`)
-      const parentNode = el.parentNode
-      this[ADD_SNAPSHOT]({
-        undo: () => {
-          this[UPDATE_CANVAS_WIDGET_DATA]({
-            id,
-            update: (widget) => {
-              widget.display = 'none'
-            },
-          })
-          parentNode.removeChild(el)
-        },
-        redo: () => {
-          this[UPDATE_CANVAS_WIDGET_DATA]({
-            id,
-            update: (widget) => {
-              widget.display = 'visible'
-            },
-          })
-          parentNode.appendChild(el)
-        },
-        free: () => {
-          vm.$destroy()
-        },
-      })
-      this.target = null
-    },
-    ...mapMutations('canvas', [UPDATE_CANVAS_DATE, UPDATE_CANVAS_WIDGET_DATA, ADD_WIDGET]),
-    ...mapMutations('snapshot', [ADD_SNAPSHOT]),
+    ...mapActions('canvas', [
+      ADD_WIDGET,
+    ]),
+    ...mapMutations('canvas', [
+      UPDATE_CANVAS_DATE,
+    ]),
   },
 }
 </script>

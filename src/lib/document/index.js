@@ -1,9 +1,22 @@
+import Bus, {
+  DOCUMENT_MOUSE_DOWN,
+  DOCUMENT_MOUSE_MOVE,
+  DOCUMENT_MOUSE_UP,
+  DOCUMENT_CONTEXT_MENU,
+} from '@/utils/bus'
+
 let target = null
 // 判断是否有触发mousemove事件
 let move = false
 
-export const mousemoveQueue = []
-export const mouseupQueue = []
+function contextmenu(evt) {
+  evt.preventDefault()
+  Bus.$emit(DOCUMENT_CONTEXT_MENU, evt)
+}
+
+function mousedown(evt) {
+  Bus.$emit(DOCUMENT_MOUSE_DOWN, evt)
+}
 
 function mousemove(evt) {
   if (!target) return
@@ -18,18 +31,20 @@ function mousemove(evt) {
   const top = startY + (evt.clientY - clientY)
   target.style.top = top + 'px'
   target.style.left = left + 'px'
-  mousemoveQueue.forEach(fn => fn(target, evt))
+  Bus.$emit(DOCUMENT_MOUSE_MOVE, target, evt)
 }
 
 function mouseup(evt) {
   // 由于事件冒泡会导致此方法被调用，当target为null时不做处理
   if (!target) return
-  mouseupQueue.forEach(fn => fn(target, move, evt))
+  Bus.$emit(DOCUMENT_MOUSE_UP, target, move, evt)
   move = false
   target = null
 }
 
 function init() {
+  document.addEventListener('mousedown', mousedown)
+  document.addEventListener('contextmenu', contextmenu)
   document.addEventListener('mousemove', mousemove)
   document.addEventListener('mouseup', mouseup)
 }

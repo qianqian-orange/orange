@@ -1,5 +1,14 @@
 import Vue from 'vue'
 
+// mouseWidget
 export const CANVAS_WIDGET_RESIZE = 'CANVAS_WIDGET_RESIZE'
+export const CANVAS_HOVER_MENU = 'CANVAS_HOVER_MENU'
+export const CANVAS_WIDGET_BOOTSTRAP = 'CANVAS_WIDGET_BOOTSTRAP'
+
+// document
+export const DOCUMENT_MOUSE_DOWN = 'DOCUMENT_MOUSE_DOWN'
+export const DOCUMENT_MOUSE_MOVE = 'DOCUMENT_MOUSE_MOVE'
+export const DOCUMENT_MOUSE_UP = 'DOCUMENT_MOUSE_UP'
+export const DOCUMENT_CONTEXT_MENU = 'DOCUMENT_CONTEXT_MENU'
 
 export default new Vue()
