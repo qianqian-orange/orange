@@ -22,6 +22,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { on, off } from '@/utils/dom'
 import Bus, {
   CANVAS_WIDGET_RESIZE,
   DOCUMENT_MOUSE_DOWN,
@@ -106,12 +107,12 @@ export default {
       })
     },
     addEventListener() {
-      document.addEventListener('mousemove', this.mousemove)
-      document.addEventListener('mouseup', this.mouseup)
+      on(document, 'mousemove', this.mousemove)
+      on(document, 'mouseup', this.mouseup)
     },
     removeEventListener() {
-      document.removeEventListener('mousemove', this.mousemove)
-      document.removeEventListener('mouseup', this.mouseup)
+      off(document, 'mousemove', this.mousemove)
+      off(document, 'mouseup', this.mouseup)
     },
     ...mapActions('canvas', [ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]),
   },
@@ -122,7 +123,7 @@ export default {
   .resizer {
     &-container {
       position: relative;
-      z-index: 10000;
+      z-index: 100;
     }
 
     &-line {
@@ -131,7 +132,7 @@ export default {
     }
 
     &-circular {
-      .expand-click(-4.5px);
+      .expand-click(4.5px);
 
       position: absolute;
       transform: translate(-50%, -50%);

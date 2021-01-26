@@ -11,3 +11,14 @@
     height: 100%;
   }
 }
+
+.clearfix {
+  &::before,
+  &::after {
+    content: " ";
+    display: inline-block;
+    height: 100%;
+    visibility: hidden;
+    clear: both;
+  }
+}

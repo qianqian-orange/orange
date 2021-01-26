@@ -1,14 +1,10 @@
 import { getTarget } from '@/lib/document'
+import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 
 const ABSORB_INSTANCE = 3
 
-export const MARKLINE_DIRECTION = {
-  yAxis: 'yAxis',
-  xAxis: 'xAxis',
-}
-
-export const MARKLINE_HANDLER = {
-  [MARKLINE_DIRECTION.yAxis]: {
+export const MARKLINE_HANDLER_MAP = {
+  [COORDINATE_DIRECTION_MAP.yAxis]: {
     targetFilter: widget => ({
       top: widget.top,
       bottom: widget.top + widget.height,
@@ -36,7 +32,7 @@ export const MARKLINE_HANDLER = {
           width: '1px',
           height: line.endPoint - line.startPoint + 'px',
         },
-        direction: MARKLINE_DIRECTION.yAxis,
+        direction: COORDINATE_DIRECTION_MAP.yAxis,
         interval: line.endPoint - line.startPoint,
       })))
     },
@@ -47,7 +43,7 @@ export const MARKLINE_HANDLER = {
       el.position.startX += interval
     },
   },
-  [MARKLINE_DIRECTION.xAxis]: {
+  [COORDINATE_DIRECTION_MAP.xAxis]: {
     targetFilter: widget => ({
       top: widget.left,
       bottom: widget.left + widget.width,
@@ -75,7 +71,7 @@ export const MARKLINE_HANDLER = {
           width: line.endPoint - line.startPoint + 'px',
           height: '1px',
         },
-        direction: MARKLINE_DIRECTION.xAxis,
+        direction: COORDINATE_DIRECTION_MAP.xAxis,
         interval: line.endPoint - line.startPoint,
       })))
     },
@@ -88,9 +84,9 @@ export const MARKLINE_HANDLER = {
   },
 }
 
-export const MARKLINE = {
-  [MARKLINE_DIRECTION.yAxis]: ['yl', 'yc', 'yr'],
-  [MARKLINE_DIRECTION.xAxis]: ['xt', 'xc', 'xb'],
+export const MARKLINE_MAP = {
+  [COORDINATE_DIRECTION_MAP.yAxis]: ['yl', 'yc', 'yr'],
+  [COORDINATE_DIRECTION_MAP.xAxis]: ['xt', 'xc', 'xb'],
 }
 
 export function rect(style) {

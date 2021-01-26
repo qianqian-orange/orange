@@ -15,6 +15,10 @@ const mutations = {
 export default {
   namespaced: true,
   state: () => ({
+    screen: {
+      width: '3000px',
+      height: '1500px',
+    },
     widgetListMap: {
       'primary-button': {
         id: 'primary-button',

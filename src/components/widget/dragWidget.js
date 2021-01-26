@@ -1,3 +1,4 @@
+import { on, off } from '@/utils/dom'
 import Widget from './index'
 
 export default {
@@ -8,25 +9,25 @@ export default {
   },
   beforeDestroy() {
     const el = this.$el
-    el.removeEventListener('dragstart', this.dragstart)
-    el.removeEventListener('dragend', this.dragend)
+    off(el, 'dragstart', this.dragstart)
+    off(el, 'dragend', this.dragend)
   },
   methods: {
+    dragstart(evt) {
+      evt.target.style.transform = 'translateZ(0)'
+      evt.dataTransfer.setData('dataSource', JSON.stringify({
+        id: evt.target.id,
+        offsetX: evt.offsetX,
+        offsetY: evt.offsetY,
+      }))
+    },
+    dragend(evt) {
+      evt.target.style.transform = ''
+    },
     addEventListener() {
       const el = this.$el
-      this.dragstart = (evt) => {
-        evt.target.style.transform = 'translateZ(0)'
-        evt.dataTransfer.setData('dataSource', JSON.stringify({
-          id: evt.target.id,
-          offsetX: evt.offsetX,
-          offsetY: evt.offsetY,
-        }))
-      }
-      el.addEventListener('dragstart', this.dragstart)
-      this.dragend = (evt) => {
-        evt.target.style.transform = ''
-      }
-      el.addEventListener('dragend', this.dragend)
+      on(el, 'dragstart', this.dragstart)
+      on(el, 'dragend', this.dragend)
     },
   },
 }

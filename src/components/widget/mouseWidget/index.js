@@ -1,6 +1,8 @@
 import {
   mapActions,
 } from 'vuex'
+import { on, off } from '@/utils/dom'
+import { leftMousedown } from '@/utils/check'
 import { setTarget } from '@/lib/document'
 import Bus, {
   CANVAS_WIDGET_RESIZE,
@@ -8,7 +10,6 @@ import Bus, {
   DOCUMENT_MOUSE_UP,
 } from '@/utils/bus'
 import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
-import { leftMousedown } from '@/utils/check'
 import menu from './mixins/menu'
 import Widget from '@/components/widget'
 
@@ -67,13 +68,13 @@ export default {
     },
     addEventListener() {
       const el = this.$el
-      el.addEventListener('mousedown', this.mousedown)
-      el.addEventListener('click', this.click)
+      on(el, 'mousedown', this.mousedown)
+      on(el, 'click', this.click)
     },
     removeEventListener() {
       const el = this.$el
-      el.removeEventListener('mousedown', this.mousedown)
-      el.removeEventListener('click', this.click)
+      off(el, 'mousedown', this.mousedown)
+      off(el, 'click', this.click)
     },
     ...mapActions('canvas', [
       ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT,

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.querySelector('#canvas')
+    const ctx = canvas.getContext('2d')
+    const start = -100
+    const interval = {
+      line: 10,
+      text: 100,
+    }
+    let offset
+    if (start <= 0) {
+      offset = Math.abs(start) % interval.line
+    } else {
+      offset = interval.line - start % interval.line
+    }
+    const count = Math.floor(canvas.width / interval.line)
+    for (let i = 0; i < count; i += 1) {
+      let x = offset + i * interval.line + 0.5
+      let text = offset + i * interval.line + start
+      let lineHeight
+      if (text % interval.text === 0) {
+        lineHeight = 8
+        ctx.strokeStyle = '#f00'
+      } else {
+        lineHeight = 4
+        ctx.strokeStyle = '#0f0'
+      }
+      ctx.beginPath()
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, lineHeight)
+      ctx.stroke()
+      if (text % interval.text === 0) {
+        ctx.fillStyle = '#f00'
+        ctx.beginPath()
+        ctx.fillText(text, x + 2, 16)
+      }
+    }
+  </script>
+  <!-- <canvas id="canvas" width="16" height="500"></canvas>
+  <script>
+    const canvas = document.querySelector('#canvas')
+    const ctx = canvas.getContext('2d')
+    const start = 0
+    const interval = {
+      line: 10,
+      text: 100,
+    }
+    let offset
+    if (start <= 0) {
+      offset = Math.abs(start) % interval.line
+    } else {
+      offset = interval.line - start % interval.line
+    }
+    const count = Math.floor(canvas.height / interval.line)
+    for (let i = 0; i < count; i += 1) {
+      let y = offset + i * interval.line + 0.5
+      let text = offset + i * interval.line + start
+      let lineLength
+      if (text % interval.text === 0) {
+        lineLength = 8
+        ctx.strokeStyle = '#f00'
+      } else {
+        lineLength = 4
+        ctx.strokeStyle = '#0f0'
+      }
+      ctx.beginPath()
+      ctx.moveTo(0, y)
+      ctx.lineTo(lineLength, y)
+      ctx.stroke()
+      if (text % interval.text === 0) {
+        ctx.save()
+        ctx.fillStyle = '#f00'
+        ctx.translate(16, y - 2)
+        ctx.rotate(-Math.PI / 2)
+        ctx.beginPath()
+        ctx.fillText(text, 0, 0)
+        ctx.restore()
+      }
+    }
+  </script> -->
+
+  <!-- <canvas id="canvas" width="400" height="400"></canvas> -->
+  <!-- <script>
+    const canvas = document.querySelector('#canvas')
+    const ctx = canvas.getContext('2d')
+    ctx.save()
+    ctx.translate(100, 100)
+    ctx.rotate(-Math.PI)
+    ctx.beginPath()
+    ctx.fillRect(0, 0, 100, 100)
+    ctx.restore()
+  </script> -->
+</body>
+</html>

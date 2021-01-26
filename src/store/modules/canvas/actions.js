@@ -35,6 +35,18 @@ const bootstrap = (vm) => {
   Bus.$off(CANVAS_WIDGET_BOOTSTRAP, bootstrap)
 }
 
+// const adjustPosition = ({ x, y }, { style: { container, component } }, rect) => {
+//   const width = parseInt(component.width, 10)
+//   const height = parseInt(component.height, 10)
+//   container.position = 'absolute'
+//   if (x < 0) container.left = 0
+//   else if (x + width > rect.width) container.left = rect.width - width + 'px'
+//   else container.left = x + 'px'
+//   if (y < 0) container.top = 0
+//   else if (y + height > rect.height) container.top = rect.height - height + 'px'
+//   else container.top = y + 'px'
+// }
+
 export default {
   [TO_TOP]({ commit }, id) {
     const node = mouseWidgetMap[id]

@@ -1,0 +1,77 @@
+.el-scrollbar {
+  position: relative;
+  overflow: hidden;
+
+  &.fitHeight {
+    height: 100%;
+  }
+}
+
+.el-scrollbar__bar {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  z-index: 1;
+  opacity: 0;
+  -webkit-transition: opacity 120ms ease-out;
+  transition: opacity 120ms ease-out;
+  border-radius: 4px;
+}
+
+.el-scrollbar:active > .el-scrollbar__bar,
+.el-scrollbar:focus > .el-scrollbar__bar,
+.el-scrollbar:hover > .el-scrollbar__bar {
+  opacity: 1;
+  transition: opacity 340ms ease-out;
+}
+
+.el-scrollbar__wrap {
+  overflow: scroll;
+  font-size: 0;
+}
+
+.el-scrollbar__wrap--hidden-default {
+  scrollbar-width: none;
+}
+
+.el-scrollbar__wrap--hidden-default::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.el-scrollbar__view {
+  display: inline-block;
+}
+
+.el-scrollbar__thumb {
+  position: relative;
+  display: block;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  background-color: rgb(69, 70, 71);
+  transition: .3s background-color;
+  border-radius: inherit;
+}
+
+.el-scrollbar__thumb:hover {
+  background-color: rgb(89, 90, 92);
+}
+
+.el-scrollbar__bar.is-vertical {
+  top: 2px;
+  width: 6px;
+}
+
+.el-scrollbar__bar.is-vertical > div {
+  width: 100%;
+}
+
+.el-scrollbar__bar.is-horizontal {
+  left: 2px;
+  height: 6px;
+}
+
+.el-scrollbar__bar.is-horizontal > div {
+  height: 100%;
+}

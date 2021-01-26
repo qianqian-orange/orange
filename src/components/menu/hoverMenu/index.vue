@@ -173,7 +173,7 @@ export default {
       line-height: 28px;
       transition: none;
 
-      .glass();
+      .glass;
 
       &.ant-menu-item-selected {
         background-color: transparent;
@@ -202,7 +202,7 @@ export default {
         line-height: 28px;
         transition: none;
 
-        .glass();
+        .glass;
 
         &:active {
           background-color: transparent;

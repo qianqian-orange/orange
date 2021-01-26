@@ -25,19 +25,19 @@ import Bus, {
   DOCUMENT_MOUSE_UP,
 } from '@/utils/bus'
 import { keys } from '@/utils/object'
+import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import MarkLine, {
   rect,
-  MARKLINE,
-  MARKLINE_DIRECTION,
-  MARKLINE_HANDLER,
+  MARKLINE_MAP,
+  MARKLINE_HANDLER_MAP,
 } from './markLine'
 
 const markline = new MarkLine()
 const cache = {
-  [MARKLINE_DIRECTION.yAxis]: {
+  [COORDINATE_DIRECTION_MAP.yAxis]: {
     neighbors: null,
   },
-  [MARKLINE_DIRECTION.xAxis]: {
+  [COORDINATE_DIRECTION_MAP.xAxis]: {
     neighbors: null,
   },
 }
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       target: null,
-      plainLine: [...MARKLINE[MARKLINE_DIRECTION.xAxis], ...MARKLINE[MARKLINE_DIRECTION.yAxis]]
+      plainLine: [...MARKLINE_MAP[COORDINATE_DIRECTION_MAP.xAxis], ...MARKLINE_MAP[COORDINATE_DIRECTION_MAP.yAxis]]
         .reduce((res, identification) => {
           res[identification] = {
             visible: false,
@@ -89,18 +89,18 @@ export default {
       })
       // 将距离标线清空重新收集
       this.distanceLines.length = 0
-      let direction = MARKLINE_DIRECTION.yAxis
+      let direction = COORDINATE_DIRECTION_MAP.yAxis
       this.core({
-        ...MARKLINE_HANDLER[direction],
+        ...MARKLINE_HANDLER_MAP[direction],
         widgetList,
-        lines: MARKLINE[direction],
+        lines: MARKLINE_MAP[direction],
         direction,
       })
-      direction = MARKLINE_DIRECTION.xAxis
+      direction = COORDINATE_DIRECTION_MAP.xAxis
       this.core({
-        ...MARKLINE_HANDLER[direction],
+        ...MARKLINE_HANDLER_MAP[direction],
         widgetList,
-        lines: MARKLINE[direction],
+        lines: MARKLINE_MAP[direction],
         direction,
       })
     },
@@ -159,7 +159,7 @@ export default {
 
     &-container {
       position: relative;
-      z-index: 10000;
+      z-index: 100;
     }
 
     &.plain {

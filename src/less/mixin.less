@@ -1,10 +1,10 @@
 .expand-click(@size) {
-  &::before {
+  &::after {
     content: "";
     position: absolute;
-    top: @size;
-    right: @size;
-    bottom: @size;
-    left: @size;
+    top: -@size;
+    right: -@size;
+    bottom: -@size;
+    left: -@size;
   }
 }

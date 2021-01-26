@@ -4,7 +4,7 @@
     class="workspace"
   >
     <workspace-header />
-    <div class="workspace-main">
+    <div class="workspace-main clearfix">
       <workspace-left-panel />
       <workspace-screen />
       <div class="workspace-right-panel">
@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import WorkspaceHeader from './components/layout/header'
-import WorkspaceLeftPanel from './components/layout/leftPanel'
-import WorkspaceScreen from './components/layout/screen'
+import WorkspaceHeader from './layouts/header'
+import WorkspaceLeftPanel from './layouts/leftPanel'
+import WorkspaceScreen from './layouts/screen'
 
 export default {
   name: 'App',
@@ -36,16 +36,15 @@ export default {
   }
 
   .workspace {
-    display: flex;
-    flex-direction: column;
-
     &-main {
-      display: flex;
-      flex: 1;
+      height: calc(100% - 52px);
     }
 
     &-right-panel {
+      float: right;
       width: 230px;
+      height: 100%;
+      min-width: 230px;
       background-color: @black;
     }
   }

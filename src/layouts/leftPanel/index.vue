@@ -87,7 +87,10 @@ export default {
 <style lang="less" scoped>
   .workspace {
     &-left-panel {
+      float: left;
       width: 251px;
+      height: 100%;
+      min-width: 251px;
       color: @textPrimaryColor;
       background-color: @black;
     }

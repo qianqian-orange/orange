@@ -1,3 +1,4 @@
+import { on } from '@/utils/dom'
 import Bus, {
   DOCUMENT_MOUSE_DOWN,
   DOCUMENT_MOUSE_MOVE,
@@ -43,10 +44,10 @@ function mouseup(evt) {
 }
 
 function init() {
-  document.addEventListener('mousedown', mousedown)
-  document.addEventListener('contextmenu', contextmenu)
-  document.addEventListener('mousemove', mousemove)
-  document.addEventListener('mouseup', mouseup)
+  on(document, 'contextmenu', contextmenu)
+  on(document, 'mousedown', mousedown)
+  on(document, 'mousemove', mousemove)
+  on(document, 'mouseup', mouseup)
 }
 
 init()
