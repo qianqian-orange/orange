@@ -1,14 +1,9 @@
-import lodash from 'lodash'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 
 const RULER_LINE_DEFAULT_LENGTH = 8
 
-let copy = null
-
-export const RULER_COORDINATE_ORIGIN = {
-  x: 0,
-  y: 0,
-}
+// 记录当前移动的参考线节点
+let target = null
 
 export const RULER_IDENTIFICATION_MAP = {
   backBtn: 'ruler-back-btn',
@@ -16,37 +11,53 @@ export const RULER_IDENTIFICATION_MAP = {
 
 export const RULER_LINE_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
-    mousedown(vm, evt) {
-      copy = lodash.cloneDeep(vm.target)
+    mousedown(vm, executor, evt) {
+      target = evt.target.parentNode
+      executor(target)
+      vm.startX = parseInt(target.style.left, 10)
       vm.clientX = evt.clientX
     },
-    mousemove(vm, evt) {
+    mousemove(vm, executor, evt) {
+      executor(target)
       const interval = evt.clientX - vm.clientX
-      vm.target.style.left = parseInt(copy.style.left, 10) + interval + 'px'
-      vm.target.num = copy.num + interval
+      target.style.left = vm.startX + interval + 'px'
+      target.dataset.num = vm.num + interval
     },
-    mouseup() {
-      copy = null
+    mouseup(executor) {
+      executor(target)
+      target = null
     },
-    update(line, { min }) {
-      line.style.left = line.num - (min - RULER_COORDINATE_ORIGIN.x) + 'px'
+    update(line, el) {
+      line.num = el.dataset.num
+      line.style.left = el.style.left
+    },
+    offset(el, start) {
+      el.style.left = +el.dataset.num - start + 'px'
     },
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
-    mousedown(vm, evt) {
-      copy = lodash.cloneDeep(vm.target)
+    mousedown(vm, executor, evt) {
+      target = evt.target.parentNode
+      executor(target)
+      vm.startY = parseInt(target.style.top, 10)
       vm.clientY = evt.clientY
     },
-    mousemove(vm, evt) {
+    mousemove(vm, executor, evt) {
+      executor(target)
       const interval = evt.clientY - vm.clientY
-      vm.target.style.top = parseInt(copy.style.top, 10) + interval + 'px'
-      vm.target.num = copy.num + interval
+      target.style.top = vm.startY + interval + 'px'
+      target.dataset.num = vm.num + interval
     },
-    mouseup() {
-      copy = null
+    mouseup(executor) {
+      executor(target)
+      target = null
     },
-    update(line, { min }) {
-      line.style.top = line.num - (min - RULER_COORDINATE_ORIGIN.y) + 'px'
+    update(line, el) {
+      line.num = el.dataset.num
+      line.style.top = el.style.top
+    },
+    offset(el, start) {
+      el.style.top = +el.dataset.num - start + 'px'
     },
   },
 }
@@ -54,25 +65,25 @@ export const RULER_LINE_MAP = {
 export const RULER_BAR_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
     mouseenter(vm, evt) {
-      // 当拖拽刻度线时不触发另一个标尺的标线显示
-      if (copy) return
+      // 当拖拽参考线时不触发另一个标尺的标线显示
+      if (target) return
       vm.offsetX = evt.offsetX
       vm.clientX = evt.clientX
       vm.line.visible = true
       vm.line.style = {
         left: vm.offsetX + 'px',
-        height: vm.rect.height,
+        height: vm.view.height,
       }
       vm.line.num = vm.start + vm.offsetX
     },
     mousemove(vm, evt) {
-      if (copy) return
+      if (target) return
       if (evt.offsetY > RULER_LINE_DEFAULT_LENGTH * 2) return
       const interval = evt.clientX - vm.clientX
       vm.line.style.left = vm.offsetX + interval + 'px'
       vm.line.num = vm.start + vm.offsetX + interval
     },
-    num(vm) {
+    boundary(vm) {
       return {
         min: vm.start,
         max: vm.start + vm.width,
@@ -81,24 +92,24 @@ export const RULER_BAR_MAP = {
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
     mouseenter(vm, evt) {
-      if (copy) return
+      if (target) return
       vm.offsetY = evt.offsetY
       vm.clientY = evt.clientY
       vm.line.visible = true
       vm.line.style = {
         top: vm.offsetY + 'px',
-        width: vm.rect.width,
+        width: vm.view.width,
       }
       vm.line.num = vm.start + vm.offsetY
     },
     mousemove(vm, evt) {
-      if (copy) return
+      if (target) return
       if (evt.offsetX > RULER_LINE_DEFAULT_LENGTH * 2) return
       const interval = evt.clientY - vm.clientY
       vm.line.style.top = vm.offsetY + interval + 'px'
       vm.line.num = vm.start + vm.offsetY + interval
     },
-    num(vm) {
+    boundary(vm) {
       return {
         min: vm.start,
         max: vm.start + vm.height,

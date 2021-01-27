@@ -10,6 +10,8 @@ export default class MenuItem {
     divider = false,
     props = {},
     events = {},
+    icon = {},
+    content = '',
     eventEmitter = new EventEmitter(),
     dataSource = {},
     children = null,
@@ -20,9 +22,12 @@ export default class MenuItem {
     this.divider = divider
     this.props = props
     this.events = events
+    this.icon = icon
+    this.content = content
     this.eventEmitter = eventEmitter
     this.dataSource = dataSource
     this.children = children
+    this.menu = null // 当menu实例添加此菜单项时会调用depend方法进行赋值
     this.bind()
     init.call(this)
   }
@@ -43,5 +48,12 @@ export default class MenuItem {
 
   emit(type) {
     this.eventEmitter.emit(type)
+  }
+
+  depend(menu) {
+    this.menu = menu
+    this.children && this.children.forEach((item) => {
+      item.depend(menu)
+    })
   }
 }

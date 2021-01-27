@@ -2,14 +2,12 @@
   <div class="ruler-container">
     <bar
       :start="startX"
-      :rect="rect"
-      :style="{ left: backBtnWidth, height: backBtnWidth }"
+      :style="{ left: `${size}px`, height: `${size}px` }"
     />
     <bar
       :start="startY"
-      :rect="rect"
-      :direction="COORDINATE_DIRECTION_MAP.yAxis"
-      :style="{ top: backBtnWidth, width: backBtnWidth }"
+      :direction="direction.yAxis"
+      :style="{ top: `${size}px`, width: `${size}px` }"
     />
     <a-tooltip placement="right">
       <template #title>
@@ -17,8 +15,8 @@
       </template>
       <span
         class="back-btn"
-        :data-identification="RULER_IDENTIFICATION_MAP.backBtn"
-        :style="{ width: backBtnWidth, height: backBtnWidth }"
+        :data-identification="identification.backBtn"
+        :style="{ width: `${size}px`, height: `${size}px` }"
         @click="back"
       />
     </a-tooltip>
@@ -26,8 +24,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import { RULER_IDENTIFICATION_MAP } from './ruler'
+import eventEmitter, { SCROLL_END } from './eventEmitter'
 import Bar from './bar'
 
 export default {
@@ -44,32 +44,31 @@ export default {
       type: Number,
       default: 0,
     },
-    container: {
-      type: Object,
-      default: () => ({
-        width: 0,
-        height: 0,
-      }),
-    },
   },
   data() {
     return {
-      COORDINATE_DIRECTION_MAP,
-      RULER_IDENTIFICATION_MAP,
-      backBtnWidth: '18px',
+      direction: {
+        yAxis: COORDINATE_DIRECTION_MAP.yAxis,
+      },
+      identification: {
+        backBtn: RULER_IDENTIFICATION_MAP.backBtn,
+      },
     }
   },
   computed: {
-    rect() {
-      return {
-        width: parseInt(this.backBtnWidth, 10) + parseInt(this.container.width, 10) + 'px',
-        height: parseInt(this.backBtnWidth, 10) + parseInt(this.container.height, 10) + 'px',
-      }
-    },
+    ...mapState('ruler', {
+      size: state => state.size,
+    }),
+  },
+  destroyed() {
+    eventEmitter.destroy()
   },
   methods: {
     back() {
       this.$emit('back')
+    },
+    scrollEnd() {
+      eventEmitter.emit(SCROLL_END)
     },
   },
 }

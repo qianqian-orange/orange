@@ -7,9 +7,11 @@ export const doubleLinkedList = new DoubleLinkedList()
 export const mouseWidgetMap = {}
 
 const getters = {
-  origin: (state, getter, rootState) => ({
-    x: (parseInt(rootState.global.screen.width, 10) - parseInt(state.width, 10)) / 2,
-    y: (parseInt(rootState.global.screen.height, 10) - parseInt(state.height, 10)) / 2,
+  origin: (state, getter, {
+    global: { screen: { container } },
+  }) => ({
+    x: Math.floor((parseInt(container.width, 10) - parseInt(state.width, 10)) / 2),
+    y: Math.floor((parseInt(container.height, 10) - parseInt(state.height, 10)) / 2),
   }),
 }
 

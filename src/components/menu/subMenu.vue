@@ -8,15 +8,13 @@
       <span>{{ dataSource.title }}</span>
     </template>
     <template v-for="item in dataSource.children">
-      <a-menu-item
+      <menu-item
         v-if="!item.children"
         :key="item.key"
-        :data-identification="identification"
+        :data-source="item"
         v-bind="item.props"
         v-on="item.events"
-      >
-        <span>{{ item.title }}</span>
-      </a-menu-item>
+      />
       <a-menu-divider
         v-if="item.divider"
         :key="`${item.key}-divider`"
@@ -25,7 +23,6 @@
         v-if="item.children"
         :key="item.key"
         :data-source="item"
-        :identification="identification"
         v-bind="item.props"
       />
     </template>
@@ -34,19 +31,19 @@
 
 <script>
 import { Menu } from 'ant-design-vue'
+import MenuItem from './menuItem'
 
 export default {
   name: 'SubMenu',
   isSubMenu: true,
+  components: {
+    MenuItem,
+  },
   props: {
     ...Menu.SubMenu.props,
     dataSource: {
       type: Object,
       default: () => ({}),
-    },
-    identification: {
-      type: String,
-      default: 'subMenu',
     },
   },
 }

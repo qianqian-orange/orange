@@ -1,17 +1,16 @@
 <template>
   <div
-    :class="['ruler-line', direction]"
+    :class="['ruler-line', direction, type]"
     :style="dataSource.style"
+    :data-id="dataSource.id"
     :data-num="dataSource.num"
   >
     <span
       class="move"
-      :data-id="dataSource.id"
       data-action="move"
     />
     <i
       class="remove iconfont icon-clear"
-      :data-id="dataSource.id"
       data-action="remove"
     />
   </div>
@@ -22,9 +21,13 @@
 // 会执行两种动作: move和remove
 
 export default {
-  name: 'RulerLine',
+  name: 'ReferenceLine',
   inject: ['direction'],
   props: {
+    type: {
+      type: String,
+      default: 'fixed',
+    },
     dataSource: {
       type: Object,
       required: true,

@@ -1,5 +1,3 @@
-import { keys } from '@/utils/object'
-
 export default class Menu {
   constructor() {
     this.target = null
@@ -7,7 +5,16 @@ export default class Menu {
     this.items = []
   }
 
-  setData(data) {
-    keys(data, (item, key) => { this[key] = item })
+  setData({
+    target = null,
+    event = null,
+    items = [],
+  }) {
+    this.target = target
+    this.event = event
+    this.items = items
+    items.forEach((item) => {
+      item.depend(this)
+    })
   }
 }

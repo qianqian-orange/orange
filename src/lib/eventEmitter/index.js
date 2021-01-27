@@ -23,4 +23,8 @@ export default class EventEmitter {
     if (!this.event[type]) return
     this.event[type].forEach(fn => fn(...args))
   }
+
+  destroy() {
+    this.event = null
+  }
 }

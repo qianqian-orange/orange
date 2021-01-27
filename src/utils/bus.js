@@ -11,4 +11,8 @@ export const DOCUMENT_MOUSE_MOVE = 'DOCUMENT_MOUSE_MOVE'
 export const DOCUMENT_MOUSE_UP = 'DOCUMENT_MOUSE_UP'
 export const DOCUMENT_CONTEXT_MENU = 'DOCUMENT_CONTEXT_MENU'
 
+// screen
+export const SCREEN_SCROLL = 'SCREEN_SCROLL'
+export const SCREEN_SCROLL_END = 'SCREEN_SCROLL_END'
+
 export default new Vue()

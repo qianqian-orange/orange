@@ -1,117 +1,114 @@
 <template>
-  <div class="workspace-screen-view">
+  <div
+    class="workspace-screen-view"
+    :style="screenViewStyle"
+  >
     <el-scrollbar
       ref="scrollbar"
       @scroll="scroll"
+      @scroll-end="scrollEnd"
     >
       <div
         class="workspace-screen-container"
-        :style="screenStyle"
+        :style="screenContainerStyle"
       >
         <grid />
-        <div
-          ref="canvas-container"
-          class="canvas-container"
-          :data-identification="identification"
-          @drop="drop"
-          @dragover="dragover"
-        >
-          <mark-line />
-          <resizer />
-          <mouse-widget
-            v-for="widget in canvas.mouseWidgetList"
-            :key="widget.id"
-            :data-source="widget"
-          />
-        </div>
+        <screen-canvas />
       </div>
     </el-scrollbar>
     <ruler
-      :start-x="ruler.startX"
-      :start-y="ruler.startY"
-      :container="{
-        width: screen.width,
-        height: screen.height,
-      }"
-      @back="back2origin"
+      v-if="rulerState.visible"
+      @scroll-to="scrollTo"
     />
     <hover-menu />
   </div>
 </template>
 
 <script>
-import lodash from 'lodash'
-import {
-  mapState,
-  mapActions,
-  mapGetters,
-} from 'vuex'
-import uuid from '@/utils/uid'
-import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
+import { mapState, mapMutations } from 'vuex'
+import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
+import { UPDATE_RULER_DATA } from '@/store/modules/ruler/mutation-types'
 import Grid from './components/grid'
-import MouseWidget from '@/components/widget/mouseWidget'
-import MarkLine from '@/components/markLine'
-import Resizer from '@/components/resizer'
+import ScreenCanvas from './components/canvas'
 import HoverMenu from '@/components/menu/hoverMenu'
-import Ruler from '@/components/ruler'
-import menu from './mixins/menu'
-import ruler from './mixins/ruler'
+import Ruler from './components/ruler'
+import scroll from './mixins/scroll'
 
 export default {
   name: 'WorkspaceScreen',
   components: {
     Grid,
-    MouseWidget,
-    MarkLine,
-    Resizer,
+    ScreenCanvas,
     HoverMenu,
     Ruler,
   },
-  mixins: [menu, ruler],
-  data() {
-    return {
-      identification: 'canvas',
-    }
-  },
+  mixins: [scroll],
   computed: {
-    screenStyle() {
+    screenViewStyle() {
+      let paddingTop = 0
+      let paddingLeft = 0
+      if (this.rulerState.visible) {
+        paddingTop = `${this.rulerState.size}px`
+        paddingLeft = `${this.rulerState.size}px`
+      }
       return {
-        width: this.screen.width,
-        height: this.screen.height,
+        paddingTop,
+        paddingLeft,
       }
     },
-    ...mapGetters('canvas', ['origin']),
+    screenContainerStyle() {
+      const {
+        width,
+        height,
+      } = this.globalState.screen.container
+      return {
+        width,
+        height,
+      }
+    },
     ...mapState('global', {
-      screen: state => state.screen,
-      widgetListMap: state => state.widgetListMap,
+      globalState: state => state,
     }),
-    ...mapState('canvas', {
-      canvas: state => state,
+    ...mapState('ruler', {
+      rulerState: state => state,
     }),
+  },
+  watch: {
+    'rulerState.visible'() {
+      this.$nextTick(() => {
+        this.$refs.scrollbar.update()
+      })
+    },
+  },
+  mounted() {
+    const {
+      offsetWidth,
+      offsetHeight,
+    } = this.$el
+    this[UPDATE_GLOBAL_DATA]({
+      log: {
+        source: 'WorkspaceScreen -> mounted',
+        reason: '更新screen视图的宽高尺寸',
+      },
+      update: ({ screen: { view } }) => {
+        view.width = offsetWidth + 'px'
+        view.height = offsetHeight + 'px'
+      },
+    })
+    this[UPDATE_RULER_DATA]({
+      log: {
+        source: 'WorkspaceScreen -> mounted',
+        reason: '更新ruler视图的宽高尺寸',
+      },
+      update: ({ view }) => {
+        view.width = offsetWidth + 'px'
+        view.height = offsetHeight + 'px'
+      },
+    })
   },
   methods: {
-    drop(evt) {
-      evt.preventDefault()
-      const {
-        id,
-        offsetX,
-        offsetY,
-      } = JSON.parse(evt.dataTransfer.getData('dataSource'))
-      const widget = lodash.cloneDeep(this.widgetListMap[id])
-      widget.id = `${widget.component}-${uuid()}`
-      widget.style.container = {
-        position: 'absolute',
-        top: evt.offsetY - offsetY + 'px',
-        left: evt.offsetX - offsetX + 'px',
-      }
-      this[ADD_WIDGET](widget)
-    },
-    dragover(evt) {
-      evt.preventDefault()
-    },
-    ...mapActions('canvas', [
-      ADD_WIDGET,
-    ]),
+    ...mapMutations('global', [UPDATE_GLOBAL_DATA]),
+    ...mapMutations('ruler', [UPDATE_RULER_DATA]),
   },
 }
 </script>
@@ -121,11 +118,9 @@ export default {
     &-view {
       float: left;
       position: relative; // 给标尺定位用到
-      overflow: hidden; // 隐藏标尺的刻度线用到
+      overflow: hidden; // 隐藏标尺的参考线用到
       width: calc(100% - 251px - 230px);
       height: 100%;
-      padding-top: 18px;
-      padding-left: 18px;
       background-color: @deepBlack;
     }
 
@@ -134,12 +129,5 @@ export default {
       z-index: 0; // 这里设置z-index是为了让container产生层级上下文，这样container的背景色就不会把grid遮住
       background-color: @deepBlack;
     }
-  }
-
-  .canvas-container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
   }
 </style>

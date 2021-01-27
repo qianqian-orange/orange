@@ -97,6 +97,7 @@ export default {
       sizeHeight: '0',
       moveX: 0,
       moveY: 0,
+      timer: null,
     }
   },
   computed: {
@@ -145,6 +146,11 @@ export default {
       this.moveY = ((wrap.scrollTop * 100) / wrap.clientHeight)
       this.moveX = ((wrap.scrollLeft * 100) / wrap.clientWidth)
       this.$emit('scroll', evt)
+
+      clearTimeout(this.timer)
+      this.timer = setTimeout(() => {
+        this.$emit('scroll-end')
+      }, 100)
     },
     update() {
       const wrap = this.wrap

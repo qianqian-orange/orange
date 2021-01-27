@@ -1,5 +1,5 @@
 import {
-  UPDATE_WIDGET_DATA,
+  UPDATE_GLOBAL_DATA,
 } from './mutation-types'
 
 const getters = {
@@ -7,8 +7,8 @@ const getters = {
 }
 
 const mutations = {
-  [UPDATE_WIDGET_DATA]({ widgetListMap }, { id, update }) {
-    update(widgetListMap[id])
+  [UPDATE_GLOBAL_DATA](state, { update }) {
+    update(state)
   },
 }
 
@@ -16,8 +16,14 @@ export default {
   namespaced: true,
   state: () => ({
     screen: {
-      width: '3000px',
-      height: '1500px',
+      view: {
+        width: 0,
+        height: 0,
+      },
+      container: {
+        width: '3000px',
+        height: '1500px',
+      },
     },
     widgetListMap: {
       'primary-button': {

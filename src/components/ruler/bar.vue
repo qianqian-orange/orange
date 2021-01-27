@@ -13,32 +13,36 @@
         :width="width"
         :height="height"
       />
-      <ruler-line
+      <reference-line
         v-show="line.visible"
-        class="active"
+        type="active"
         :data-source="line"
       />
     </div>
-    <ruler-line-list
+    <reference-line-list
       ref="lineList"
-      :num="num"
+      :boundary="boundary"
     />
   </div>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import uuid from '@/utils/uid'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
+import { ADD_REFERENCE_LINE } from '@/store/modules/ruler/mutation-types'
 import Ruler, { RULER_BAR_MAP } from './ruler'
-import RulerLine from './line'
-import RulerLineList from './lineList'
+import menu from './mixins/menu'
+import ReferenceLine from './line'
+import ReferenceLineList from './lineList'
 
 export default {
   name: 'RulerBar',
   components: {
-    RulerLine,
-    RulerLineList,
+    ReferenceLine,
+    ReferenceLineList,
   },
+  mixins: [menu],
   provide() {
     return {
       direction: this.direction,
@@ -52,13 +56,6 @@ export default {
     start: {
       type: Number,
       default: 0,
-    },
-    rect: {
-      type: Object,
-      default: () => ({
-        width: 0,
-        height: 0,
-      }),
     },
   },
   data() {
@@ -79,16 +76,19 @@ export default {
     }
   },
   computed: {
-    num() {
-      return RULER_BAR_MAP[this.direction].num(this)
+    boundary() {
+      return RULER_BAR_MAP[this.direction].boundary(this)
     },
+    ...mapState('ruler', {
+      view: state => state.view,
+    }),
   },
   watch: {
     start(value) {
       // 更新画布
       this.ruler.update({ start: value })
       // 更新刻度线
-      this.$refs.lineList.update(this.num)
+      this.$refs.lineList.offset(value)
     },
   },
   mounted() {
@@ -120,15 +120,19 @@ export default {
       this.line.visible = false
     },
     add() {
-      this.$refs.lineList.add({
-        id: uuid(),
-        visible: true,
-        num: this.line.num,
-        style: {
-          ...this.line.style,
+      this[ADD_REFERENCE_LINE]({
+        direction: this.direction,
+        line: {
+          id: uuid(),
+          visible: true,
+          num: this.line.num,
+          style: {
+            ...this.line.style,
+          },
         },
       })
     },
+    ...mapMutations('ruler', [ADD_REFERENCE_LINE]),
   },
 }
 </script>

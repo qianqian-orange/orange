@@ -44,7 +44,7 @@ import {
   mapGetters,
   mapMutations,
 } from 'vuex'
-import { UPDATE_WIDGET_DATA } from '@/store/modules/global/mutation-types'
+import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
 import DragWidget from '@/components/widget/dragWidget'
 
 export default {
@@ -64,9 +64,13 @@ export default {
     initData() {
       this.widgetList.forEach(({ id }) => {
         const el = document.querySelector(`#${id}`)
-        this[UPDATE_WIDGET_DATA]({
-          id,
-          update: (widget) => {
+        this[UPDATE_GLOBAL_DATA]({
+          log: {
+            source: 'WorkspaceLeftPanel -> initData',
+            reason: '更新组件的样式数据',
+          },
+          update: ({ widgetListMap }) => {
+            const widget = widgetListMap[id]
             const width = el.offsetWidth + 'px'
             const height = el.offsetHeight + 'px'
             widget.style.component = {
@@ -79,7 +83,7 @@ export default {
         })
       })
     },
-    ...mapMutations('global', [UPDATE_WIDGET_DATA]),
+    ...mapMutations('global', [UPDATE_GLOBAL_DATA]),
   },
 }
 </script>

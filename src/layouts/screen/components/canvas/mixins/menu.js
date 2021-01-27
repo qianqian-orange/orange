@@ -1,16 +1,12 @@
-import Bus, {
-  CANVAS_HOVER_MENU,
-  DOCUMENT_CONTEXT_MENU,
-} from '@/utils/bus'
-import menu, { paste } from '@/components/menu/hoverMenu/config'
+import Bus, { CANVAS_HOVER_MENU } from '@/utils/bus'
+import Menu from '@/components/menu/hoverMenu/menu'
+import { paste } from '@/components/widget/mouseWidget/mixins/menu/config'
+import base from '@/components/menu/hoverMenu/mixins/base'
+
+const menu = new Menu()
 
 export default {
-  mounted() {
-    Bus.$on(DOCUMENT_CONTEXT_MENU, this.contextmenu)
-  },
-  beforeDestroy() {
-    Bus.$off(DOCUMENT_CONTEXT_MENU, this.contextmenu)
-  },
+  mixins: [base],
   methods: {
     contextmenu(evt) {
       const identification = evt.target.dataset.identification

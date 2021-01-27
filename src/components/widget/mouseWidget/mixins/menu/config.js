@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import store from '@/store'
-import Menu from '@/components/menu/hoverMenu/menu'
 import MenuItem from '@/components/menu/hoverMenu/menuItem'
 import uuid from '@/utils/uid'
 import {
@@ -10,14 +9,12 @@ import {
   DELETE_WIDGET,
 } from '@/store/modules/canvas/action-types'
 
-const menu = new Menu()
-
 export const cut = new MenuItem({
   title: '剪切',
   key: 'cut',
   events: {
     click() {
-      store.dispatch(`canvas/${DELETE_WIDGET}`, menu.target.id)
+      store.dispatch(`canvas/${DELETE_WIDGET}`, this.menu.target.id)
     },
   },
 })
@@ -47,11 +44,11 @@ const paste2mouse = new MenuItem({
       const {
         offsetLeft,
         offsetTop,
-      } = menu.event.target
+      } = this.menu.event.target
       const {
         offsetX,
         offsetY,
-      } = menu.event
+      } = this.menu.event
       const widget = lodash.cloneDeep(paste.dataSource)
       widget.id = `${widget.component}-${uuid()}`
       widget.style.container.top = offsetTop + offsetY + 'px'
@@ -71,7 +68,7 @@ export const paste = new MenuItem({
   },
   init() {
     const fn = () => {
-      this.dataSource = menu.target
+      this.dataSource = this.menu.target
       this.props.disabled = false
     }
     cut.on('click', fn)
@@ -89,7 +86,7 @@ export const remove = new MenuItem({
   divider: true,
   events: {
     click() {
-      store.dispatch(`canvas/${DELETE_WIDGET}`, menu.target.id)
+      store.dispatch(`canvas/${DELETE_WIDGET}`, this.menu.target.id)
     },
   },
 })
@@ -99,7 +96,7 @@ export const toTop = new MenuItem({
   key: 'toTop',
   events: {
     click() {
-      store.dispatch(`canvas/${TO_TOP}`, menu.target.id)
+      store.dispatch(`canvas/${TO_TOP}`, this.menu.target.id)
     },
   },
 })
@@ -109,9 +106,7 @@ export const toBottom = new MenuItem({
   key: 'toBottom',
   events: {
     click() {
-      store.dispatch(`canvas/${TO_BOTTOM}`, menu.target.id)
+      store.dispatch(`canvas/${TO_BOTTOM}`, this.menu.target.id)
     },
   },
 })
-
-export default menu

@@ -1,7 +1,10 @@
 <template>
   <div
     class="grid-container"
-    :style="gridStyle"
+    :style="{
+      width: canvasState.width,
+      height: canvasState.height,
+    }"
   >
     <svg
       width="100%"
@@ -56,14 +59,8 @@ import { mapState } from 'vuex'
 export default {
   name: 'Grid',
   computed: {
-    gridStyle() {
-      return {
-        width: this.canvas.width,
-        height: this.canvas.height,
-      }
-    },
     ...mapState('canvas', {
-      canvas: state => state,
+      canvasState: state => state,
     }),
   },
 }

@@ -11,19 +11,17 @@
       <a-menu
         ref="hover-menu"
         mode="vertical"
-        style="width: 240px;"
+        :style="{ width }"
         @click="click"
       >
         <template v-for="item in menus">
-          <a-menu-item
+          <menu-item
             v-if="!item.children"
             :key="item.key"
-            :data-identification="identification"
+            :data-source="item"
             v-bind="item.props"
             v-on="item.events"
-          >
-            <span>{{ item.title }}</span>
-          </a-menu-item>
+          />
           <a-menu-divider
             v-if="item.divider"
             :key="`${item.key}-divider`"
@@ -32,7 +30,6 @@
             v-if="item.children"
             :key="item.key"
             :data-source="item"
-            :identification="identification"
             v-bind="item.props"
           />
         </template>
@@ -47,20 +44,24 @@ import Bus, {
   DOCUMENT_MOUSE_DOWN,
 } from '@/utils/bus'
 import { sleep } from '@/utils/timer'
+import { MENU_IDENTIFICATION_MAP } from '@/const/menu'
+import MenuItem from '@/components/menu/menuItem'
 import SubMenu from '@/components/menu/subMenu'
 
 let position = {}
+const MENU_DEFAULT_WIDTH = '240px'
 
 export default {
   name: 'HoverMenu',
   components: {
+    MenuItem,
     SubMenu,
   },
   data() {
     return {
+      width: MENU_DEFAULT_WIDTH,
       menus: [],
       visible: false,
-      identification: 'hoverMenu',
     }
   },
   mounted() {
@@ -109,11 +110,12 @@ export default {
     },
     mousedown(evt) {
       // 利用glass类给menu-item添加一个伪元素，方便将evt.tagret指向menu-item
-      if (evt.target.dataset.identification === this.identification) return
+      if (evt.target.dataset.identification === MENU_IDENTIFICATION_MAP.menuItem) return
       this.visible = false
     },
     setData(data) {
       this.menus = data.menus
+      this.width = data.width || MENU_DEFAULT_WIDTH
       position = data.position
       // 这里秒延时的目的：
       // 一是因为需要用到菜单的宽高数据，所以需要等菜单数据渲染出来
@@ -163,8 +165,11 @@ export default {
     padding: 4px 0;
     border-right: none;
     background-color: @lightBlack;
+    transition: none;
 
     .ant-menu-item {
+      .glass;
+
       height: 28px;
       margin-top: 0;
       margin-bottom: 0;
@@ -173,20 +178,29 @@ export default {
       line-height: 28px;
       transition: none;
 
-      .glass;
+      .left-icon {
+        margin-right: 10px;
+        font-size: 12px;
+      }
+
+      .right-icon {
+        float: right;
+        font-size: 14px;
+      }
 
       &.ant-menu-item-selected {
         background-color: transparent;
-      }
-
-      &.ant-menu-item-disabled {
-        color: @textSecondaryColor !important;
       }
 
       &.ant-menu-item-active,
       &:active {
         color: #fff;
         background-color: @deepBlue;
+      }
+
+      &.ant-menu-item-disabled {
+        color: @textSecondaryColor !important;
+        background-color: transparent;
       }
     }
 
@@ -195,14 +209,14 @@ export default {
       transition: none;
 
       .ant-menu-submenu-title {
+        .glass;
+
         height: 28px;
         margin: 0;
         color: @textPrimaryColor;
         font-size: 12px;
         line-height: 28px;
         transition: none;
-
-        .glass;
 
         &:active {
           background-color: transparent;
