@@ -3,12 +3,13 @@
     ref="ruler"
     :start-x="startX"
     :start-y="startY"
+    :zoom="canvasState.zoom"
     @back="back"
   />
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Bus, { SCREEN_SCROLL, SCREEN_SCROLL_END } from '@/utils/bus'
 import Ruler from '@/components/ruler'
 
@@ -25,6 +26,9 @@ export default {
   },
   computed: {
     ...mapGetters('canvas', ['origin']),
+    ...mapState('canvas', {
+      canvasState: state => state,
+    }),
   },
   mounted() {
     // 先监听滚动事件在执行返回原点逻辑

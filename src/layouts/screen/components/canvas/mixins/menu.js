@@ -1,5 +1,5 @@
 import Bus, { CANVAS_HOVER_MENU } from '@/utils/bus'
-import Menu from '@/components/menu/hoverMenu/menu'
+import Menu from '@/components/menu/constructors/menu'
 import { paste } from '@/components/widget/mouseWidget/mixins/menu/config'
 import base from '@/components/menu/hoverMenu/mixins/base'
 

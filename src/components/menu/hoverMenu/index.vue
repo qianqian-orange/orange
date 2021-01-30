@@ -8,32 +8,13 @@
       v-show="visible"
       class="hover-menu-container"
     >
-      <a-menu
+      <orange-menu
         ref="hover-menu"
-        mode="vertical"
-        :style="{ width }"
+        :width="width"
+        :size="size"
+        :menus="menus"
         @click="click"
-      >
-        <template v-for="item in menus">
-          <menu-item
-            v-if="!item.children"
-            :key="item.key"
-            :data-source="item"
-            v-bind="item.props"
-            v-on="item.events"
-          />
-          <a-menu-divider
-            v-if="item.divider"
-            :key="`${item.key}-divider`"
-          />
-          <sub-menu
-            v-if="item.children"
-            :key="item.key"
-            :data-source="item"
-            v-bind="item.props"
-          />
-        </template>
-      </a-menu>
+      />
     </div>
   </transition>
 </template>
@@ -44,24 +25,26 @@ import Bus, {
   DOCUMENT_MOUSE_DOWN,
 } from '@/utils/bus'
 import { sleep } from '@/utils/timer'
-import { MENU_IDENTIFICATION_MAP } from '@/const/menu'
-import MenuItem from '@/components/menu/menuItem'
-import SubMenu from '@/components/menu/subMenu'
+import {
+  MENU_IDENTIFICATION_MAP,
+  MENU_DEFAULT_WIDTH,
+  MENU_SIZE,
+} from '@/const/menu'
+import OrangeMenu from '@/components/menu/menu'
 
 let position = {}
-const MENU_DEFAULT_WIDTH = '240px'
 
 export default {
   name: 'HoverMenu',
   components: {
-    MenuItem,
-    SubMenu,
+    OrangeMenu,
   },
   data() {
     return {
       width: MENU_DEFAULT_WIDTH,
       menus: [],
       visible: false,
+      size: MENU_SIZE.normal,
     }
   },
   mounted() {
@@ -116,6 +99,7 @@ export default {
     setData(data) {
       this.menus = data.menus
       this.width = data.width || MENU_DEFAULT_WIDTH
+      this.size = data.size || MENU_SIZE.normal
       position = data.position
       // 这里秒延时的目的：
       // 一是因为需要用到菜单的宽高数据，所以需要等菜单数据渲染出来
@@ -155,124 +139,6 @@ export default {
     &.hover-menu-enter,
     &.hover-menu-leave-to {
       opacity: 0;
-    }
-  }
-</style>
-
-<style lang="less">
-  .hover-menu-container .ant-menu.ant-menu-vertical.ant-menu-root,
-  .hover-menu-popup .ant-menu.ant-menu-vertical.ant-menu-sub {
-    padding: 4px 0;
-    border-right: none;
-    background-color: @lightBlack;
-    transition: none;
-
-    .ant-menu-item {
-      .glass;
-
-      height: 28px;
-      margin-top: 0;
-      margin-bottom: 0;
-      color: @textPrimaryColor;
-      font-size: 12px;
-      line-height: 28px;
-      transition: none;
-
-      .left-icon {
-        margin-right: 10px;
-        font-size: 12px;
-      }
-
-      .right-icon {
-        float: right;
-        font-size: 14px;
-      }
-
-      &.ant-menu-item-selected {
-        background-color: transparent;
-      }
-
-      &.ant-menu-item-active,
-      &:active {
-        color: #fff;
-        background-color: @deepBlue;
-      }
-
-      &.ant-menu-item-disabled {
-        color: @textSecondaryColor !important;
-        background-color: transparent;
-      }
-    }
-
-    .ant-menu-submenu {
-      padding: 0;
-      transition: none;
-
-      .ant-menu-submenu-title {
-        .glass;
-
-        height: 28px;
-        margin: 0;
-        color: @textPrimaryColor;
-        font-size: 12px;
-        line-height: 28px;
-        transition: none;
-
-        &:active {
-          background-color: transparent;
-        }
-      }
-
-      .ant-menu-submenu-arrow {
-        &::before,
-        &::after {
-          background-color: @textPrimaryColor;
-          background-image: none;
-          transition: none;
-        }
-      }
-    }
-
-    .ant-menu-submenu.ant-menu-submenu-active {
-      background-color: @deepBlue;
-
-      .ant-menu-submenu-title {
-        color: #fff;
-      }
-
-      .ant-menu-submenu-arrow {
-        &::before,
-        &::after {
-          background-color: #fff;
-        }
-      }
-    }
-
-    .ant-menu-submenu.ant-menu-submenu-disabled {
-      .ant-menu-submenu-title {
-        color: @textSecondaryColor !important;
-      }
-
-      .ant-menu-submenu-arrow {
-        &::before,
-        &::after {
-          background-color: @textSecondaryColor !important;
-        }
-      }
-    }
-
-    .ant-menu-item-divider {
-      background-color: @deepBlack;
-    }
-  }
-
-  .hover-menu-popup.ant-menu-submenu-popup {
-    z-index: 10000;
-    background-color: transparent;
-    border-radius: 0;
-
-    .ant-menu {
-      border-radius: 0;
     }
   }
 </style>

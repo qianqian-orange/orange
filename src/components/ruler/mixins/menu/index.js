@@ -1,6 +1,7 @@
 import Bus, { CANVAS_HOVER_MENU } from '@/utils/bus'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
-import Menu from '@/components/menu/hoverMenu/menu'
+import { MENU_SIZE } from '@/const/menu'
+import Menu from '@/components/menu/constructors/menu'
 import {
   showRuler,
   showLine,
@@ -33,6 +34,7 @@ export default {
           top: evt.clientY,
           left: evt.clientX,
         },
+        size: MENU_SIZE.small,
         width: '140px',
       })
     },

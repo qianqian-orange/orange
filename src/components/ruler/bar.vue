@@ -86,7 +86,7 @@ export default {
   watch: {
     start(value) {
       // 更新画布
-      this.ruler.update({ start: value })
+      this.update({ start: value })
       // 更新刻度线
       this.$refs.lineList.offset(value)
     },
@@ -118,6 +118,9 @@ export default {
     },
     mouseleave() {
       this.line.visible = false
+    },
+    update({ start }) {
+      this.ruler.update({ start })
     },
     add() {
       this[ADD_REFERENCE_LINE]({

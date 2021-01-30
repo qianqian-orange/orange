@@ -2,7 +2,7 @@ import Bus, {
   CANVAS_WIDGET_RESIZE,
   CANVAS_HOVER_MENU,
 } from '@/utils/bus'
-import Menu from '@/components/menu/hoverMenu/menu'
+import Menu from '@/components/menu/constructors/menu'
 import {
   cut,
   copy,

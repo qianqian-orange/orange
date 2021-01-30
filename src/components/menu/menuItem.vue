@@ -2,6 +2,7 @@
   <a-menu-item
     :key="dataSource.key"
     :data-identification="identification"
+    :class="[dataSource.glass && 'glass', size]"
     v-bind="$props"
     v-on="$listeners"
   >
@@ -19,13 +20,17 @@
 
 <script>
 import { Menu } from 'ant-design-vue'
-import { MENU_IDENTIFICATION_MAP } from '@/const/menu'
+import { MENU_IDENTIFICATION_MAP, MENU_SIZE } from '@/const/menu'
 
 export default {
   name: 'MenuItem',
   isMenuItem: true,
   props: {
     ...Menu.Item.props,
+    size: {
+      type: String,
+      default: MENU_SIZE.normal,
+    },
     dataSource: {
       type: Object,
       required: true,

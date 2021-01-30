@@ -14,12 +14,12 @@
       <defs>
         <pattern
           id="smallGrid"
-          width="10"
-          height="10"
+          :width="smallGridSize"
+          :height="smallGridSize"
           patternUnits="userSpaceOnUse"
         >
           <path
-            d="M 10 0 L 0 0 0 10"
+            :d="`M ${smallGridSize} 0 L 0 0 0 ${smallGridSize}`"
             fill="none"
             stroke="rgba(207, 207, 207, 0.3)"
             stroke-width="1"
@@ -27,17 +27,17 @@
         </pattern>
         <pattern
           id="grid"
-          width="50"
-          height="50"
+          :width="bigGridSize"
+          :height="bigGridSize"
           patternUnits="userSpaceOnUse"
         >
           <rect
-            width="50"
-            height="50"
+            :width="bigGridSize"
+            :height="bigGridSize"
             fill="url(#smallGrid)"
           />
           <path
-            d="M 50 0 L 0 0 0 50"
+            :d="`M ${bigGridSize} 0 L 0 0 0 ${bigGridSize}`"
             fill="none"
             stroke="rgba(186, 186, 186, 0.5)"
             stroke-width="1"
@@ -59,6 +59,12 @@ import { mapState } from 'vuex'
 export default {
   name: 'Grid',
   computed: {
+    smallGridSize() {
+      return this.canvasState.interval * this.canvasState.zoom
+    },
+    bigGridSize() {
+      return this.smallGridSize * 5
+    },
     ...mapState('canvas', {
       canvasState: state => state,
     }),

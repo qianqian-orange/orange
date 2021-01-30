@@ -1,47 +1,24 @@
 <template>
   <div class="workspace-header">
     <ul class="toolbar">
-      <li
-        :class="['tool', !undoEnable && 'disabled']"
-        @click="UNDO"
-      >
-        <i class="iconfont icon-undo" />
-        <span class="text">撤销</span>
-      </li>
-      <li
-        :class="['tool', !redoEnable && 'disabled']"
-        @click="REDO"
-      >
-        <i class="iconfont icon-redo" />
-        <span class="text">重做</span>
-      </li>
+      <undo />
+      <redo />
+      <zoom />
     </ul>
   </div>
 </template>
 
 <script>
-import {
-  mapGetters,
-  mapMutations,
-} from 'vuex'
-import {
-  UNDO,
-  REDO,
-} from '@/store/modules/snapshot/mutation-types'
+import Undo from './components/undo'
+import Redo from './components/redo'
+import Zoom from './components/zoom'
 
 export default {
   name: 'WorkspaceHeader',
-  computed: {
-    ...mapGetters('snapshot', [
-      'undoEnable',
-      'redoEnable',
-    ]),
-  },
-  methods: {
-    ...mapMutations('snapshot', [
-      UNDO,
-      REDO,
-    ]),
+  components: {
+    Undo,
+    Redo,
+    Zoom,
   },
 }
 </script>
@@ -61,25 +38,6 @@ export default {
       height: 100%;
       color: @textPrimaryColor;
       font-size: 12px;
-
-      .tool {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 44px;
-        height: 100%;
-
-        &:hover {
-          color: @greyWhite;
-          background-color: @black;
-          cursor: pointer;
-        }
-
-        &.disabled {
-          color: @textSecondaryColor;
-        }
-      }
     }
   }
 </style>

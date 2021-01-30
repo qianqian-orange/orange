@@ -7,6 +7,7 @@ export default class MenuItem {
   constructor({
     title,
     key,
+    glass = false, // 给menuItem添加glass类，会遮住其子元素
     divider = false,
     props = {},
     events = {},
@@ -16,9 +17,11 @@ export default class MenuItem {
     dataSource = {},
     children = null,
     init = noop,
+    destroy = noop,
   }) {
     this.title = title
     this.key = key
+    this.glass = glass
     this.divider = divider
     this.props = props
     this.events = events
@@ -28,6 +31,7 @@ export default class MenuItem {
     this.dataSource = dataSource
     this.children = children
     this.menu = null // 当menu实例添加此菜单项时会调用depend方法进行赋值
+    this.destroy = destroy
     this.bind()
     init.call(this)
   }
@@ -55,5 +59,9 @@ export default class MenuItem {
     this.children && this.children.forEach((item) => {
       item.depend(menu)
     })
+  }
+
+  destroy() {
+    this.destroy()
   }
 }

@@ -1,4 +1,4 @@
-import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
+import { COORDINATE_DIRECTION_MAP, CANVAS_MINIMUM_INTERVAL } from '@/const/canvas'
 
 const RULER_LINE_DEFAULT_LENGTH = 8
 
@@ -121,7 +121,7 @@ export const RULER_BAR_MAP = {
 export const RULER_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
     lineCount(ruler) {
-      return Math.ceil(ruler.canvas.width / ruler.interval.line)
+      return Math.ceil(ruler.canvas.width / CANVAS_MINIMUM_INTERVAL)
     },
     drawLine(ctx, pos, lineLength) {
       ctx.beginPath()
@@ -137,7 +137,7 @@ export const RULER_MAP = {
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
     lineCount(ruler) {
-      return Math.ceil(ruler.canvas.height / ruler.interval.line)
+      return Math.ceil(ruler.canvas.height / CANVAS_MINIMUM_INTERVAL)
     },
     drawLine(ctx, pos, lineLength) {
       ctx.beginPath()
@@ -165,10 +165,6 @@ export default class Ruler {
     this.canvas = document.querySelector(`#${id}`)
     this.ctx = this.canvas.getContext('2d')
     this.direction = direction
-    this.interval = {
-      line: 10, // 线条间隔距离
-      text: 100, // 文本间隔距离
-    }
     this.start = 0
     this.offset = 0
   }
@@ -178,27 +174,27 @@ export default class Ruler {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     const lineCount = RULER_MAP[this.direction].lineCount(this)
     for (let i = 0; i < lineCount; i += 1) {
-      const pos = this.offset + i * this.interval.line + 0.5
-      const num = this.offset + i * this.interval.line + this.start
+      const pos = this.offset + i * CANVAS_MINIMUM_INTERVAL + 0.5
+      const num = this.offset + i * CANVAS_MINIMUM_INTERVAL + this.start
       let lineLength
-      if (num % this.interval.text === 0) {
+      if (num % (CANVAS_MINIMUM_INTERVAL * 10) === 0) {
         lineLength = RULER_LINE_DEFAULT_LENGTH
         this.ctx.strokeStyle = 'rgb(184, 188, 191)'
+        RULER_MAP[this.direction].drawText(this.ctx, pos, num)
       } else {
         lineLength = RULER_LINE_DEFAULT_LENGTH / 2
         this.ctx.strokeStyle = 'rgb(128, 128, 128)'
       }
       RULER_MAP[this.direction].drawLine(this.ctx, pos, lineLength)
-      if (num % this.interval.text === 0) RULER_MAP[this.direction].drawText(this.ctx, pos, num)
     }
   }
 
   update({
     start,
   }) {
-    this.start = start
-    if (this.start <= 0) this.offset = Math.abs(this.start) % this.interval.line
-    else this.offset = this.interval.line - this.start % this.interval.line
+    this.start = start || this.start
+    if (this.start <= 0) this.offset = Math.abs(this.start) % CANVAS_MINIMUM_INTERVAL
+    else this.offset = CANVAS_MINIMUM_INTERVAL - this.start % CANVAS_MINIMUM_INTERVAL
     this.draw()
   }
 }

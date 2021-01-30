@@ -1,0 +1,20 @@
+.tool-item-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-width: 44px;
+
+  &:hover:not(.disabled),
+  &.active {
+    color: @greyWhite;
+    background-color: @black;
+    cursor: pointer;
+  }
+
+  &.disabled {
+    color: @textSecondaryColor;
+    cursor: not-allowed;
+  }
+}

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import store from '@/store'
-import MenuItem from '@/components/menu/hoverMenu/menuItem'
+import MenuItem from '@/components/menu/constructors/menuItem'
 import uuid from '@/utils/uid'
 import {
   TO_TOP,
@@ -12,6 +12,7 @@ import {
 export const cut = new MenuItem({
   title: '剪切',
   key: 'cut',
+  glass: true,
   events: {
     click() {
       store.dispatch(`canvas/${DELETE_WIDGET}`, this.menu.target.id)
@@ -22,11 +23,13 @@ export const cut = new MenuItem({
 export const copy = new MenuItem({
   title: '复制',
   key: 'copy',
+  glass: true,
 })
 
 const paste2canvas = new MenuItem({
   title: '到画布',
   key: 'paste2canvas',
+  glass: true,
   events: {
     click() {
       const widget = lodash.cloneDeep(paste.dataSource)
@@ -39,6 +42,7 @@ const paste2canvas = new MenuItem({
 const paste2mouse = new MenuItem({
   title: '到鼠标位置',
   key: 'paste2mouse',
+  glass: true,
   events: {
     click() {
       const {
@@ -62,8 +66,6 @@ export const paste = new MenuItem({
   title: '粘贴',
   key: 'paste',
   props: {
-    popupClassName: 'hover-menu-popup',
-    popupOffset: [0, -4],
     disabled: true,
   },
   init() {
@@ -83,6 +85,7 @@ export const paste = new MenuItem({
 export const remove = new MenuItem({
   title: '删除',
   key: 'remove',
+  glass: true,
   divider: true,
   events: {
     click() {
@@ -94,6 +97,7 @@ export const remove = new MenuItem({
 export const toTop = new MenuItem({
   title: '置顶',
   key: 'toTop',
+  glass: true,
   events: {
     click() {
       store.dispatch(`canvas/${TO_TOP}`, this.menu.target.id)
@@ -104,6 +108,7 @@ export const toTop = new MenuItem({
 export const toBottom = new MenuItem({
   title: '置底',
   key: 'toBottom',
+  glass: true,
   events: {
     click() {
       store.dispatch(`canvas/${TO_BOTTOM}`, this.menu.target.id)

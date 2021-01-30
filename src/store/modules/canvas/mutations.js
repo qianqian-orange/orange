@@ -9,7 +9,7 @@ import {
 } from './mutation-types'
 
 export default {
-  [UPDATE_CANVAS_DATE](state, update) {
+  [UPDATE_CANVAS_DATE](state, { update }) {
     update(state)
   },
   [UPDATE_CANVAS_WIDGET_DATA](state, { id, update }) {

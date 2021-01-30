@@ -44,6 +44,10 @@ export default {
       type: Number,
       default: 0,
     },
+    zoom: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {

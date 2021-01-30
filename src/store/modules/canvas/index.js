@@ -1,3 +1,4 @@
+import { CANVAS_MINIMUM_INTERVAL } from '@/const/canvas'
 import DoubleLinkedList from '@/lib/dataStructure/doubleLinkedList'
 import actions from './actions'
 import mutations from './mutations'
@@ -20,6 +21,8 @@ export default {
   state: () => ({
     width: '1440px', // 1440
     height: '1024px', // 1024
+    interval: CANVAS_MINIMUM_INTERVAL, // 最小区间间隔
+    zoom: 1, // 画布缩放因子
     mouseWidgetList: [],
   }),
   getters,
