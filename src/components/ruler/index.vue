@@ -2,10 +2,12 @@
   <div class="ruler-container">
     <bar
       :start="startX"
+      :zoom="zoom"
       :style="{ left: `${size}px`, height: `${size}px` }"
     />
     <bar
       :start="startY"
+      :zoom="zoom"
       :direction="direction.yAxis"
       :style="{ top: `${size}px`, width: `${size}px` }"
     />
@@ -24,7 +26,8 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+import { UPDATE_RULER_DATA } from '@/store/modules/ruler/mutation-types'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import { RULER_IDENTIFICATION_MAP } from './ruler'
 import eventEmitter, { SCROLL_END } from './eventEmitter'
@@ -64,6 +67,24 @@ export default {
       size: state => state.size,
     }),
   },
+  watch: {
+    zoom(value) {
+      this[UPDATE_RULER_DATA]({
+        log: {
+          source: 'ruler -> index.vue',
+          reason: '当缩放因子改变时修改参考线的定位位置',
+        },
+        update: ({ referenceLine }) => {
+          referenceLine[COORDINATE_DIRECTION_MAP.xAxis].forEach((line) => {
+            line.style.left = Math.floor(line.num * value) - this.startX + 'px'
+          })
+          referenceLine[COORDINATE_DIRECTION_MAP.yAxis].forEach((line) => {
+            line.style.top = Math.floor(line.num * value) - this.startY + 'px'
+          })
+        },
+      })
+    },
+  },
   destroyed() {
     eventEmitter.destroy()
   },
@@ -74,6 +95,7 @@ export default {
     scrollEnd() {
       eventEmitter.emit(SCROLL_END)
     },
+    ...mapMutations('ruler', [UPDATE_RULER_DATA]),
   },
 }
 </script>

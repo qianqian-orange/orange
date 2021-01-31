@@ -37,6 +37,10 @@ export default {
       type: Object,
       required: true,
     },
+    zoom: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -128,7 +132,7 @@ export default {
     },
     offset(start) {
       this.getLineEls().forEach((el) => {
-        RULER_LINE_MAP[this.direction].offset(el, start)
+        RULER_LINE_MAP[this.direction].offset(this, el, start)
       })
     },
     scrollEnd() {

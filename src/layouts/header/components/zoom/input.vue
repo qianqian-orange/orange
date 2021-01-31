@@ -16,7 +16,6 @@ export default {
   data() {
     return {
       value: 100,
-      zoom: 1,
       min: 20,
       max: 400,
     }

@@ -36,6 +36,12 @@ const resizer = new Resizer()
 
 export default {
   name: 'Resizer',
+  props: {
+    zoom: {
+      type: Number,
+      default: 1,
+    },
+  },
   data() {
     return {
       lines: [],
@@ -43,6 +49,15 @@ export default {
       visible: false,
       identification: 'resizer',
     }
+  },
+  watch: {
+    zoom() {
+      if (!target) return
+      // 由于缩放会修改节点的样式值，为了获取到最新的样式值，需要在nextTick时在执行
+      this.$nextTick(() => {
+        this.setData(target)
+      })
+    },
   },
   mounted() {
     Bus.$on(DOCUMENT_MOUSE_DOWN, this.documentMousedown)
@@ -61,7 +76,7 @@ export default {
     setData(el) {
       target = el
       this.visible = true
-      resizer.setEl(target)
+      resizer.setData({ el, zoom: this.zoom })
       this.lines = resizer.getLines()
       this.circulars = resizer.getCirculars()
     },
@@ -71,6 +86,7 @@ export default {
       if (el.id !== target.id && el.dataset.identification !== this.identification) this.visible = false
     },
     documentMousemove() {
+      // 拖拽组件时隐藏resizer
       this.visible = false
     },
     mousemove(evt) {
@@ -132,7 +148,7 @@ export default {
     }
 
     &-circular {
-      .expand-click(4.5px);
+      .expand-click(3.5px);
 
       position: absolute;
       transform: translate(-50%, -50%);

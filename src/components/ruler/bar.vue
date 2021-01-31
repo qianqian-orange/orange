@@ -22,6 +22,7 @@
     <reference-line-list
       ref="lineList"
       :boundary="boundary"
+      :zoom="zoom"
     />
   </div>
 </template>
@@ -57,6 +58,10 @@ export default {
       type: Number,
       default: 0,
     },
+    zoom: {
+      type: Number,
+      default: 1,
+    },
   },
   data() {
     return {
@@ -90,6 +95,9 @@ export default {
       // 更新刻度线
       this.$refs.lineList.offset(value)
     },
+    zoom(value) {
+      this.update({ zoom: value })
+    },
   },
   mounted() {
     this.initData()
@@ -119,8 +127,8 @@ export default {
     mouseleave() {
       this.line.visible = false
     },
-    update({ start }) {
-      this.ruler.update({ start })
+    update(data) {
+      this.ruler.update(data)
     },
     add() {
       this[ADD_REFERENCE_LINE]({

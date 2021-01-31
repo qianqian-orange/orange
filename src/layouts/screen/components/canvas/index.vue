@@ -5,8 +5,8 @@
     @drop="drop"
     @dragover="dragover"
   >
-    <mark-line />
-    <resizer />
+    <mark-line :zoom="canvasState.zoom" />
+    <resizer :zoom="canvasState.zoom" />
     <mouse-widget
       v-for="widget in canvasState.mouseWidgetList"
       :key="widget.id"
@@ -60,6 +60,8 @@ export default {
         position: 'absolute',
         top: evt.offsetY - offsetY + 'px',
         left: evt.offsetX - offsetX + 'px',
+        transformOrigin: '0 0',
+        transform: `scale(${this.canvasState.zoom})`,
       }
       this[ADD_WIDGET](widget)
     },

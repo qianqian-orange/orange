@@ -21,7 +21,7 @@ export const RULER_LINE_MAP = {
       executor(target)
       const interval = evt.clientX - vm.clientX
       target.style.left = vm.startX + interval + 'px'
-      target.dataset.num = vm.num + interval
+      target.dataset.num = vm.num + Math.floor(interval / vm.zoom)
     },
     mouseup(executor) {
       executor(target)
@@ -31,8 +31,8 @@ export const RULER_LINE_MAP = {
       line.num = el.dataset.num
       line.style.left = el.style.left
     },
-    offset(el, start) {
-      el.style.left = +el.dataset.num - start + 'px'
+    offset(vm, el, start) {
+      el.style.left = Math.floor(+el.dataset.num * vm.zoom) - start + 'px'
     },
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
@@ -46,7 +46,7 @@ export const RULER_LINE_MAP = {
       executor(target)
       const interval = evt.clientY - vm.clientY
       target.style.top = vm.startY + interval + 'px'
-      target.dataset.num = vm.num + interval
+      target.dataset.num = vm.num + Math.floor(interval / vm.zoom)
     },
     mouseup(executor) {
       executor(target)
@@ -56,8 +56,8 @@ export const RULER_LINE_MAP = {
       line.num = el.dataset.num
       line.style.top = el.style.top
     },
-    offset(el, start) {
-      el.style.top = +el.dataset.num - start + 'px'
+    offset(vm, el, start) {
+      el.style.top = Math.floor(+el.dataset.num * vm.zoom) - start + 'px'
     },
   },
 }
@@ -74,14 +74,14 @@ export const RULER_BAR_MAP = {
         left: vm.offsetX + 'px',
         height: vm.view.height,
       }
-      vm.line.num = vm.start + vm.offsetX
+      vm.line.num = Math.floor((vm.start + vm.offsetX) / vm.zoom)
     },
     mousemove(vm, evt) {
       if (target) return
       if (evt.offsetY > RULER_LINE_DEFAULT_LENGTH * 2) return
       const interval = evt.clientX - vm.clientX
       vm.line.style.left = vm.offsetX + interval + 'px'
-      vm.line.num = vm.start + vm.offsetX + interval
+      vm.line.num = Math.floor((vm.start + vm.offsetX + interval) / vm.zoom)
     },
     boundary(vm) {
       return {
@@ -100,14 +100,14 @@ export const RULER_BAR_MAP = {
         top: vm.offsetY + 'px',
         width: vm.view.width,
       }
-      vm.line.num = vm.start + vm.offsetY
+      vm.line.num = Math.floor((vm.start + vm.offsetY) / vm.zoom)
     },
     mousemove(vm, evt) {
       if (target) return
       if (evt.offsetX > RULER_LINE_DEFAULT_LENGTH * 2) return
       const interval = evt.clientY - vm.clientY
       vm.line.style.top = vm.offsetY + interval + 'px'
-      vm.line.num = vm.start + vm.offsetY + interval
+      vm.line.num = Math.floor((vm.start + vm.offsetY + interval) / vm.zoom)
     },
     boundary(vm) {
       return {
@@ -165,6 +165,7 @@ export default class Ruler {
     this.canvas = document.querySelector(`#${id}`)
     this.ctx = this.canvas.getContext('2d')
     this.direction = direction
+    this.zoom = 1
     this.start = 0
     this.offset = 0
   }
@@ -175,9 +176,9 @@ export default class Ruler {
     const lineCount = RULER_MAP[this.direction].lineCount(this)
     for (let i = 0; i < lineCount; i += 1) {
       const pos = this.offset + i * CANVAS_MINIMUM_INTERVAL + 0.5
-      const num = this.offset + i * CANVAS_MINIMUM_INTERVAL + this.start
+      const num = Math.floor((this.offset + i * CANVAS_MINIMUM_INTERVAL + this.start) / this.zoom)
       let lineLength
-      if (num % (CANVAS_MINIMUM_INTERVAL * 10) === 0) {
+      if (num % (CANVAS_MINIMUM_INTERVAL * 10 / this.zoom) === 0) {
         lineLength = RULER_LINE_DEFAULT_LENGTH
         this.ctx.strokeStyle = 'rgb(184, 188, 191)'
         RULER_MAP[this.direction].drawText(this.ctx, pos, num)
@@ -191,8 +192,10 @@ export default class Ruler {
 
   update({
     start,
+    zoom,
   }) {
-    this.start = start || this.start
+    this.zoom = zoom || this.zoom
+    this.start = typeof start === 'number' ? start : this.start
     if (this.start <= 0) this.offset = Math.abs(this.start) % CANVAS_MINIMUM_INTERVAL
     else this.offset = CANVAS_MINIMUM_INTERVAL - this.start % CANVAS_MINIMUM_INTERVAL
     this.draw()

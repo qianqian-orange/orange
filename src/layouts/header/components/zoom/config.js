@@ -1,16 +1,34 @@
 import store from '@/store'
 import { noop } from '@/utils'
 import MenuItem from '@/components/menu/constructors/menuItem'
+import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
 import { UPDATE_CANVAS_DATE } from '@/store/modules/canvas/mutation-types'
+import { scale } from '@/store/modules/canvas/util'
 
 function update(zoom, log) {
+  store.commit(`global/${UPDATE_GLOBAL_DATA}`, {
+    log: {
+      source: 'zoom -> menu',
+      reason: `当点击缩放菜单的${log}子菜单项时需要更改屏幕容器宽高`,
+    },
+    update: ({ screen: { container } }) => {
+      container.width = parseInt(container.width) * (zoom / store.state.canvas.zoom) + 'px'
+      container.height = parseInt(container.height) * (zoom / store.state.canvas.zoom) + 'px'
+    },
+  })
   store.commit(`canvas/${UPDATE_CANVAS_DATE}`, {
     log: {
       source: 'zoom -> menu',
-      reason: `当点击缩放菜单的${log}子菜单项时需要更改zoom值`,
+      reason: `当点击缩放菜单的${log}子菜单项时需要更改zoom值和画布宽高`,
     },
     update: (state) => {
+      const percent = zoom / state.zoom
       state.zoom = zoom
+      state.width = parseInt(state.width) * percent + 'px'
+      state.height = parseInt(state.height) * percent + 'px'
+      state.mouseWidgetList.forEach(({ style: { container } }) => {
+        scale(container, zoom, percent)
+      })
     },
   })
 }
@@ -20,7 +38,6 @@ export const enlarge = new MenuItem({
   key: 'enlarge',
   events: {
     click() {
-      console.log('放大')
     },
   },
 })
@@ -31,7 +48,6 @@ export const narrow = new MenuItem({
   divider: true,
   events: {
     click() {
-      update(0.5, '50%')
     },
   },
 })
@@ -95,7 +111,6 @@ export const zoom100 = new MenuItem({
 export const zoom200 = new MenuItem({
   title: '200%',
   key: 'zoom200',
-  divider: true,
   icon: {
     left: {
       className: 'icon-success',

@@ -3,7 +3,7 @@
     ref="ruler"
     :start-x="startX"
     :start-y="startY"
-    :zoom="canvasState.zoom"
+    :zoom="zoom"
     @back="back"
   />
 </template>
@@ -27,8 +27,13 @@ export default {
   computed: {
     ...mapGetters('canvas', ['origin']),
     ...mapState('canvas', {
-      canvasState: state => state,
+      zoom: state => state.zoom,
     }),
+  },
+  watch: {
+    zoom() {
+      this.back()
+    },
   },
   mounted() {
     // 先监听滚动事件在执行返回原点逻辑

@@ -16,46 +16,38 @@
         <span>缩放</span>
       </li>
     </template>
-    <template #menu-extra>
-      <zoom-input />
-    </template>
   </dropdown-menu>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { MENU_SIZE } from '@/const/menu'
 import {
-  enlarge,
-  narrow,
   zoom50,
   zoom100,
   zoom200,
-  fitCavnas,
-  zoom2area,
 } from './config'
 import DropdownMenu from '@/components/menu/dropdownMenu'
-import ZoomInput from './input'
 
 export default {
   name: 'Zoom',
   components: {
     DropdownMenu,
-    ZoomInput,
   },
   data() {
     return {
-      zoom: 1,
       size: MENU_SIZE.large,
       menus: [
-        enlarge,
-        narrow,
         zoom50,
         zoom100,
         zoom200,
-        fitCavnas,
-        zoom2area,
       ],
     }
+  },
+  computed: {
+    ...mapState('canvas', {
+      zoom: state => state.zoom,
+    }),
   },
 }
 </script>

@@ -4,6 +4,7 @@ export default class Resizer {
   constructor() {
     this.el = null
     this.firstChild = null
+    this.zoom = 1
     this.resize = false // 判断是否执行调节器逻辑
     this.move = false // 判断是否有移动过
     // 判断可以调节属性值
@@ -26,9 +27,13 @@ export default class Resizer {
     this.bottom = 0
   }
 
-  setEl(el) {
-    this.el = el
+  setData({
+    el,
+    zoom,
+  }) {
+    this.el = el || this.el
     this.firstChild = el.firstChild
+    this.zoom = zoom || this.zoom
   }
 
   getLines() {
@@ -37,36 +42,34 @@ export default class Resizer {
         top,
         left,
       },
+      offsetWidth,
+      offsetHeight,
     } = this.el
-    const {
-      style: {
-        width,
-        height,
-      },
-    } = this.firstChild
+    const width = offsetWidth * this.zoom
+    const height = offsetHeight * this.zoom
     const lines = []
     lines.push({
       id: 'n-line',
       style: {
         top,
         left,
-        width,
+        width: width + 'px',
         height: '1px',
       },
     }, {
       id: 'e-line',
       style: {
         top,
-        left: parseInt(left, 10) + parseInt(width, 10) - 1 + 'px',
+        left: parseInt(left, 10) + width - 1 + 'px',
         width: '1px',
-        height,
+        height: height + 'px',
       },
     }, {
       id: 's-line',
       style: {
-        top: parseInt(top, 10) + parseInt(height, 10) - 1 + 'px',
+        top: parseInt(top, 10) + height - 1 + 'px',
         left,
-        width,
+        width: width + 'px',
         height: '1px',
       },
     }, {
@@ -75,14 +78,25 @@ export default class Resizer {
         top,
         left,
         width: '1px',
-        height,
+        height: height + 'px',
       },
     })
     return lines
   }
 
   getCirculars() {
-    const { top, left, right, bottom, width, height } = this.rect()
+    const {
+      offsetTop,
+      offsetLeft,
+      offsetWidth,
+      offsetHeight,
+    } = this.el
+    const top = offsetTop
+    const left = offsetLeft
+    const right = offsetLeft + Math.floor(offsetWidth * this.zoom)
+    const bottom = offsetTop + Math.floor(offsetHeight * this.zoom)
+    const width = Math.floor(offsetWidth * this.zoom)
+    const height = Math.floor(offsetHeight * this.zoom)
     const circulars = []
     circulars.push({
       id: 'n-resize',
@@ -186,8 +200,6 @@ export default class Resizer {
     return {
       top: offsetTop,
       left: offsetLeft,
-      right: offsetLeft + offsetWidth,
-      bottom: offsetTop + offsetHeight,
       width: offsetWidth,
       height: offsetHeight,
     }
@@ -216,11 +228,13 @@ export default class Resizer {
     }
     if (this.resizeEnable.width) {
       queue.push(({ intervalX, intervalY }) => {
-        const width = this.width + intervalX
+        const width = this.width + Math.floor(intervalX / this.zoom)
         if (width > this.minWidth) this.firstChild.style.width = width + 'px'
         else {
           this.firstChild.style.width = this.minWidth + 'px'
-          if (this.resizeEnable.left) this.el.style.left = this.right - this.minWidth + 'px'
+          if (this.resizeEnable.left) {
+            this.el.style.left = this.right - Math.floor(this.minWidth * this.zoom) + 'px'
+          }
         }
         return {
           intervalX,
@@ -230,11 +244,13 @@ export default class Resizer {
     }
     if (this.resizeEnable.height) {
       queue.push(({ intervalX, intervalY }) => {
-        const height = this.height + intervalY
+        const height = this.height + Math.floor(intervalY / this.zoom)
         if (height > this.minHeight) this.firstChild.style.height = height + 'px'
         else {
           this.firstChild.style.height = this.minHeight + 'px'
-          if (this.resizeEnable.top) this.el.style.top = this.bottom - this.minHeight + 'px'
+          if (this.resizeEnable.top) {
+            this.el.style.top = this.bottom - Math.floor(this.minHeight * this.zoom) + 'px'
+          }
         }
         return {
           intervalX,
@@ -249,13 +265,13 @@ export default class Resizer {
     this.resize = true
     this.clientX = evt.clientX
     this.clientY = evt.clientY
-    const { top, left, right, bottom, width, height } = this.rect()
+    const { top, left, width, height } = this.rect()
     this.top = top
     this.left = left
-    this.right = right
-    this.bottom = bottom
     this.width = width
     this.height = height
+    this.right = left + Math.floor(width * this.zoom)
+    this.bottom = top + Math.floor(height * this.zoom)
     const {
       minWidth,
       minHeight,

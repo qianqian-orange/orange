@@ -44,6 +44,12 @@ const cache = {
 
 export default {
   name: 'MarkLine',
+  props: {
+    zoom: {
+      type: Number,
+      default: 1,
+    },
+  },
   data() {
     return {
       target: null,
@@ -86,7 +92,7 @@ export default {
         height: offsetHeight + 'px',
         top: style.top,
         left: style.left,
-      })
+      }, this.zoom)
       // 将距离标线清空重新收集
       this.distanceLines.length = 0
       let direction = COORDINATE_DIRECTION_MAP.yAxis
@@ -128,7 +134,7 @@ export default {
           height: style.component.height,
           top: style.container.top,
           left: style.container.left,
-        }))))
+        }, this.zoom))))
       lines.forEach((identification) => {
         const line = this.plainLine[identification]
         markline.target = targetFilter(this.target)
@@ -146,7 +152,7 @@ export default {
         }
         line.visible = true
         setPlainLine(line, data)
-        setDistanceLine(this.distanceLines, data)
+        setDistanceLine(this.distanceLines, data, this.zoom)
       })
     },
   },

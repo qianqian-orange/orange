@@ -18,8 +18,15 @@ import {
   ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT,
 } from './action-types'
 import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
+import { scale } from './util'
 
-function add(commit, widget) {
+function add(commit, state, widget) {
+  const { container } = widget.style
+  const zoom = +container.transform.match(/scale\((.+)\)/)[1]
+  if (zoom !== state.zoom) {
+    const percent = state.zoom / zoom
+    scale(container, state.zoom, percent)
+  }
   mouseWidgetMap[widget.id] = doubleLinkedList.add(widget)
   commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
 }
@@ -95,8 +102,8 @@ export default {
       },
     }, { root: true })
   },
-  [ADD_WIDGET]({ commit }, widget) {
-    add(commit, widget)
+  [ADD_WIDGET]({ commit, state }, widget) {
+    add(commit, state, widget)
     // 在新增组件mouted时显示resizer
     Bus.$on(CANVAS_WIDGET_BOOTSTRAP, bootstrap)
     commit(`snapshot/${ADD_SNAPSHOT}`, {
@@ -104,16 +111,16 @@ export default {
         remove(commit, widget.id)
       },
       redo: () => {
-        add(commit, widget)
+        add(commit, state, widget)
       },
     }, { root: true })
   },
-  [DELETE_WIDGET]({ commit }, id) {
+  [DELETE_WIDGET]({ commit, state }, id) {
     const widget = mouseWidgetMap[id].data
     remove(commit, id)
     commit(`snapshot/${ADD_SNAPSHOT}`, {
       undo: () => {
-        add(commit, widget)
+        add(commit, state, widget)
       },
       redo: () => {
         remove(commit, id)
