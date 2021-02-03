@@ -15,6 +15,7 @@
         :size="size"
         :data-source="item"
         v-bind="item.props"
+        v-on="item.events"
       />
       <menu-item
         v-else
@@ -33,9 +34,9 @@
 </template>
 
 <script>
+import base from '@/components/menu/mixins/base'
 import MenuItem from '@/components/menu/menuItem'
 import SubMenu from '@/components/menu/subMenu'
-import { MENU_DEFAULT_WIDTH, MENU_SIZE } from '@/const/menu'
 
 export default {
   name: 'OrangeMenu',
@@ -43,20 +44,7 @@ export default {
     MenuItem,
     SubMenu,
   },
-  props: {
-    width: {
-      type: String,
-      default: MENU_DEFAULT_WIDTH,
-    },
-    size: {
-      type: String,
-      default: MENU_SIZE.normal,
-    },
-    menus: {
-      type: Array,
-      default: () => [],
-    },
-  },
+  mixins: [base],
   computed: {
     hasLeftIcon() {
       return this.menus.filter(item => item.icon && item.icon.left).length

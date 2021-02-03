@@ -1,6 +1,6 @@
 <template>
   <li
-    :class="['tool-item-container', !redoEnable && 'disabled']"
+    :class="['tool-container', !redoEnable && 'disabled']"
     @click="REDO"
   >
     <i class="iconfont icon-redo" />

@@ -1,4 +1,3 @@
-import { getTarget } from '@/lib/document'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 
 const ABSORB_INSTANCE = 3
@@ -36,12 +35,6 @@ export const MARKLINE_HANDLER_MAP = {
         interval: Math.floor((line.endPoint - line.startPoint) / zoom),
       })))
     },
-    update(target, interval) {
-      const el = getTarget()
-      target.left += interval
-      el.style.left = target.left + 'px'
-      el.position.startX += interval
-    },
   },
   [COORDINATE_DIRECTION_MAP.xAxis]: {
     targetFilter: widget => ({
@@ -75,27 +68,12 @@ export const MARKLINE_HANDLER_MAP = {
         interval: Math.floor((line.endPoint - line.startPoint) / zoom),
       })))
     },
-    update(target, interval) {
-      const el = getTarget()
-      target.top += interval
-      el.style.top = target.top + 'px'
-      el.position.startY += interval
-    },
   },
 }
 
-export const MARKLINE_MAP = {
+export const MARKLINE_LINE_MAP = {
   [COORDINATE_DIRECTION_MAP.yAxis]: ['yl', 'yc', 'yr'],
   [COORDINATE_DIRECTION_MAP.xAxis]: ['xt', 'xc', 'xb'],
-}
-
-export function rect(style, zoom) {
-  return {
-    width: Math.floor(parseInt(style.width, 10) * zoom),
-    height: Math.floor(parseInt(style.height, 10) * zoom),
-    top: parseInt(style.top, 10),
-    left: parseInt(style.left, 10),
-  }
 }
 
 export default class MarkLine {

@@ -1,13 +1,9 @@
-import { COORDINATE_DIRECTION_MAP, CANVAS_MINIMUM_INTERVAL } from '@/const/canvas'
-
-const RULER_LINE_DEFAULT_LENGTH = 8
+import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 
 // 记录当前移动的参考线节点
 let target = null
 
-export const RULER_IDENTIFICATION_MAP = {
-  backBtn: 'ruler-back-btn',
-}
+export const RULER_BACK_BTN = 'RULER_BACK_BTN'
 
 export const RULER_LINE_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
@@ -31,8 +27,11 @@ export const RULER_LINE_MAP = {
       line.num = el.dataset.num
       line.style.left = el.style.left
     },
-    offset(vm, el, start) {
-      el.style.left = Math.floor(+el.dataset.num * vm.zoom) - start + 'px'
+    offset(vm, el, offset) {
+      el.style.left = Math.floor(+el.dataset.num * vm.zoom) - offset + 'px'
+    },
+    zoom(vm, line, zoom) {
+      line.style.left = Math.floor(line.num * zoom) - vm.offset + 'px'
     },
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
@@ -56,8 +55,11 @@ export const RULER_LINE_MAP = {
       line.num = el.dataset.num
       line.style.top = el.style.top
     },
-    offset(vm, el, start) {
-      el.style.top = Math.floor(+el.dataset.num * vm.zoom) - start + 'px'
+    offset(vm, el, offset) {
+      el.style.top = Math.floor(+el.dataset.num * vm.zoom) - offset + 'px'
+    },
+    zoom(vm, line, zoom) {
+      line.style.top = Math.floor(line.num * zoom) - vm.offset + 'px'
     },
   },
 }
@@ -72,21 +74,24 @@ export const RULER_BAR_MAP = {
       vm.line.visible = true
       vm.line.style = {
         left: vm.offsetX + 'px',
-        height: vm.view.height,
+        height: vm.rect.height,
       }
-      vm.line.num = Math.floor((vm.start + vm.offsetX) / vm.zoom)
+      vm.line.num = Math.floor((vm.offset + vm.offsetX) / vm.zoom)
     },
     mousemove(vm, evt) {
       if (target) return
-      if (evt.offsetY > RULER_LINE_DEFAULT_LENGTH * 2) return
+      if (evt.offsetY > parseInt(vm.height, 10)) {
+        vm.line.visible = false
+        return
+      }
       const interval = evt.clientX - vm.clientX
       vm.line.style.left = vm.offsetX + interval + 'px'
-      vm.line.num = Math.floor((vm.start + vm.offsetX + interval) / vm.zoom)
+      vm.line.num = Math.floor((vm.offset + vm.offsetX + interval) / vm.zoom)
     },
     boundary(vm) {
       return {
-        min: vm.start,
-        max: vm.start + vm.width,
+        min: Math.floor(vm.offset / vm.zoom),
+        max: Math.floor((vm.offset + vm.width) / vm.zoom),
       }
     },
   },
@@ -98,61 +103,64 @@ export const RULER_BAR_MAP = {
       vm.line.visible = true
       vm.line.style = {
         top: vm.offsetY + 'px',
-        width: vm.view.width,
+        width: vm.rect.width,
       }
-      vm.line.num = Math.floor((vm.start + vm.offsetY) / vm.zoom)
+      vm.line.num = Math.floor((vm.offset + vm.offsetY) / vm.zoom)
     },
     mousemove(vm, evt) {
       if (target) return
-      if (evt.offsetX > RULER_LINE_DEFAULT_LENGTH * 2) return
+      if (evt.offsetX > parseInt(vm.width, 10)) {
+        vm.line.visible = false
+        return
+      }
       const interval = evt.clientY - vm.clientY
       vm.line.style.top = vm.offsetY + interval + 'px'
-      vm.line.num = Math.floor((vm.start + vm.offsetY + interval) / vm.zoom)
+      vm.line.num = Math.floor((vm.offset + vm.offsetY + interval) / vm.zoom)
     },
     boundary(vm) {
       return {
-        min: vm.start,
-        max: vm.start + vm.height,
+        min: Math.floor(vm.offset / vm.zoom),
+        max: Math.floor((vm.offset + vm.height) / vm.zoom),
       }
     },
   },
 }
 
-export const RULER_MAP = {
+const RULER_CANVAS_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
-    lineCount(ruler) {
-      return Math.ceil(ruler.canvas.width / CANVAS_MINIMUM_INTERVAL)
+    scaleCount() {
+      return Math.ceil(this.canvas.width / this.minimumScaleInterval)
     },
-    drawLine(ctx, pos, lineLength) {
-      ctx.beginPath()
-      ctx.moveTo(pos, 0)
-      ctx.lineTo(pos, lineLength)
-      ctx.stroke()
+    drawScale(pos, scaleLength) {
+      this.ctx.beginPath()
+      this.ctx.moveTo(pos, 0)
+      this.ctx.lineTo(pos, scaleLength)
+      this.ctx.stroke()
     },
-    drawText(ctx, pos, text) {
-      ctx.fillStyle = 'rgb(128, 128, 128)'
-      ctx.beginPath()
-      ctx.fillText(text, pos + 2, RULER_LINE_DEFAULT_LENGTH * 2)
+    drawText(pos, text) {
+      this.ctx.fillStyle = 'rgb(128, 128, 128)'
+      this.ctx.beginPath()
+      this.ctx.fillText(text, pos + 2, this.maximumScaleLength * 2)
     },
   },
   [COORDINATE_DIRECTION_MAP.yAxis]: {
-    lineCount(ruler) {
-      return Math.ceil(ruler.canvas.height / CANVAS_MINIMUM_INTERVAL)
+    scaleCount() {
+      return Math.ceil(this.canvas.height / this.minimumScaleInterval)
     },
-    drawLine(ctx, pos, lineLength) {
-      ctx.beginPath()
-      ctx.moveTo(0, pos)
-      ctx.lineTo(lineLength, pos)
-      ctx.stroke()
+    drawScale(pos, scaleLength) {
+      this.ctx.beginPath()
+      this.ctx.moveTo(0, pos)
+      this.ctx.lineTo(scaleLength, pos)
+      this.ctx.stroke()
     },
-    drawText(ctx, pos, text) {
-      ctx.save()
-      ctx.fillStyle = 'rgb(128, 128, 128)'
-      ctx.translate(RULER_LINE_DEFAULT_LENGTH * 2, pos - 2)
-      ctx.rotate(-Math.PI / 2)
-      ctx.beginPath()
-      ctx.fillText(text, 0, 0)
-      ctx.restore()
+    drawText(pos, text) {
+      this.ctx.save()
+      this.ctx.fillStyle = 'rgb(128, 128, 128)'
+      this.ctx.translate(this.maximumScaleLength * 2, pos - 2)
+      this.ctx.rotate(-Math.PI / 2)
+      this.ctx.beginPath()
+      this.ctx.fillText(text, 0, 0)
+      this.ctx.restore()
     },
   },
 }
@@ -165,39 +173,43 @@ export default class Ruler {
     this.canvas = document.querySelector(`#${id}`)
     this.ctx = this.canvas.getContext('2d')
     this.direction = direction
+    this.minimumScaleInterval = 10 // 最小刻度间隔
+    this.maximumScaleInterval = this.minimumScaleInterval * 10
+    this.minimumScaleLength = 4 // 最小刻度长度
+    this.maximumScaleLength = this.minimumScaleLength * 2
     this.zoom = 1
-    this.start = 0
-    this.offset = 0
+    this.offset = 0 // 与坐标原点的偏移距离
+    this.residue = 0 // 与第一个最小刻度的距离
   }
 
   draw() {
     // 清空画布
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-    const lineCount = RULER_MAP[this.direction].lineCount(this)
-    for (let i = 0; i < lineCount; i += 1) {
-      const pos = this.offset + i * CANVAS_MINIMUM_INTERVAL + 0.5
-      const num = Math.floor((this.offset + i * CANVAS_MINIMUM_INTERVAL + this.start) / this.zoom)
-      let lineLength
-      if (num % (CANVAS_MINIMUM_INTERVAL * 10 / this.zoom) === 0) {
-        lineLength = RULER_LINE_DEFAULT_LENGTH
+    const count = RULER_CANVAS_MAP[this.direction].scaleCount.call(this)
+    for (let i = 0; i < count; i += 1) {
+      const pos = this.residue + i * this.minimumScaleInterval + 0.5
+      const num = Math.floor((this.offset + this.residue + i * this.minimumScaleInterval) / this.zoom)
+      let scaleLength
+      if (num % (this.maximumScaleInterval / this.zoom) === 0) {
+        scaleLength = this.maximumScaleLength
         this.ctx.strokeStyle = 'rgb(184, 188, 191)'
-        RULER_MAP[this.direction].drawText(this.ctx, pos, num)
+        RULER_CANVAS_MAP[this.direction].drawText.call(this, pos, num)
       } else {
-        lineLength = RULER_LINE_DEFAULT_LENGTH / 2
+        scaleLength = this.minimumScaleLength
         this.ctx.strokeStyle = 'rgb(128, 128, 128)'
       }
-      RULER_MAP[this.direction].drawLine(this.ctx, pos, lineLength)
+      RULER_CANVAS_MAP[this.direction].drawScale.call(this, pos, scaleLength)
     }
   }
 
   update({
-    start,
+    offset,
     zoom,
   }) {
     this.zoom = zoom || this.zoom
-    this.start = typeof start === 'number' ? start : this.start
-    if (this.start <= 0) this.offset = Math.abs(this.start) % CANVAS_MINIMUM_INTERVAL
-    else this.offset = CANVAS_MINIMUM_INTERVAL - this.start % CANVAS_MINIMUM_INTERVAL
+    this.offset = typeof offset === 'number' ? offset : this.offset
+    if (this.offset <= 0) this.residue = Math.abs(this.offset) % this.minimumScaleInterval
+    else this.residue = this.minimumScaleInterval - this.offset % this.minimumScaleInterval
     this.draw()
   }
 }

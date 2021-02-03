@@ -1,4 +1,5 @@
 import {
+  mapState,
   mapActions,
 } from 'vuex'
 import { on, off } from '@/utils/dom'
@@ -8,6 +9,7 @@ import Bus, {
   CANVAS_WIDGET_RESIZE,
   CANVAS_WIDGET_BOOTSTRAP,
   DOCUMENT_MOUSE_UP,
+  CANVAS_WIDGET_MOUSEDOWN,
 } from '@/utils/bus'
 import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import menu from './mixins/menu'
@@ -17,6 +19,11 @@ export default {
   name: 'MouseWidget',
   extends: Widget,
   mixins: [menu],
+  computed: {
+    ...mapState('canvas', {
+      zoom: state => state.zoom,
+    }),
+  },
   mounted() {
     this.addEventListener()
     Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
@@ -38,6 +45,7 @@ export default {
         clientY: evt.clientY,
       }
       setTarget(target)
+      Bus.$emit(CANVAS_WIDGET_MOUSEDOWN)
     },
     mouseup(target, move) {
       if (target.id !== this.dataSource.id) return
@@ -49,16 +57,24 @@ export default {
       } = target
       // 如果没有移动过那么不添加快照
       if (!move) return
+      // 保留添加快照时缩放因子的值
+      const zoom = this.zoom
       this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
         id,
-        update: ({ style: { container } }) => {
+        update: ({ widget: { style: { container } } }) => {
           container.top = top
           container.left = left
         },
         snapshot: {
-          undo: ({ style: { container } }) => {
-            container.top = startY + 'px'
-            container.left = startX + 'px'
+          undo: ({ state, widget: { style: { container } } }) => {
+            const percent = state.zoom / zoom
+            container.top = Math.floor(startY * percent) + 'px'
+            container.left = Math.floor(startX * percent) + 'px'
+          },
+          redo: ({ state, widget: { style: { container } } }) => {
+            const percent = state.zoom / zoom
+            container.top = Math.floor(parseInt(top, 10) * percent) + 'px'
+            container.left = Math.floor(parseInt(left, 10) * percent) + 'px'
           },
         },
       })

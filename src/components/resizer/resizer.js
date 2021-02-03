@@ -1,10 +1,16 @@
+import { noop } from '@/utils'
 import { compose } from '@/utils/functional'
 
 export default class Resizer {
   constructor() {
     this.el = null
-    this.firstChild = null
     this.zoom = 1
+    this.update = {
+      width: noop,
+      height: noop,
+      top: noop,
+      left: noop,
+    }
     this.resize = false // 判断是否执行调节器逻辑
     this.move = false // 判断是否有移动过
     // 判断可以调节属性值
@@ -29,24 +35,24 @@ export default class Resizer {
 
   setData({
     el,
+    update,
+    minWidth,
+    minHeight,
     zoom,
   }) {
-    this.el = el || this.el
-    this.firstChild = el.firstChild
-    this.zoom = zoom || this.zoom
+    this.el = el
+    this.update = update
+    this.minWidth = minWidth
+    this.minHeight = minHeight
+    this.zoom = zoom
   }
 
   getLines() {
-    const {
-      style: {
-        top,
-        left,
-      },
-      offsetWidth,
-      offsetHeight,
-    } = this.el
-    const width = offsetWidth * this.zoom
-    const height = offsetHeight * this.zoom
+    const rect = this.rect()
+    const top = rect.top + 'px'
+    const left = rect.left + 'px'
+    const width = rect.width * this.zoom
+    const height = rect.height * this.zoom
     const lines = []
     lines.push({
       id: 'n-line',
@@ -85,18 +91,13 @@ export default class Resizer {
   }
 
   getCirculars() {
-    const {
-      offsetTop,
-      offsetLeft,
-      offsetWidth,
-      offsetHeight,
-    } = this.el
-    const top = offsetTop
-    const left = offsetLeft
-    const right = offsetLeft + Math.floor(offsetWidth * this.zoom)
-    const bottom = offsetTop + Math.floor(offsetHeight * this.zoom)
-    const width = Math.floor(offsetWidth * this.zoom)
-    const height = Math.floor(offsetHeight * this.zoom)
+    const rect = this.rect()
+    const top = rect.top
+    const left = rect.left
+    const right = rect.left + Math.floor(rect.width * this.zoom)
+    const bottom = rect.top + Math.floor(rect.height * this.zoom)
+    const width = Math.floor(rect.width * this.zoom)
+    const height = Math.floor(rect.height * this.zoom)
     const circulars = []
     circulars.push({
       id: 'n-resize',
@@ -210,7 +211,7 @@ export default class Resizer {
     const queue = []
     if (this.resizeEnable.top) {
       queue.push(({ intervalX, intervalY }) => {
-        this.el.style.top = this.top + intervalY + 'px'
+        this.update.top(this.top + intervalY + 'px')
         return {
           intervalX,
           intervalY: -intervalY,
@@ -219,7 +220,7 @@ export default class Resizer {
     }
     if (this.resizeEnable.left) {
       queue.push(({ intervalX, intervalY }) => {
-        this.el.style.left = this.left + intervalX + 'px'
+        this.update.left(this.left + intervalX + 'px')
         return {
           intervalX: -intervalX,
           intervalY,
@@ -229,11 +230,11 @@ export default class Resizer {
     if (this.resizeEnable.width) {
       queue.push(({ intervalX, intervalY }) => {
         const width = this.width + Math.floor(intervalX / this.zoom)
-        if (width > this.minWidth) this.firstChild.style.width = width + 'px'
+        if (width > this.minWidth) this.update.width(width + 'px')
         else {
-          this.firstChild.style.width = this.minWidth + 'px'
+          this.update.width(this.minWidth + 'px')
           if (this.resizeEnable.left) {
-            this.el.style.left = this.right - Math.floor(this.minWidth * this.zoom) + 'px'
+            this.update.left(this.right - Math.floor(this.minWidth * this.zoom) + 'px')
           }
         }
         return {
@@ -245,11 +246,11 @@ export default class Resizer {
     if (this.resizeEnable.height) {
       queue.push(({ intervalX, intervalY }) => {
         const height = this.height + Math.floor(intervalY / this.zoom)
-        if (height > this.minHeight) this.firstChild.style.height = height + 'px'
+        if (height > this.minHeight) this.update.height(height + 'px')
         else {
-          this.firstChild.style.height = this.minHeight + 'px'
+          this.update.height(this.minHeight + 'px')
           if (this.resizeEnable.top) {
-            this.el.style.top = this.bottom - Math.floor(this.minHeight * this.zoom) + 'px'
+            this.update.top(this.bottom - Math.floor(this.minHeight * this.zoom) + 'px')
           }
         }
         return {
@@ -272,12 +273,6 @@ export default class Resizer {
     this.height = height
     this.right = left + Math.floor(width * this.zoom)
     this.bottom = top + Math.floor(height * this.zoom)
-    const {
-      minWidth,
-      minHeight,
-    } = this.firstChild.style
-    this.minWidth = parseInt(minWidth, 10)
-    this.minHeight = parseInt(minHeight, 10)
     this.executor = this.collectExecutor()
   }
 

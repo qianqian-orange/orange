@@ -2,7 +2,7 @@
   <a-menu-item
     :key="dataSource.key"
     :data-identification="identification"
-    :class="[dataSource.glass && 'glass', size]"
+    :class="[size, dataSource.glass && 'glass']"
     v-bind="$props"
     v-on="$listeners"
   >
@@ -38,6 +38,7 @@ export default {
   },
   data() {
     return {
+      // 配置.glass类可以很轻松判断当前点击的节点是不是menu的item
       identification: MENU_IDENTIFICATION_MAP.menuItem,
     }
   },

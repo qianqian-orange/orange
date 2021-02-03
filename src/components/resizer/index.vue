@@ -21,14 +21,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 import { on, off } from '@/utils/dom'
-import Bus, {
-  CANVAS_WIDGET_RESIZE,
-  DOCUMENT_MOUSE_DOWN,
-  DOCUMENT_MOUSE_MOVE,
-} from '@/utils/bus'
-import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import Resizer from './resizer'
 
 let target = null
@@ -60,34 +53,32 @@ export default {
     },
   },
   mounted() {
-    Bus.$on(DOCUMENT_MOUSE_DOWN, this.documentMousedown)
-    // 移动组件的时候把resizer隐藏掉
-    Bus.$on(DOCUMENT_MOUSE_MOVE, this.documentMousemove)
-    Bus.$on(CANVAS_WIDGET_RESIZE, this.setData)
     this.addEventListener()
   },
   beforeDestroy() {
-    Bus.$off(DOCUMENT_MOUSE_DOWN, this.documentMousedown)
-    Bus.$off(DOCUMENT_MOUSE_MOVE, this.documentMousemove)
-    Bus.$off(CANVAS_WIDGET_RESIZE, this.setData)
     this.removeEventListener()
   },
   methods: {
-    setData(el) {
-      target = el
+    setData({ el, minWidth, minHeight, update }) {
       this.visible = true
-      resizer.setData({ el, zoom: this.zoom })
+      target = el
+      resizer.setData({
+        el,
+        update,
+        minWidth,
+        minHeight,
+        zoom: this.zoom,
+      })
       this.lines = resizer.getLines()
       this.circulars = resizer.getCirculars()
     },
-    documentMousedown(evt) {
+    mousedown(evt) {
       if (!target) return
       const el = evt.target
-      if (el.id !== target.id && el.dataset.identification !== this.identification) this.visible = false
-    },
-    documentMousemove() {
-      // 拖拽组件时隐藏resizer
-      this.visible = false
+      if (el.id !== target.id && el.dataset.identification !== this.identification) {
+        this.visible = false
+        target = null
+      }
     },
     mousemove(evt) {
       resizer.run(evt, () => {
@@ -99,38 +90,19 @@ export default {
       if (!target) return
       const id = target.id
       resizer.end(evt, ({ prev, current }) => {
-        this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
-          id,
-          update: ({ style: { container, component } }) => {
-            container.top = current.top
-            container.left = current.left
-            component.width = current.width
-            component.height = current.height
-          },
-          snapshot: {
-            undo: ({ style: { container, component } }) => {
-              container.top = prev.top
-              container.left = prev.left
-              component.width = prev.width
-              component.height = prev.height
-            },
-            free: () => {
-              prev = null
-              current = null
-            },
-          },
-        })
+        this.$emit('mouseup', id, prev, current)
       })
     },
     addEventListener() {
+      on(document, 'mousedown', this.mousedown)
       on(document, 'mousemove', this.mousemove)
       on(document, 'mouseup', this.mouseup)
     },
     removeEventListener() {
+      off(document, 'mousedown', this.mousedown)
       off(document, 'mousemove', this.mousemove)
       off(document, 'mouseup', this.mouseup)
     },
-    ...mapActions('canvas', [ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]),
   },
 }
 </script>
@@ -138,7 +110,9 @@ export default {
 <style lang="less" scoped>
   .resizer {
     &-container {
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
       z-index: 100;
     }
 

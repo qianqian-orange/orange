@@ -1,6 +1,5 @@
 <template>
   <div
-    class="ruler-line-container"
     @mousedown="mousedown"
     @click="remove"
   >
@@ -16,13 +15,11 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
 import { on, off } from '@/utils/dom'
-import eventEmitter, { SCROLL_END } from './eventEmitter'
-import { DELETE_REFERENCE_LINE, UPDATE_RULER_DATA } from '@/store/modules/ruler/mutation-types'
+import { SCROLL_END } from './const/event'
 import {
   RULER_LINE_MAP,
-  RULER_IDENTIFICATION_MAP,
+  RULER_BACK_BTN,
 } from './ruler'
 import ReferenceLine from './line'
 
@@ -31,11 +28,15 @@ export default {
   components: {
     ReferenceLine,
   },
-  inject: ['direction'],
+  inject: ['store', 'eventEmitter', 'direction'],
   props: {
-    boundary: { // 记录刻度的最小值和最大值
+    boundary: { // 记录当前刻度的边界值
       type: Object,
       required: true,
+    },
+    offset: {
+      type: Number,
+      default: 0,
     },
     zoom: {
       type: Number,
@@ -53,21 +54,35 @@ export default {
     }
   },
   computed: {
-    ...mapState('ruler', {
-      lines(state) {
-        return state.referenceLine[this.direction]
-      },
-    }),
+    lines() {
+      return this.store.referenceLine[this.direction]
+    },
+  },
+  watch: {
+    offset(value) {
+      // 当移动滚动条时需要修改参考线的位置
+      this.getLineEls().forEach((el) => {
+        RULER_LINE_MAP[this.direction].offset(this, el, value)
+      })
+    },
+    zoom(value) {
+      // 当缩放因子改变时需要修改参考线的位置
+      this.store.update({
+        update: ({ referenceLine }) => {
+          referenceLine[this.direction].forEach((line) => {
+            RULER_LINE_MAP[this.direction].zoom(this, line, value)
+          })
+        },
+      })
+    },
   },
   mounted() {
-    eventEmitter.on(SCROLL_END, this.scrollEnd)
+    this.eventEmitter.on(SCROLL_END, this.scrollEnd)
     this.addEventListener()
   },
   beforeDestroyed() {
+    this.eventEmitter.off(SCROLL_END, this.scrollEnd)
     this.removeEventListener()
-  },
-  destroyed() {
-    eventEmitter.off(SCROLL_END, this.scrollEnd)
   },
   methods: {
     addEventListener() {
@@ -89,7 +104,7 @@ export default {
       if (!this.move) return
       RULER_LINE_MAP[this.direction].mousemove(this, (target) => {
         // 当刻度线移动到返回按钮时进行隐藏
-        if (evt.target.dataset.identification === RULER_IDENTIFICATION_MAP.backBtn) target.style.display = 'none'
+        if (evt.target.dataset.identification === RULER_BACK_BTN) target.style.display = 'none'
         else target.style.display = ''
       }, evt)
     },
@@ -100,16 +115,9 @@ export default {
         const num = target.dataset.num
         const id = target.dataset.id
         if (num < this.boundary.min || num > this.boundary.max) {
-          this[DELETE_REFERENCE_LINE]({
-            direction: this.direction,
-            index: this.lines.findIndex(line => line.id === id),
-          })
+          this.store.remove(this.direction, this.lines.findIndex(line => line.id === id))
         } else {
-          this[UPDATE_RULER_DATA]({
-            log: {
-              source: 'ReferenceLineList -> mouseup',
-              reason: '当参考线移动结束后需要修改对应数据',
-            },
+          this.store.update({
             update: ({ referenceLine }) => {
               const line = referenceLine[this.direction].find(line => line.id === id)
               RULER_LINE_MAP[this.direction].update(line, target)
@@ -121,28 +129,16 @@ export default {
     remove(evt) {
       if (evt.target.dataset.action !== 'remove') return
       const id = evt.target.parentNode.dataset.id
-      this[DELETE_REFERENCE_LINE]({
-        direction: this.direction,
-        index: this.lines.findIndex(line => line.id === id),
-      })
+      this.store.remove(this.direction, this.lines.findIndex(line => line.id === id))
     },
     getLineEls() {
       if (!this.$refs.line) return []
       return this.$refs.line.map(vm => vm.$el)
     },
-    offset(start) {
-      this.getLineEls().forEach((el) => {
-        RULER_LINE_MAP[this.direction].offset(this, el, start)
-      })
-    },
     scrollEnd() {
       const lineEls = this.getLineEls()
       if (!lineEls.length) return
-      this[UPDATE_RULER_DATA]({
-        log: {
-          source: 'ReferenceLineList -> scrollEnd',
-          reason: '当滚动结束后需要修改参考线的数据',
-        },
+      this.store.update({
         update: ({ referenceLine }) => {
           referenceLine[this.direction].forEach((line, index) => {
             RULER_LINE_MAP[this.direction].update(line, lineEls[index])
@@ -150,7 +146,6 @@ export default {
         },
       })
     },
-    ...mapMutations('ruler', [DELETE_REFERENCE_LINE, UPDATE_RULER_DATA]),
   },
 }
 </script>

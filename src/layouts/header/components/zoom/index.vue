@@ -6,7 +6,7 @@
   >
     <template #default="{ visible }">
       <li
-        :class="['tool-item-container', visible && 'active']"
+        :class="['tool-container', visible && 'active']"
         :style="{ width: '68px' }"
       >
         <div class="zoom-container">

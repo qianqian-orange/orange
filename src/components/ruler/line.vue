@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="['ruler-line', direction, type]"
+    :class="['ruler-reference-line', direction, type]"
     :style="dataSource.style"
     :data-id="dataSource.id"
     :data-num="dataSource.num"
@@ -37,7 +37,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .ruler-line {
+  .ruler-reference-line {
     position: absolute;
     z-index: 100;
 

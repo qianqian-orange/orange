@@ -2,7 +2,6 @@ import Bus, {
   CANVAS_WIDGET_RESIZE,
   CANVAS_HOVER_MENU,
 } from '@/utils/bus'
-import Menu from '@/components/menu/constructors/menu'
 import {
   cut,
   copy,
@@ -11,9 +10,7 @@ import {
   toTop,
   toBottom,
 } from './config'
-import base from '@/components/menu/hoverMenu/mixins/base'
-
-const menu = new Menu()
+import base, { MENU_INSTANCE } from '@/components/menu/hoverMenu/mixins/base'
 
 export default {
   mixins: [base],
@@ -22,6 +19,7 @@ export default {
       const id = evt.target.id
       if (!id || id !== this.dataSource.id) return
       // 设置数据源
+      const menu = this[MENU_INSTANCE]
       menu.setData({
         target: this.dataSource,
         event: evt,

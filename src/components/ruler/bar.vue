@@ -20,18 +20,16 @@
       />
     </div>
     <reference-line-list
-      ref="lineList"
       :boundary="boundary"
+      :offset="offset"
       :zoom="zoom"
     />
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
 import uuid from '@/utils/uid'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
-import { ADD_REFERENCE_LINE } from '@/store/modules/ruler/mutation-types'
 import Ruler, { RULER_BAR_MAP } from './ruler'
 import menu from './mixins/menu'
 import ReferenceLine from './line'
@@ -44,6 +42,7 @@ export default {
     ReferenceLineList,
   },
   mixins: [menu],
+  inject: ['store', 'eventEmitter'],
   provide() {
     return {
       direction: this.direction,
@@ -54,13 +53,20 @@ export default {
       type: String,
       default: COORDINATE_DIRECTION_MAP.xAxis,
     },
-    start: {
+    offset: {
       type: Number,
       default: 0,
     },
     zoom: {
       type: Number,
       default: 1,
+    },
+    rect: {
+      type: Object,
+      default: () => ({
+        width: 0,
+        height: 0,
+      }),
     },
   },
   data() {
@@ -84,16 +90,11 @@ export default {
     boundary() {
       return RULER_BAR_MAP[this.direction].boundary(this)
     },
-    ...mapState('ruler', {
-      view: state => state.view,
-    }),
   },
   watch: {
-    start(value) {
+    offset(value) {
       // 更新画布
-      this.update({ start: value })
-      // 更新刻度线
-      this.$refs.lineList.offset(value)
+      this.update({ offset: value })
     },
     zoom(value) {
       this.update({ zoom: value })
@@ -131,19 +132,15 @@ export default {
       this.ruler.update(data)
     },
     add() {
-      this[ADD_REFERENCE_LINE]({
-        direction: this.direction,
-        line: {
-          id: uuid(),
-          visible: true,
-          num: this.line.num,
-          style: {
-            ...this.line.style,
-          },
+      this.store.add(this.direction, {
+        id: uuid(),
+        visible: true,
+        num: this.line.num,
+        style: {
+          ...this.line.style,
         },
       })
     },
-    ...mapMutations('ruler', [ADD_REFERENCE_LINE]),
   },
 }
 </script>

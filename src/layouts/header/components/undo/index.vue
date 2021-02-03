@@ -1,6 +1,6 @@
 <template>
   <li
-    :class="['tool-item-container', !undoEnable && 'disabled']"
+    :class="['tool-container', !undoEnable && 'disabled']"
     @click="UNDO"
   >
     <i class="iconfont icon-undo" />

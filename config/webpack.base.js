@@ -102,6 +102,7 @@ module.exports = {
     modules: [resolvePath('../src'), resolvePath('../node_modules')],
     alias: {
       '@': resolvePath('../src'),
+      'ruler': resolvePath('../src/components/ruler'),
     },
     extensions: ['.js', '.vue'],
   },

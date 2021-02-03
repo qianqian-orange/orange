@@ -1,16 +1,23 @@
 <template>
   <ruler
     ref="ruler"
-    :start-x="startX"
-    :start-y="startY"
+    :offset-x="offsetX"
+    :offset-y="offsetY"
+    :rect="rect"
     :zoom="zoom"
+    :size="`${size}px`"
     @back="back"
+    @contextmenu="contextmenu"
   />
 </template>
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import Bus, { SCREEN_SCROLL, SCREEN_SCROLL_END } from '@/utils/bus'
+import Bus, {
+  SCREEN_SCROLL,
+  SCREEN_SCROLL_END,
+  CANVAS_HOVER_MENU,
+} from '@/utils/bus'
 import Ruler from '@/components/ruler'
 
 export default {
@@ -20,12 +27,26 @@ export default {
   },
   data() {
     return {
-      startX: 0,
-      startY: 0,
+      size: 16,
+      offsetX: 0,
+      offsetY: 0,
     }
   },
   computed: {
+    rect() {
+      const {
+        width,
+        height,
+      } = this.screen.view
+      return {
+        width,
+        height,
+      }
+    },
     ...mapGetters('canvas', ['origin']),
+    ...mapState('global', {
+      screen: state => state.screen,
+    }),
     ...mapState('canvas', {
       zoom: state => state.zoom,
     }),
@@ -48,14 +69,18 @@ export default {
   methods: {
     scroll(evt) {
       const target = evt.target
-      this.startX = target.scrollLeft - this.origin.x
-      this.startY = target.scrollTop - this.origin.y
+      // 根据标尺尺寸更改原点坐标
+      this.offsetX = target.scrollLeft - (this.origin.x - this.size)
+      this.offsetY = target.scrollTop - (this.origin.y - this.size)
     },
     scrollEnd() {
       this.$refs.ruler.scrollEnd()
     },
     back() {
-      this.$emit('scroll-to', this.origin.x, this.origin.y)
+      this.$emit('scroll-to', this.origin.x - this.size, this.origin.y - this.size)
+    },
+    contextmenu(data) {
+      Bus.$emit(CANVAS_HOVER_MENU, data)
     },
   },
 }

@@ -14,7 +14,10 @@ export default {
   },
   [UPDATE_CANVAS_WIDGET_DATA](state, { id, update }) {
     const widget = mouseWidgetMap[id].data
-    update(widget)
+    update({
+      state,
+      widget,
+    })
   },
   [UPDATE_CANVAS_WIDGET_LIST_DATA](state) {
     state.mouseWidgetList = doubleLinkedList.toArray()

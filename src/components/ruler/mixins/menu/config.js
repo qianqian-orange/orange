@@ -1,118 +1,139 @@
-import store from '@/store'
 import { noop } from '@/utils'
-import {
-  UPDATE_RULER_DATA,
-  TOGGLE_REFERENCE_LINE_VISIBLE,
-  DELETE_REFERENCE_LINE,
-} from '@/store/modules/ruler/mutation-types'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import MenuItem from '@/components/menu/constructors/menuItem'
 
-export const showRuler = new MenuItem({
-  title: '显示标尺',
-  key: 'showRuler',
-  glass: true,
-  icon: {
-    right: {
-      className: 'icon-success',
-      visible: true,
+export const SHOW_RULER = 'SHOW_RULER'
+export const SHOW_LINE = 'SHOW_LINE'
+export const REMOVE_ALL_HORIZONTAL_LINE = 'REMOVE_ALL_HORIZONTAL_LINE'
+export const REMOVE_ALL_VERTICAL_LINE = 'REMOVE_ALL_VERTICAL_LINE'
+
+const config = {
+  [SHOW_RULER]: (menu) => new MenuItem({
+    menu,
+    title: '显示标尺',
+    key: 'showRuler',
+    glass: true,
+    icon: {
+      right: {
+        className: 'icon-success',
+        visible: true,
+      },
     },
-  },
-  events: {
-    click() {
-      store.commit(`ruler/${UPDATE_RULER_DATA}`, {
-        log: {
-          source: 'ruler -> menu',
-          reason: '当点击右键菜单中显示标尺菜单项时隐藏标尺显示',
+    events: {
+      click() {
+        const { vm } = this.menu
+        vm.store.update({
+          update: (state) => {
+            state.visible = false
+          },
+        })
+      },
+    },
+  }),
+  [SHOW_LINE]: (menu) => new MenuItem({
+    menu,
+    title: '显示参考线',
+    key: 'showLine',
+    glass: true,
+    icon: {
+      right: {
+        className: 'icon-success',
+        visible: true,
+      },
+    },
+    divider: true,
+    events: {
+      click() {
+        const { vm } = this.menu
+        const visible = this.icon.right.visible = !this.icon.right.visible
+        vm.store.update({
+          update: ({ referenceLine }) => {
+            referenceLine.visible = visible
+            referenceLine[COORDINATE_DIRECTION_MAP.xAxis]
+              .concat(referenceLine[COORDINATE_DIRECTION_MAP.yAxis])
+              .forEach((line) => {
+                line.visible = visible
+              })
+          },
+        })
+      },
+    },
+    dataSource: {
+      watch: noop,
+    },
+    init() {
+      const { vm } = this.menu
+      this.dataSource.watch = vm.$watch(
+        () => vm.store.referenceLine.visible,
+        (visible) => {
+          this.icon.right.visible = visible
         },
-        update: (state) => {
-          state.visible = false
+      )
+    },
+    destroy() {
+      this.dataSource.watch()
+    },
+  }),
+  [REMOVE_ALL_HORIZONTAL_LINE]: (menu) => new MenuItem({
+    menu,
+    title: '删除所有纵向参考线',
+    key: 'removeAllHorizontalLine',
+    glass: true,
+    props: {
+      disabled: true,
+    },
+    events: {
+      click() {
+        const { vm } = this.menu
+        vm.store.remove(COORDINATE_DIRECTION_MAP.xAxis)
+      },
+    },
+    dataSource: {
+      watch: noop,
+    },
+    init() {
+      const { vm } = this.menu
+      this.dataSource.watch = vm.$watch(
+        () => vm.store.referenceLine[COORDINATE_DIRECTION_MAP.xAxis],
+        (lines) => {
+          this.props.disabled = !lines.length
         },
-      })
+      )
     },
-  },
-})
+    destroy() {
+      this.dataSource.watch()
+    },
+  }),
+  [REMOVE_ALL_VERTICAL_LINE]: (menu) => new MenuItem({
+    menu,
+    title: '删除所有横向参考线',
+    key: 'removeAllVerticalLine',
+    glass: true,
+    props: {
+      disabled: true,
+    },
+    events: {
+      click() {
+        const { vm } = this.menu
+        vm.store.remove(COORDINATE_DIRECTION_MAP.yAxis)
+      },
+    },
+    dataSource: {
+      watch: noop,
+    },
+    init() {
+      const { vm } = this.menu
+      this.dataSource.watch = vm.$watch(
+        () => vm.store.referenceLine[COORDINATE_DIRECTION_MAP.yAxis],
+        (lines) => {
+          this.props.disabled = !lines.length
+        },
+      )
+    },
+    destroy() {
+      this.dataSource.watch()
+    },
+  }),
+}
 
-export const showLine = new MenuItem({
-  title: '显示参考线',
-  key: 'showLine',
-  glass: true,
-  icon: {
-    right: {
-      className: 'icon-success',
-      visible: true,
-    },
-  },
-  divider: true,
-  events: {
-    click() {
-      this.icon.right.visible = !this.icon.right.visible
-      store.commit(`ruler/${TOGGLE_REFERENCE_LINE_VISIBLE}`, this.icon.right.visible)
-    },
-  },
-  dataSource: {
-    watch: noop,
-  },
-  init() {
-    this.dataSource.watch = store.watch((state) => state.ruler.referenceLine.visible, (visible) => {
-      this.icon.right.visible = visible
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
-
-export const removeAllHorizontalLine = new MenuItem({
-  title: '删除所有纵向参考线',
-  key: 'removeAllHorizontalLine',
-  glass: true,
-  props: {
-    disabled: true,
-  },
-  events: {
-    click() {
-      store.commit(`ruler/${DELETE_REFERENCE_LINE}`, {
-        direction: COORDINATE_DIRECTION_MAP.xAxis,
-      })
-    },
-  },
-  dataSource: {
-    watch: noop,
-  },
-  init() {
-    this.dataSource.watch = store.watch((state) => state.ruler.referenceLine[COORDINATE_DIRECTION_MAP.xAxis], (lines) => {
-      this.props.disabled = !lines.length
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
-
-export const removeAllVerticalLine = new MenuItem({
-  title: '删除所有横向参考线',
-  key: 'removeAllVerticalLine',
-  glass: true,
-  props: {
-    disabled: true,
-  },
-  events: {
-    click() {
-      store.commit(`ruler/${DELETE_REFERENCE_LINE}`, {
-        direction: COORDINATE_DIRECTION_MAP.yAxis,
-      })
-    },
-  },
-  dataSource: {
-    watch: noop,
-  },
-  init() {
-    this.dataSource.watch = store.watch((state) => state.ruler.referenceLine[COORDINATE_DIRECTION_MAP.yAxis], (lines) => {
-      this.props.disabled = !lines.length
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
+export default (menu) => (type) => config[type](menu)

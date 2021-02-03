@@ -45,6 +45,7 @@ const paste2mouse = new MenuItem({
   glass: true,
   events: {
     click() {
+      // 当粘贴的触发时机是在某个组件内那offsetLeft,offsetTop就可以用到了
       const {
         offsetLeft,
         offsetTop,
@@ -55,8 +56,12 @@ const paste2mouse = new MenuItem({
       } = this.menu.event
       const widget = lodash.cloneDeep(paste.dataSource)
       widget.id = `${widget.component}-${uuid()}`
-      widget.style.container.top = offsetTop + offsetY + 'px'
-      widget.style.container.left = offsetLeft + offsetX + 'px'
+      const { container } = widget.style
+      container.top = offsetTop + offsetY + 'px'
+      container.left = offsetLeft + offsetX + 'px'
+      // 上面设置的top和left值已经是根据符合当前画布的缩放因子下的位置，
+      // 所以添加这个组件的时候就不需要在进行位置调整了
+      container.transform = `scale(${store.state.canvas.zoom})`
       store.dispatch(`canvas/${ADD_WIDGET}`, widget)
     },
   },

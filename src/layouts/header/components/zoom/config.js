@@ -12,8 +12,9 @@ function update(zoom, log) {
       reason: `当点击缩放菜单的${log}子菜单项时需要更改屏幕容器宽高`,
     },
     update: ({ screen: { container } }) => {
-      container.width = parseInt(container.width) * (zoom / store.state.canvas.zoom) + 'px'
-      container.height = parseInt(container.height) * (zoom / store.state.canvas.zoom) + 'px'
+      const percent = zoom / store.state.canvas.zoom
+      container.width = parseInt(container.width) * percent + 'px'
+      container.height = parseInt(container.height) * percent + 'px'
     },
   })
   store.commit(`canvas/${UPDATE_CANVAS_DATE}`, {
@@ -52,90 +53,6 @@ export const narrow = new MenuItem({
   },
 })
 
-export const zoom50 = new MenuItem({
-  title: '50%',
-  key: 'zoom50',
-  icon: {
-    left: {
-      className: 'icon-success',
-      visible: false,
-    },
-  },
-  dataSource: {
-    zoom: 0.5,
-    watch: noop,
-  },
-  events: {
-    click() {
-      update(this.dataSource.zoom, '50%')
-    },
-  },
-  init() {
-    this.dataSource.watch = store.watch((state) => state.canvas.zoom, (zoom) => {
-      this.icon.left.visible = zoom === this.dataSource.zoom
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
-
-export const zoom100 = new MenuItem({
-  title: '100%',
-  key: 'zoom100',
-  icon: {
-    left: {
-      className: 'icon-success',
-      visible: true,
-    },
-  },
-  dataSource: {
-    zoom: 1,
-    watch: noop,
-  },
-  events: {
-    click() {
-      update(this.dataSource.zoom, '100%')
-    },
-  },
-  init() {
-    store.watch((state) => state.canvas.zoom, (zoom) => {
-      this.icon.left.visible = zoom === this.dataSource.zoom
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
-
-export const zoom200 = new MenuItem({
-  title: '200%',
-  key: 'zoom200',
-  icon: {
-    left: {
-      className: 'icon-success',
-      visible: false,
-    },
-  },
-  dataSource: {
-    zoom: 2,
-    watch: noop,
-  },
-  events: {
-    click() {
-      update(this.dataSource.zoom, '200%')
-    },
-  },
-  init() {
-    store.watch((state) => state.canvas.zoom, (zoom) => {
-      this.icon.left.visible = zoom === this.dataSource.zoom
-    })
-  },
-  destroy() {
-    this.dataSource.watch()
-  },
-})
-
 export const fitCavnas = new MenuItem({
   title: '适应画布',
   key: 'fitCavnas',
@@ -153,3 +70,38 @@ export const zoom2area = new MenuItem({
     },
   },
 })
+
+const factory = (zoom) => new MenuItem({
+  title: `${zoom * 100}%`,
+  key: `zoom${zoom * 100}`,
+  icon: {
+    left: {
+      className: 'icon-success',
+      visible: false,
+    },
+  },
+  dataSource: {
+    zoom,
+    watch: noop,
+  },
+  events: {
+    click() {
+      update(this.dataSource.zoom, `${zoom * 100}%`)
+    },
+  },
+  init() {
+    this.dataSource.watch = store.watch((state) => state.canvas.zoom, (zoom) => {
+      this.icon.left.visible = zoom === this.dataSource.zoom
+    })
+  },
+  destroy() {
+    this.dataSource.watch()
+  },
+})
+
+export const zoom50 = factory(0.5)
+
+export const zoom100 = factory(1)
+zoom100.icon.left.visible = true
+
+export const zoom200 = factory(2)

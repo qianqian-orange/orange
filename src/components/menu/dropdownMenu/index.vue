@@ -1,4 +1,5 @@
 <template>
+  <!-- transition-name设置为空字符串是为了去掉过渡动画 -->
   <a-dropdown
     v-model="visible"
     transition-name=""
@@ -21,28 +22,15 @@
 </template>
 
 <script>
+import base from '@/components/menu/mixins/base'
 import OrangeMenu from '@/components/menu/menu'
-import { MENU_DEFAULT_WIDTH, MENU_SIZE } from '@/const/menu'
 
 export default {
   name: 'DropMenu',
   components: {
     OrangeMenu,
   },
-  props: {
-    width: {
-      type: String,
-      default: MENU_DEFAULT_WIDTH,
-    },
-    size: {
-      type: String,
-      default: MENU_SIZE.normal,
-    },
-    menus: {
-      type: Array,
-      default: () => [],
-    },
-  },
+  mixins: [base],
   data() {
     return {
       visible: false,

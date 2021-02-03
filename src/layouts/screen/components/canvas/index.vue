@@ -5,8 +5,6 @@
     @drop="drop"
     @dragover="dragover"
   >
-    <mark-line :zoom="canvasState.zoom" />
-    <resizer :zoom="canvasState.zoom" />
     <mouse-widget
       v-for="widget in canvasState.mouseWidgetList"
       :key="widget.id"
@@ -22,15 +20,11 @@ import uuid from '@/utils/uid'
 import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
 import menu from './mixins/menu'
 import MouseWidget from '@/components/widget/mouseWidget'
-import MarkLine from '@/components/markLine'
-import Resizer from '@/components/resizer'
 
 export default {
   name: 'ScreenCanvas',
   components: {
     MouseWidget,
-    MarkLine,
-    Resizer,
   },
   mixins: [menu],
   data() {

@@ -15,6 +15,7 @@
         :size="size"
         :data-source="item"
         v-bind="item.props"
+        v-on="item.events"
       />
       <menu-item
         v-else

@@ -18,17 +18,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { getTarget } from '@/lib/document'
-import Bus, {
-  DOCUMENT_MOUSE_MOVE,
-  DOCUMENT_MOUSE_UP,
-} from '@/utils/bus'
+import { on, off } from '@/utils/dom'
 import { keys } from '@/utils/object'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import MarkLine, {
-  rect,
-  MARKLINE_MAP,
+  MARKLINE_LINE_MAP,
   MARKLINE_HANDLER_MAP,
 } from './markLine'
 
@@ -45,6 +39,10 @@ const cache = {
 export default {
   name: 'MarkLine',
   props: {
+    target: {
+      type: Object,
+      required: true,
+    },
     zoom: {
       type: Number,
       default: 1,
@@ -52,12 +50,12 @@ export default {
   },
   data() {
     return {
-      target: null,
-      plainLine: [...MARKLINE_MAP[COORDINATE_DIRECTION_MAP.xAxis], ...MARKLINE_MAP[COORDINATE_DIRECTION_MAP.yAxis]]
+      markline: false,
+      plainLine: MARKLINE_LINE_MAP[COORDINATE_DIRECTION_MAP.xAxis].concat(MARKLINE_LINE_MAP[COORDINATE_DIRECTION_MAP.yAxis])
         .reduce((res, identification) => {
           res[identification] = {
             visible: false,
-            isAdsorb: false,
+            adsorb: false,
             style: {
               top: 0,
               left: 0,
@@ -70,90 +68,62 @@ export default {
       distanceLines: [],
     }
   },
-  computed: {
-    ...mapState('canvas', {
-      mouseWidgetList: state => state.mouseWidgetList,
-    }),
-  },
   mounted() {
-    Bus.$on(DOCUMENT_MOUSE_MOVE, this.mousemove)
-    Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
+    on(document, 'mousemove', this.mousemove)
+    on(document, 'mouseup', this.mouseup)
   },
   beforeDestroy() {
-    Bus.$off(DOCUMENT_MOUSE_MOVE, this.mousemove)
-    Bus.$off(DOCUMENT_MOUSE_UP, this.mouseup)
+    off(document, 'mousemove', this.mousemove)
+    off(document, 'mouseup', this.mouseup)
   },
   methods: {
-    mousemove({ id, style }) {
-      const { offsetWidth, offsetHeight } = getTarget()
-      const widgetList = this.mouseWidgetList.filter(widget => widget.id !== id)
-      this.target = rect({
-        width: offsetWidth + 'px',
-        height: offsetHeight + 'px',
-        top: style.top,
-        left: style.left,
-      }, this.zoom)
+    setData({ neighbors }) {
+      this.markline = true
+      ;[COORDINATE_DIRECTION_MAP.xAxis, COORDINATE_DIRECTION_MAP.yAxis].forEach((direction) => {
+        cache[direction].neighbors = neighbors.map(item => MARKLINE_HANDLER_MAP[direction].neighborFilter(item))
+      })
+    },
+    mousemove() {
+      if (!this.markline) return
       // 将距离标线清空重新收集
       this.distanceLines.length = 0
-      let direction = COORDINATE_DIRECTION_MAP.yAxis
-      this.core({
-        ...MARKLINE_HANDLER_MAP[direction],
-        widgetList,
-        lines: MARKLINE_MAP[direction],
-        direction,
-      })
-      direction = COORDINATE_DIRECTION_MAP.xAxis
-      this.core({
-        ...MARKLINE_HANDLER_MAP[direction],
-        widgetList,
-        lines: MARKLINE_MAP[direction],
-        direction,
+      ;[COORDINATE_DIRECTION_MAP.xAxis, COORDINATE_DIRECTION_MAP.yAxis].forEach((direction) => {
+        const {
+          targetFilter,
+          setPlainLine,
+          setDistanceLine,
+        } = MARKLINE_HANDLER_MAP[direction]
+        markline.target = targetFilter(this.target)
+        markline.neighbors = cache[direction].neighbors
+        MARKLINE_LINE_MAP[direction].forEach((identification) => {
+          const line = this.plainLine[identification]
+          markline.identification = identification
+          // 先判断吸附逻辑在判断标线逻辑
+          line.adsorb = markline.adsorb(line.adsorb, (interval) => {
+            this.$emit('adsorb', direction, interval)
+            // 这里注意需要更新target值
+            markline.target = targetFilter(this.target)
+          })
+          const data = markline.line()
+          if (!data) {
+            line.visible = false
+            return
+          }
+          line.visible = true
+          setPlainLine(line, data)
+          setDistanceLine(this.distanceLines, data, this.zoom)
+        })
       })
     },
     mouseup() {
+      if (!this.markline) return
+      this.markline = false
       // 将普通标线隐藏
       keys(this.plainLine, (obj) => { obj.visible = false })
       // 将距离标线清空
       this.distanceLines.length = 0
       // 重置缓存数据
       keys(cache, (obj) => { obj.neighbors = null })
-    },
-    core({
-      widgetList,
-      lines,
-      direction,
-      targetFilter,
-      neighborFilter,
-      setPlainLine,
-      setDistanceLine,
-      update,
-    }) {
-      markline.neighbors = cache[direction].neighbors ||
-        (cache[direction].neighbors = widgetList.map(({ style }) => neighborFilter(rect({
-          width: style.component.width,
-          height: style.component.height,
-          top: style.container.top,
-          left: style.container.left,
-        }, this.zoom))))
-      lines.forEach((identification) => {
-        const line = this.plainLine[identification]
-        markline.target = targetFilter(this.target)
-        markline.identification = identification
-        // 先判断吸附逻辑在判断标线逻辑
-        line.isAdsorb = markline.adsorb(line.isAdsorb, (interval) => {
-          update(this.target, interval)
-          // 这里注意需要更新target值
-          markline.target = targetFilter(this.target)
-        })
-        const data = markline.line()
-        if (!data) {
-          line.visible = false
-          return
-        }
-        line.visible = true
-        setPlainLine(line, data)
-        setDistanceLine(this.distanceLines, data, this.zoom)
-      })
     },
   },
 }
@@ -164,7 +134,9 @@ export default {
     position: absolute;
 
     &-container {
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
       z-index: 100;
     }
 

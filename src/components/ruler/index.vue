@@ -1,15 +1,20 @@
 <template>
-  <div class="ruler-container">
+  <div
+    v-if="store.visible"
+    class="ruler-container"
+  >
     <bar
-      :start="startX"
+      :offset="offsetX"
       :zoom="zoom"
-      :style="{ left: `${size}px`, height: `${size}px` }"
+      :rect="rect"
+      :style="{ left: size, height: size }"
     />
     <bar
-      :start="startY"
+      :offset="offsetY"
       :zoom="zoom"
+      :rect="rect"
       :direction="direction.yAxis"
-      :style="{ top: `${size}px`, width: `${size}px` }"
+      :style="{ top: size, width: size }"
     />
     <a-tooltip placement="right">
       <template #title>
@@ -17,8 +22,8 @@
       </template>
       <span
         class="back-btn"
-        :data-identification="identification.backBtn"
-        :style="{ width: `${size}px`, height: `${size}px` }"
+        :data-identification="identification"
+        :style="{ width: size, height: size }"
         @click="back"
       />
     </a-tooltip>
@@ -26,11 +31,11 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-import { UPDATE_RULER_DATA } from '@/store/modules/ruler/mutation-types'
+import createStore from './store'
+import EventEmitter from '@/lib/eventEmitter'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
-import { RULER_IDENTIFICATION_MAP } from './ruler'
-import eventEmitter, { SCROLL_END } from './eventEmitter'
+import { SCROLL_END, CONTEXTMENU } from './const/event'
+import { RULER_BACK_BTN } from './ruler'
 import Bar from './bar'
 
 export default {
@@ -38,12 +43,18 @@ export default {
   components: {
     Bar,
   },
+  provide() {
+    return {
+      store: this.store,
+      eventEmitter: this.eventEmitter,
+    }
+  },
   props: {
-    startX: {
+    offsetX: {
       type: Number,
       default: 0,
     },
-    startY: {
+    offsetY: {
       type: Number,
       default: 0,
     },
@@ -51,51 +62,44 @@ export default {
       type: Number,
       default: 1,
     },
+    rect: {
+      type: Object,
+      default: () => ({
+        width: 0,
+        height: 0,
+      }),
+    },
+    size: {
+      type: String,
+      default: '16px', // 刻度值的宽高尺寸，对于x轴而言是定义高的长度，对于y轴而言是定义宽的长度
+    },
   },
   data() {
     return {
+      store: createStore(),
+      eventEmitter: new EventEmitter(),
       direction: {
         yAxis: COORDINATE_DIRECTION_MAP.yAxis,
       },
-      identification: {
-        backBtn: RULER_IDENTIFICATION_MAP.backBtn,
-      },
+      identification: RULER_BACK_BTN,
     }
   },
-  computed: {
-    ...mapState('ruler', {
-      size: state => state.size,
-    }),
+  mounted() {
+    this.eventEmitter.on(CONTEXTMENU, this.contextmenu)
   },
-  watch: {
-    zoom(value) {
-      this[UPDATE_RULER_DATA]({
-        log: {
-          source: 'ruler -> index.vue',
-          reason: '当缩放因子改变时修改参考线的定位位置',
-        },
-        update: ({ referenceLine }) => {
-          referenceLine[COORDINATE_DIRECTION_MAP.xAxis].forEach((line) => {
-            line.style.left = Math.floor(line.num * value) - this.startX + 'px'
-          })
-          referenceLine[COORDINATE_DIRECTION_MAP.yAxis].forEach((line) => {
-            line.style.top = Math.floor(line.num * value) - this.startY + 'px'
-          })
-        },
-      })
-    },
-  },
-  destroyed() {
-    eventEmitter.destroy()
+  beforeDestroyed() {
+    this.eventEmitter.off(CONTEXTMENU, this.contextmenu)
   },
   methods: {
     back() {
       this.$emit('back')
     },
     scrollEnd() {
-      eventEmitter.emit(SCROLL_END)
+      this.eventEmitter.emit(SCROLL_END)
     },
-    ...mapMutations('ruler', [UPDATE_RULER_DATA]),
+    contextmenu(data) {
+      this.$emit('contextmenu', data)
+    },
   },
 }
 </script>
