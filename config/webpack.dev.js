@@ -16,7 +16,7 @@ module.exports = merge(baseConfig, {
     contentBase: resolvePath('../dist'),
     overlay: false,
     // proxy: {},
-    // historyApiFallback: {}
+    historyApiFallback: true,
   },
   devtool: '#source-map',
 })

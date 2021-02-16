@@ -4,7 +4,14 @@ import Widget from './index'
 export default {
   name: 'DragWidget',
   extends: Widget,
+  props: {
+    category: {
+      type: String,
+      required: true,
+    },
+  },
   mounted() {
+    this.$emit('bootstrap', this.$el)
     this.addEventListener()
   },
   beforeDestroy() {
@@ -17,6 +24,7 @@ export default {
       evt.target.style.transform = 'translateZ(0)'
       evt.dataTransfer.setData('dataSource', JSON.stringify({
         id: evt.target.id,
+        category: this.category,
         offsetX: evt.offsetX,
         offsetY: evt.offsetY,
       }))

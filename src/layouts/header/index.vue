@@ -24,14 +24,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .workspace {
-    &-header {
-      box-sizing: border-box;
-      height: 52px;
-      padding-left: 248px;
-      border-bottom: 1px solid @deepBlack;
-      background-color: @lightBlack;
-    }
+  .workspace-header {
+    box-sizing: border-box;
+    height: 52px;
+    padding-left: 248px;
+    border-bottom: 1px solid @deepBlack;
+    background-color: @lightBlack;
 
     .toolbar {
       display: flex;

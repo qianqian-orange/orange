@@ -57,11 +57,11 @@
 		"@babel/runtime-corejs3": "^7.11.0",
 		"ant-design-vue": "^1.7.2",
 		"axios": "^0.19.2",
-		"lodash": "^4.17.20",
-		"sortablejs": "^1.12.0",
+		"ramda": "^0.27.1",
 		"uuid": "^8.3.2",
 		"vue": "^2.6.11",
 		"vue-router": "^3.3.4",
-		"vuex": "^3.5.1"
+		"vuex": "^3.5.1",
+		"wangeditor": "^4.6.6"
 	}
 }

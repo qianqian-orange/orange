@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import lodash from 'lodash'
 import { mapState, mapActions } from 'vuex'
 import uuid from '@/utils/uid'
 import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
@@ -33,11 +32,11 @@ export default {
     }
   },
   computed: {
-    ...mapState('global', {
-      globalState: state => state,
-    }),
     ...mapState('canvas', {
       canvasState: state => state,
+    }),
+    ...mapState('widget', {
+      widgetState: state => state,
     }),
   },
   methods: {
@@ -45,18 +44,18 @@ export default {
       evt.preventDefault()
       const {
         id,
+        category,
         offsetX,
         offsetY,
       } = JSON.parse(evt.dataTransfer.getData('dataSource'))
-      const widget = lodash.cloneDeep(this.globalState.widgetListMap[id])
+      const widget = this.widgetState[category][id].clone()
       widget.id = `${widget.component}-${uuid()}`
-      widget.style.container = {
-        position: 'absolute',
-        top: evt.offsetY - offsetY + 'px',
-        left: evt.offsetX - offsetX + 'px',
-        transformOrigin: '0 0',
-        transform: `scale(${this.canvasState.zoom})`,
-      }
+      const { style: { container } } = widget
+      container.position = 'absolute'
+      container.top = evt.offsetY - offsetY + 'px'
+      container.left = evt.offsetX - offsetX + 'px'
+      container.transformOrigin = '0 0'
+      container.transform = `scale(${this.canvasState.zoom})`
       this[ADD_WIDGET](widget)
     },
     dragover(evt) {

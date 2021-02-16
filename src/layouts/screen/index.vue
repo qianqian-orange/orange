@@ -12,7 +12,7 @@
           height: screen.container.height,
         }"
       >
-        <grid />
+        <screen-grid />
         <screen-canvas />
         <screen-mark-line />
         <screen-resizer />
@@ -26,7 +26,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
-import Grid from './components/grid'
+import ScreenGrid from './components/grid'
 import ScreenCanvas from './components/canvas'
 import ScreenMarkLine from './components/markLine'
 import ScreenResizer from './components/resizer'
@@ -37,7 +37,7 @@ import scroll from './mixins/scroll'
 export default {
   name: 'WorkspaceScreen',
   components: {
-    Grid,
+    ScreenGrid,
     ScreenCanvas,
     ScreenMarkLine,
     ScreenResizer,

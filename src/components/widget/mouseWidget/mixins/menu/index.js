@@ -16,8 +16,7 @@ export default {
   mixins: [base],
   methods: {
     contextmenu(evt) {
-      const id = evt.target.id
-      if (!id || id !== this.dataSource.id) return
+      if (evt.target !== this.$el) return
       // 设置数据源
       const menu = this[MENU_INSTANCE]
       menu.setData({

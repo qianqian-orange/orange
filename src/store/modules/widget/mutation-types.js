@@ -1,0 +1,1 @@
+export const UPDATE_WIDGET_DATA = 'UPDATE_WIDGET_DATA'

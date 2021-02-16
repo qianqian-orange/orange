@@ -54,8 +54,8 @@ export default class MenuItem {
     this.eventEmitter.off(type, fn)
   }
 
-  emit(type) {
-    this.eventEmitter.emit(type)
+  emit(type, ...args) {
+    this.eventEmitter.emit(type, ...args)
   }
 
   depend(menu) {

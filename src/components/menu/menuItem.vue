@@ -20,7 +20,7 @@
 
 <script>
 import { Menu } from 'ant-design-vue'
-import { MENU_IDENTIFICATION_MAP, MENU_SIZE } from '@/const/menu'
+import { MENU_ITEM, MENU_SIZE } from '@/const/menu'
 
 export default {
   name: 'MenuItem',
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       // 配置.glass类可以很轻松判断当前点击的节点是不是menu的item
-      identification: MENU_IDENTIFICATION_MAP.menuItem,
+      identification: MENU_ITEM,
     }
   },
 }

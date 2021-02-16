@@ -1,7 +1,3 @@
-export const MENU_IDENTIFICATION_MAP = {
-  menuItem: 'menu-item',
-}
-
 export const MENU_DEFAULT_WIDTH = '240px'
 
 export const MENU_SIZE = {
@@ -9,3 +5,5 @@ export const MENU_SIZE = {
   normal: 'normal',
   small: 'small',
 }
+
+export const MENU_ITEM = 'MENU_ITEM'

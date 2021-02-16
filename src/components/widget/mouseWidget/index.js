@@ -1,17 +1,18 @@
 import {
   mapState,
+  mapMutations,
   mapActions,
 } from 'vuex'
 import { on, off } from '@/utils/dom'
 import { leftMousedown } from '@/utils/check'
 import { setTarget } from '@/lib/document'
 import Bus, {
-  CANVAS_WIDGET_RESIZE,
   CANVAS_WIDGET_BOOTSTRAP,
   DOCUMENT_MOUSE_UP,
   CANVAS_WIDGET_MOUSEDOWN,
 } from '@/utils/bus'
 import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
+import { UPDATE_CANVAS_WIDGET_DATA } from '@/store/modules/canvas/mutation-types'
 import menu from './mixins/menu'
 import Widget from '@/components/widget'
 
@@ -25,6 +26,17 @@ export default {
     }),
   },
   mounted() {
+    const vm = this
+    this[UPDATE_CANVAS_WIDGET_DATA]({
+      log: {
+        source: 'mouseWidget -> mounted',
+        reason: '绑定当前vm实例的方法',
+      },
+      id: this.dataSource.id,
+      update: ({ widget }) => {
+        widget.getInstance = () => vm
+      },
+    })
     this.addEventListener()
     Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
     Bus.$emit(CANVAS_WIDGET_BOOTSTRAP, this)
@@ -37,6 +49,7 @@ export default {
     mousedown(evt) {
       // 只有鼠标左键点击的情况下才触发
       if (!leftMousedown(evt)) return
+      if (evt.target !== this.$el) return
       const target = evt.target
       target.position = {
         startX: target.offsetLeft,
@@ -48,7 +61,7 @@ export default {
       Bus.$emit(CANVAS_WIDGET_MOUSEDOWN)
     },
     mouseup(target, move) {
-      if (target.id !== this.dataSource.id) return
+      if (target !== this.$el) return
       // 更新widget信息和添加快照
       const {
         id,
@@ -79,19 +92,17 @@ export default {
         },
       })
     },
-    click(evt) {
-      Bus.$emit(CANVAS_WIDGET_RESIZE, evt.target)
-    },
     addEventListener() {
       const el = this.$el
       on(el, 'mousedown', this.mousedown)
-      on(el, 'click', this.click)
     },
     removeEventListener() {
       const el = this.$el
       off(el, 'mousedown', this.mousedown)
-      off(el, 'click', this.click)
     },
+    ...mapMutations('canvas', [
+      UPDATE_CANVAS_WIDGET_DATA,
+    ]),
     ...mapActions('canvas', [
       ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT,
     ]),

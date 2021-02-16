@@ -75,7 +75,7 @@ export default {
     mousedown(evt) {
       if (!target) return
       const el = evt.target
-      if (el.id !== target.id && el.dataset.identification !== this.identification) {
+      if (el !== target && el.dataset.identification !== this.identification) {
         this.visible = false
         target = null
       }

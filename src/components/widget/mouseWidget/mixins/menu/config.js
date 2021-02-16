@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import store from '@/store'
 import MenuItem from '@/components/menu/constructors/menuItem'
 import uuid from '@/utils/uid'
@@ -32,7 +31,7 @@ const paste2canvas = new MenuItem({
   glass: true,
   events: {
     click() {
-      const widget = lodash.cloneDeep(paste.dataSource)
+      const widget = paste.dataSource.clone()
       widget.id = `${widget.component}-${uuid()}`
       store.dispatch(`canvas/${ADD_WIDGET}`, widget)
     },
@@ -54,7 +53,7 @@ const paste2mouse = new MenuItem({
         offsetX,
         offsetY,
       } = this.menu.event
-      const widget = lodash.cloneDeep(paste.dataSource)
+      const widget = paste.dataSource.clone()
       widget.id = `${widget.component}-${uuid()}`
       const { container } = widget.style
       container.top = offsetTop + offsetY + 'px'

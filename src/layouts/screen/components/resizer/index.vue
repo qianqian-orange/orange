@@ -11,6 +11,7 @@ import { mapState, mapActions } from 'vuex'
 import Bus, {
   CANVAS_WIDGET_RESIZE,
   DOCUMENT_MOUSE_MOVE,
+  CANVAS_WIDGET_RESIZER_VISIBLE,
 } from '@/utils/bus'
 import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import Resizer from '@/components/resizer'
@@ -26,6 +27,7 @@ export default {
     }),
   },
   mounted() {
+    Bus.$on(CANVAS_WIDGET_RESIZER_VISIBLE, this.toggle)
     Bus.$on(DOCUMENT_MOUSE_MOVE, this.mousemove)
     Bus.$on(CANVAS_WIDGET_RESIZE, this.setData)
   },
@@ -34,6 +36,9 @@ export default {
     Bus.$off(CANVAS_WIDGET_RESIZE, this.setData)
   },
   methods: {
+    toggle(visible) {
+      this.$refs.resizer.visible = visible
+    },
     mousemove() {
       // 拖拽组件时隐藏resizer
       this.$refs.resizer.visible = false

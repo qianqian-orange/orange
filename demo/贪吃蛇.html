@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .canvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background-color: #ccc;
+    }
+
+    .snake-head {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background-color: #f00;
+    }
+
+    .game-over-tip {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      color: #0f0;
+      font-size: 24px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="snake-head"></div>
+    <div class="game-over-tip">
+      GAME OVER
+    </div>
+  </div>
+
+  <script>
+    /*
+      Math.random() 0 - 1
+      10 - 15
+      a - b
+      Math.random() * (b - a) + a
+      Math.random() * 5 + 10
+    */
+    let key
+    let direction = 'right'
+    let food
+    let body = []
+
+    function initEventListener() {
+      document.addEventListener('keydown', (evt) => {
+        switch (evt.key) {
+          case 'w':
+            direction = 'top'
+            break
+          case 's':
+            direction = 'bottom'
+            break
+          case 'a':
+            direction = 'left'
+            break
+          case 'd':
+            direction = 'right'
+            break
+        }
+      })
+    }
+
+    function main() {
+      let x = 0
+      let y = 0
+      const canvas = document.querySelector('.canvas')
+      const snakeHeadEl = document.querySelector('.snake-head')
+      const gameOverEl = document.querySelector('.game-over-tip')
+
+      function createFood() {
+        const div = document.createElement('div')
+        div.style.position = 'absolute'
+        let x = Math.floor(Math.random() * 30) * 20
+        let y = Math.floor(Math.random() * 30) * 20
+        div.style.top = x + 'px'
+        div.style.left = y + 'px'
+        div.style.width = '20px'
+        div.style.height = '20px'
+        div.style.backgroundColor = '#00f'
+        canvas.appendChild(div)
+        food = div
+      }
+
+      function lengthen() {
+        const node = body.length ? body[body.length - 1] : snakeHeadEl
+        food.style.top = node.style.top
+        food.style.left = node.style.left
+        body.push(food)
+      }
+
+      initEventListener()
+      createFood()
+
+      let timer = setInterval(() => {
+        switch (direction) {
+          case 'top':
+            y -= 20
+            break
+          case 'bottom':
+            y += 20
+            break
+          case 'left':
+            x -= 20
+            break
+          case 'right':
+            x += 20
+            break
+        }
+        // 判断是否越界
+        if (x < 0 || x > 580 || y < 0 || y > 580) {
+          clearTimeout(timer)
+          gameOverEl.style.display = 'block'
+        }
+        // 判断是否吃到食物
+        const {
+          style: {
+            top,
+            left,
+          },
+        } = food
+        if (x === parseInt(left) && y === parseInt(top)) {
+          lengthen()
+          createFood()
+        }
+        if (body.length) {
+          for (let i = body.length - 1; i >= 1; i -= 1) {
+            body[i].style.top = body[i - 1].style.top
+            body[i].style.left = body[i - 1].style.left
+          }
+          body[0].style.left = snakeHeadEl.style.left
+          body[0].style.top = snakeHeadEl.style.top
+        }
+        snakeHeadEl.style.left = x + 'px'
+        snakeHeadEl.style.top = y + 'px'
+      }, 100)
+    }
+
+    main()
+  </script>
+</body>
+</html>
