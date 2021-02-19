@@ -66,26 +66,26 @@ export default {
       const zoom = this.zoom
       this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
         id,
-        update: ({ widget: { style: { container, component } } }) => {
-          container.top = current.top
-          container.left = current.left
-          component.width = current.width
-          component.height = current.height
+        update: ({ widget: { container, component } }) => {
+          container.style.top = current.top
+          container.style.left = current.left
+          component.style.width = current.width
+          component.style.height = current.height
         },
         snapshot: {
-          undo: ({ state, widget: { style: { container, component } } }) => {
+          undo: ({ state, widget: { container, component } }) => {
             const percent = state.zoom / zoom
-            container.top = Math.floor(parseInt(prev.top, 10) * percent) + 'px'
-            container.left = Math.floor(parseInt(prev.left, 10) * percent) + 'px'
-            component.width = prev.width
-            component.height = prev.height
+            container.style.top = Math.floor(parseInt(prev.top, 10) * percent) + 'px'
+            container.style.left = Math.floor(parseInt(prev.left, 10) * percent) + 'px'
+            component.style.width = prev.width
+            component.style.height = prev.height
           },
-          redo: ({ state, widget: { style: { container, component } } }) => {
+          redo: ({ state, widget: { container, component } }) => {
             const percent = state.zoom / zoom
-            container.top = Math.floor(parseInt(current.top, 10) * percent) + 'px'
-            container.left = Math.floor(parseInt(current.left, 10) * percent) + 'px'
-            component.width = current.width
-            component.height = current.height
+            container.style.top = Math.floor(parseInt(current.top, 10) * percent) + 'px'
+            container.style.left = Math.floor(parseInt(current.left, 10) * percent) + 'px'
+            component.style.width = current.width
+            component.style.height = current.height
           },
           free: () => {
             prev = null

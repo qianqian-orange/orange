@@ -21,9 +21,7 @@
           >
             <drag-widget
               :data-source="widget"
-              :category="category"
               draggable
-              @bootstrap="bootstrap"
             />
           </li>
         </ul>
@@ -48,7 +46,7 @@ export default {
   },
   data() {
     return {
-      activeKey: 'button',
+      activeKey: 'text',
     }
   },
   computed: {
@@ -64,22 +62,6 @@ export default {
     }),
   },
   methods: {
-    bootstrap(el) {
-      const id = el.id
-      this[UPDATE_WIDGET_DATA]({
-        log: {
-          source: 'WorkspaceLeftPanel -> initData',
-          reason: '更新组件的样式数据',
-        },
-        update: (state) => {
-          const { style: { component } } = state[this.activeKey][id]
-          const width = el.offsetWidth + 'px'
-          const height = el.offsetHeight + 'px'
-          component.width = component.minWidth = width
-          component.height = component.minHeight = height
-        },
-      })
-    },
     change(activeKey) {
       this.activeKey = activeKey
     },
@@ -103,6 +85,7 @@ export default {
         justify-content: center;
         align-items: center;
         height: 40px;
+        padding: 0 8px;
         cursor: move;
       }
     }

@@ -1,17 +1,34 @@
+<template>
+  <widget>
+    <drag-widget
+      v-for="widget in dataSource.children"
+      :key="widget.id"
+      :data-source="widget"
+    />
+  </widget>
+</template>
+
+<script>
 import { on, off } from '@/utils/dom'
 import Widget from './index'
 
 export default {
   name: 'DragWidget',
-  extends: Widget,
+  components: {
+    Widget,
+  },
+  provide() {
+    return {
+      dataSource: this.dataSource,
+    }
+  },
   props: {
-    category: {
-      type: String,
+    dataSource: {
+      type: Object,
       required: true,
     },
   },
   mounted() {
-    this.$emit('bootstrap', this.$el)
     this.addEventListener()
   },
   beforeDestroy() {
@@ -24,7 +41,6 @@ export default {
       evt.target.style.transform = 'translateZ(0)'
       evt.dataTransfer.setData('dataSource', JSON.stringify({
         id: evt.target.id,
-        category: this.category,
         offsetX: evt.offsetX,
         offsetY: evt.offsetY,
       }))
@@ -39,3 +55,4 @@ export default {
     },
   },
 }
+</script>

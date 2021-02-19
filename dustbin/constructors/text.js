@@ -1,3 +1,6 @@
+import * as R from 'ramda'
+import store from '@/store'
+import { UPDATE_CANVAS_WIDGET_DATA } from '@/store/modules/canvas/mutation-types'
 import Base from './base'
 import Bus, {
   DOCUMENT_MOUSE_DOWN,
@@ -11,11 +14,13 @@ import {
 
 export default class Text extends Base {
   constructor(dataSource) {
-    super({
-      ...dataSource,
-      component: 'orange-rich-text',
-    })
-    this.on('dblclick', ({ vm }) => {
+    super(R.mergeDeepLeft({
+      is: 'orange-rich-text',
+    }, dataSource))
+    this.richText = dataSource.richText
+
+    this.container.eventEmitter.on('dblclick', ({ vm }) => {
+      if (this.draggable) return
       vm.removeClass(GLASS)
       vm.removeClass(OVERFLOW_HIDDEN)
       vm.addClass(BORDER_DASHED_LINE)
@@ -35,9 +40,23 @@ export default class Text extends Base {
       }
       Bus.$on(DOCUMENT_MOUSE_DOWN, mousedown)
     })
-  }
 
-  clone() {
-    return new Text(this)
+    this.component.eventEmitter.on('bootstrap', (vm) => {
+      vm.setContent(this.richText) // 设置编辑器内容
+    })
+
+    this.component.eventEmitter.on('change', (html) => {
+      if (this.draggable) return
+      store.commit(`canvas/${UPDATE_CANVAS_WIDGET_DATA}`, {
+        log: {
+          source: 'store -> widget -> text',
+          reason: '修改文本内容',
+        },
+        id: this.id,
+        update: ({ widget }) => {
+          widget.richText = html
+        },
+      })
+    })
   }
 }

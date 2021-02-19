@@ -1,45 +1,54 @@
+<template>
+  <widget>
+    <mouse-widget
+      v-for="widget in dataSource.children"
+      :key="widget.id"
+      :data-source="widget"
+    />
+  </widget>
+</template>
+
+<script>
 import {
   mapState,
-  mapMutations,
   mapActions,
 } from 'vuex'
 import { on, off } from '@/utils/dom'
 import { leftMousedown } from '@/utils/check'
 import { setTarget } from '@/lib/document'
 import Bus, {
-  CANVAS_WIDGET_BOOTSTRAP,
   DOCUMENT_MOUSE_UP,
   CANVAS_WIDGET_MOUSEDOWN,
 } from '@/utils/bus'
 import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
-import { UPDATE_CANVAS_WIDGET_DATA } from '@/store/modules/canvas/mutation-types'
 import menu from './mixins/menu'
 import Widget from '@/components/widget'
 
 export default {
   name: 'MouseWidget',
-  extends: Widget,
+  components: {
+    Widget,
+  },
   mixins: [menu],
+  provide() {
+    return {
+      dataSource: this.dataSource,
+    }
+  },
+  props: {
+    dataSource: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
     ...mapState('canvas', {
       zoom: state => state.zoom,
     }),
   },
   mounted() {
-    const vm = this
-    this[UPDATE_CANVAS_WIDGET_DATA]({
-      log: {
-        source: 'mouseWidget -> mounted',
-        reason: '绑定当前vm实例的方法',
-      },
-      id: this.dataSource.id,
-      update: ({ widget }) => {
-        widget.getInstance = () => vm
-      },
-    })
     this.addEventListener()
     Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
-    Bus.$emit(CANVAS_WIDGET_BOOTSTRAP, this)
   },
   beforeDestroy() {
     this.removeEventListener()
@@ -74,20 +83,20 @@ export default {
       const zoom = this.zoom
       this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
         id,
-        update: ({ widget: { style: { container } } }) => {
-          container.top = top
-          container.left = left
+        update: ({ widget: { container: { style } } }) => {
+          style.top = top
+          style.left = left
         },
         snapshot: {
-          undo: ({ state, widget: { style: { container } } }) => {
+          undo: ({ state, widget: { container: { style } } }) => {
             const percent = state.zoom / zoom
-            container.top = Math.floor(startY * percent) + 'px'
-            container.left = Math.floor(startX * percent) + 'px'
+            style.top = Math.floor(startY * percent) + 'px'
+            style.left = Math.floor(startX * percent) + 'px'
           },
-          redo: ({ state, widget: { style: { container } } }) => {
+          redo: ({ state, widget: { container: { style } } }) => {
             const percent = state.zoom / zoom
-            container.top = Math.floor(parseInt(top, 10) * percent) + 'px'
-            container.left = Math.floor(parseInt(left, 10) * percent) + 'px'
+            style.top = Math.floor(parseInt(top, 10) * percent) + 'px'
+            style.left = Math.floor(parseInt(left, 10) * percent) + 'px'
           },
         },
       })
@@ -100,11 +109,9 @@ export default {
       const el = this.$el
       off(el, 'mousedown', this.mousedown)
     },
-    ...mapMutations('canvas', [
-      UPDATE_CANVAS_WIDGET_DATA,
-    ]),
     ...mapActions('canvas', [
       ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT,
     ]),
   },
 }
+</script>

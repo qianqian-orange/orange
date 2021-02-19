@@ -2,9 +2,6 @@
   <div
     id="rich-text-container"
     class="rich-text-container"
-    :style="{
-      fontSize: '14px',
-    }"
   />
 </template>
 
@@ -20,12 +17,12 @@ export default {
   mounted() {
     this.editor = new E('#rich-text-container')
     this.editor.config.focus = false
-    this.editor.config.placeholder = ''
+    this.editor.config.placeholder = '<p>请输入&hellip;</p>'
     this.editor.config.onchange = (val) => {
       console.log(val)
     }
     this.editor.create()
-    this.editor.txt.html('<p>文本</p>') // 重新设置编辑器内容
+    // this.editor.txt.html('<p>文本</p>') // 重新设置编辑器内容
   },
   beforeDestroy() {
     this.editor.destroy()

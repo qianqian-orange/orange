@@ -12,6 +12,8 @@
     "max-nesting-depth": 3,
     "selector-max-id": 1,
     "order/properties-alphabetical-order": null,
+    "selector-pseudo-class-no-unknown": null,
+    "property-case": null,
     "order/properties-order": [
       "box-sizing",
       "float",

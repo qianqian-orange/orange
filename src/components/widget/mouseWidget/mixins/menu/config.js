@@ -1,6 +1,5 @@
 import store from '@/store'
 import MenuItem from '@/components/menu/constructors/menuItem'
-import uuid from '@/utils/uid'
 import {
   TO_TOP,
   TO_BOTTOM,
@@ -32,7 +31,6 @@ const paste2canvas = new MenuItem({
   events: {
     click() {
       const widget = paste.dataSource.clone()
-      widget.id = `${widget.component}-${uuid()}`
       store.dispatch(`canvas/${ADD_WIDGET}`, widget)
     },
   },
@@ -54,13 +52,12 @@ const paste2mouse = new MenuItem({
         offsetY,
       } = this.menu.event
       const widget = paste.dataSource.clone()
-      widget.id = `${widget.component}-${uuid()}`
-      const { container } = widget.style
-      container.top = offsetTop + offsetY + 'px'
-      container.left = offsetLeft + offsetX + 'px'
+      const { style } = widget.container
+      style.top = offsetTop + offsetY + 'px'
+      style.left = offsetLeft + offsetX + 'px'
       // 上面设置的top和left值已经是根据符合当前画布的缩放因子下的位置，
       // 所以添加这个组件的时候就不需要在进行位置调整了
-      container.transform = `scale(${store.state.canvas.zoom})`
+      style.transform = `scale(${store.state.canvas.zoom})`
       store.dispatch(`canvas/${ADD_WIDGET}`, widget)
     },
   },

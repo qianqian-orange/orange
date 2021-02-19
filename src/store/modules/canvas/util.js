@@ -1,9 +1,9 @@
-export const scale = (container, zoom, percent) => {
+export const scale = (style, zoom, percent) => {
   const {
     left,
     top,
-  } = container
-  container.left = Math.floor(parseInt(left, 10) * percent) + 'px'
-  container.top = Math.floor(parseInt(top, 10) * percent) + 'px'
-  container.transform = `scale(${zoom})`
+  } = style
+  style.left = Math.floor(parseInt(left, 10) * percent) + 'px'
+  style.top = Math.floor(parseInt(top, 10) * percent) + 'px'
+  style.transform = `scale(${zoom})`
 }

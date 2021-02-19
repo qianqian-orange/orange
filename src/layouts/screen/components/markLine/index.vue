@@ -63,11 +63,11 @@ export default {
 
       this.$refs.markLine.setData({
         neighbors: this.mouseWidgetList.filter(widget => widget.id !== id)
-          .map(({ style: { container, component } }) => ({
-            top: parseInt(container.top, 10),
-            left: parseInt(container.left, 10),
-            width: Math.floor(parseInt(component.width, 10) * this.zoom),
-            height: Math.floor(parseInt(component.height, 10) * this.zoom),
+          .map(({ container, component }) => ({
+            top: parseInt(container.style.top, 10),
+            left: parseInt(container.style.left, 10),
+            width: Math.floor(parseInt(component.style.width, 10) * this.zoom),
+            height: Math.floor(parseInt(component.style.height, 10) * this.zoom),
           })),
       })
     },

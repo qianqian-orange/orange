@@ -1,9 +1,18 @@
-import button from './config/button'
-import icon from './config/icon'
-import text from './config/text'
+import {
+  text,
+  icon,
+  rectangle,
+  button,
+  input,
+  textarea,
+} from '@/material/config'
 import {
   UPDATE_WIDGET_DATA,
 } from './mutation-types'
+
+const getters = {
+  widgetMap: state => Object.keys(state).reduce((res, cur) => ({ ...res, ...state[cur] }), {}),
+}
 
 const mutations = {
   [UPDATE_WIDGET_DATA](state, { update }) {
@@ -14,9 +23,15 @@ const mutations = {
 export default {
   namespaced: true,
   state: () => ({
-    button,
-    icon,
     text,
+    icon,
+    rectangle,
+    button,
+    input: {
+      ...input,
+      ...textarea,
+    },
   }),
+  getters,
   mutations,
 }

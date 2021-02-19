@@ -5,7 +5,11 @@ import Scroll from './components/scrollbar'
 import router from './router'
 import store from './store'
 import App from './App.vue'
-import { OrangeRichText } from './material'
+import {
+  OrangeRectangle,
+  OrangeRichText,
+  OrangeLine,
+} from './material'
 import './lib/document'
 import 'ant-design-vue/dist/antd.css'
 import './less/index.less'
@@ -14,7 +18,9 @@ Vue.prototype.$R = R
 
 Vue.use(Scroll)
 Vue.use(Antd)
+Vue.use(OrangeRectangle)
 Vue.use(OrangeRichText)
+Vue.use(OrangeLine)
 
 new Vue({
   router,

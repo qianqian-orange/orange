@@ -31,6 +31,8 @@ export default class Resizer {
     this.left = 0
     this.right = 0
     this.bottom = 0
+    // 控制north, west, east, south四个方向点的显示
+    this.minimum = 16
   }
 
   setData({
@@ -99,51 +101,57 @@ export default class Resizer {
     const width = Math.floor(rect.width * this.zoom)
     const height = Math.floor(rect.height * this.zoom)
     const circulars = []
+    if (rect.width >= this.minimum / this.zoom) {
+      circulars.push({
+        id: 'n-resize',
+        style: {
+          top: top + 'px',
+          left: left + width / 2 + 'px',
+          cursor: 'n-resize',
+        },
+        mousedown: (evt) => {
+          ;['top', 'height'].forEach((key) => { this.resizeEnable[key] = true })
+          this.start(evt)
+        },
+      }, {
+        id: 's-resize',
+        style: {
+          top: bottom + 'px',
+          left: left + width / 2 + 'px',
+          cursor: 's-resize',
+        },
+        mousedown: (evt) => {
+          this.resizeEnable.height = true
+          this.start(evt)
+        },
+      })
+    }
+    if (rect.height >= this.minimum / this.zoom) {
+      circulars.push({
+        id: 'e-resize',
+        style: {
+          top: top + height / 2 + 'px',
+          left: right + 'px',
+          cursor: 'e-resize',
+        },
+        mousedown: (evt) => {
+          this.resizeEnable.width = true
+          this.start(evt)
+        },
+      }, {
+        id: 'w-resize',
+        style: {
+          top: top + height / 2 + 'px',
+          left: left + 'px',
+          cursor: 'w-resize',
+        },
+        mousedown: (evt) => {
+          ;['left', 'width'].forEach((key) => { this.resizeEnable[key] = true })
+          this.start(evt)
+        },
+      })
+    }
     circulars.push({
-      id: 'n-resize',
-      style: {
-        top: top + 'px',
-        left: left + width / 2 + 'px',
-        cursor: 'n-resize',
-      },
-      mousedown: (evt) => {
-        ;['top', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    }, {
-      id: 'e-resize',
-      style: {
-        top: top + height / 2 + 'px',
-        left: right + 'px',
-        cursor: 'e-resize',
-      },
-      mousedown: (evt) => {
-        this.resizeEnable.width = true
-        this.start(evt)
-      },
-    }, {
-      id: 's-resize',
-      style: {
-        top: bottom + 'px',
-        left: left + width / 2 + 'px',
-        cursor: 's-resize',
-      },
-      mousedown: (evt) => {
-        this.resizeEnable.height = true
-        this.start(evt)
-      },
-    }, {
-      id: 'w-resize',
-      style: {
-        top: top + height / 2 + 'px',
-        left: left + 'px',
-        cursor: 'w-resize',
-      },
-      mousedown: (evt) => {
-        ;['left', 'width'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    }, {
       id: 'nw-resize',
       style: {
         top: top + 'px',

@@ -27,8 +27,8 @@ function update(zoom, log) {
       state.zoom = zoom
       state.width = parseInt(state.width) * percent + 'px'
       state.height = parseInt(state.height) * percent + 'px'
-      state.mouseWidgetList.forEach(({ style: { container } }) => {
-        scale(container, zoom, percent)
+      state.mouseWidgetList.forEach(({ container: { style } }) => {
+        scale(style, zoom, percent)
       })
     },
   })

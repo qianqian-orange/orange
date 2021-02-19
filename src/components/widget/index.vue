@@ -2,36 +2,41 @@
   <div
     :id="dataSource.id"
     :class="classList"
-    :style="dataSource.style.container"
-    v-on="dataSource.events"
+    :style="dataSource.container.style"
+    v-bind="dataSource.container.props"
+    v-on="dataSource.container.events"
   >
     <component
-      :is="dataSource.component"
+      :is="dataSource.is"
       ref="component"
-      v-bind="dataSource.props"
-      :style="dataSource.style.component"
+      :style="dataSource.component.style"
+      v-bind="dataSource.component.props"
+      v-on="dataSource.component.events"
     >
-      {{ dataSource.text }}
+      <template #default>
+        <slot />
+      </template>
     </component>
   </div>
 </template>
 
 <script>
 import { splice } from '@/utils/array'
-import { GLASS } from './const/classes'
+import {
+  GLASS,
+} from './const/classes'
 
 export default {
   name: 'Widget',
-  props: {
-    dataSource: {
-      type: Object,
-      required: true,
-    },
-  },
+  inject: ['dataSource'],
   data() {
     return {
       classList: [GLASS],
     }
+  },
+  mounted() {
+    const event = new CustomEvent('bootstrap', { detail: { vm: this } })
+    this.$el.dispatchEvent(event)
   },
   methods: {
     addClass(cls) {

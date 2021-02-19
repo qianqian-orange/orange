@@ -14,8 +14,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import uuid from '@/utils/uid'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
 import menu from './mixins/menu'
 import MouseWidget from '@/components/widget/mouseWidget'
@@ -35,27 +34,27 @@ export default {
     ...mapState('canvas', {
       canvasState: state => state,
     }),
-    ...mapState('widget', {
-      widgetState: state => state,
-    }),
+    ...mapGetters('widget', [
+      'widgetMap',
+    ]),
   },
   methods: {
     drop(evt) {
       evt.preventDefault()
       const {
         id,
-        category,
         offsetX,
         offsetY,
       } = JSON.parse(evt.dataTransfer.getData('dataSource'))
-      const widget = this.widgetState[category][id].clone()
-      widget.id = `${widget.component}-${uuid()}`
-      const { style: { container } } = widget
-      container.position = 'absolute'
-      container.top = evt.offsetY - offsetY + 'px'
-      container.left = evt.offsetX - offsetX + 'px'
-      container.transformOrigin = '0 0'
-      container.transform = `scale(${this.canvasState.zoom})`
+      const widget = this.widgetMap[id].clone()
+      widget.draggable = false
+      widget.children.forEach((item) => { item.draggable = false })
+      const { style } = widget.container
+      style.position = 'absolute'
+      style.top = evt.offsetY - offsetY + 'px'
+      style.left = evt.offsetX - offsetX + 'px'
+      style.transformOrigin = '0 0'
+      style.transform = `scale(${this.canvasState.zoom})`
       this[ADD_WIDGET](widget)
     },
     dragover(evt) {

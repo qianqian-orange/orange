@@ -7,6 +7,7 @@ import {
   mouseWidgetMap,
 } from './index'
 import {
+  UPDATE_CANVAS_DATE,
   UPDATE_CANVAS_WIDGET_DATA,
   UPDATE_CANVAS_WIDGET_LIST_DATA,
 } from './mutation-types'
@@ -21,11 +22,11 @@ import { ADD_SNAPSHOT } from '@/store/modules/snapshot/mutation-types'
 import { scale } from './util'
 
 function add(commit, state, widget) {
-  const { container } = widget.style
-  const zoom = +container.transform.match(/scale\((.+)\)/)[1]
+  const { style } = widget.container
+  const zoom = +style.transform.match(/scale\((.+)\)/)[1]
   if (zoom !== state.zoom) {
     const percent = state.zoom / zoom
-    scale(container, state.zoom, percent)
+    scale(style, state.zoom, percent)
   }
   mouseWidgetMap[widget.id] = doubleLinkedList.add(widget)
   commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
@@ -42,67 +43,105 @@ const bootstrap = (vm) => {
   Bus.$off(CANVAS_WIDGET_BOOTSTRAP, bootstrap)
 }
 
-// const adjustPosition = ({ x, y }, { style: { container, component } }, rect) => {
-//   const width = parseInt(component.width, 10)
-//   const height = parseInt(component.height, 10)
-//   container.position = 'absolute'
-//   if (x < 0) container.left = 0
-//   else if (x + width > rect.width) container.left = rect.width - width + 'px'
-//   else container.left = x + 'px'
-//   if (y < 0) container.top = 0
-//   else if (y + height > rect.height) container.top = rect.height - height + 'px'
-//   else container.top = y + 'px'
-// }
+// 由于通过调换元素位置会导致文本组件的editor异常，所以更改为修改组件的z-index控制层级关系
+function toTop(commit, w1, w2) {
+  const zIndex = w1.container.style.zIndex
+  commit(UPDATE_CANVAS_DATE, {
+    log: {
+      source: 'store -> canvas',
+      reason: '修改组件的z-index值',
+    },
+    update: () => {
+      w1.container.style.zIndex = w2.container.style.zIndex
+      w2.container.style.zIndex = zIndex
+    },
+  })
+  commit(`snapshot/${ADD_SNAPSHOT}`, {
+    undo: () => {
+      commit(UPDATE_CANVAS_DATE, {
+        log: {
+          source: 'store -> canvas',
+          reason: '修改组件的z-index值',
+        },
+        update: () => {
+          w2.container.style.zIndex = w1.container.style.zIndex
+          w1.container.style.zIndex = zIndex
+        },
+      })
+    },
+    redo: () => {
+      commit(UPDATE_CANVAS_DATE, {
+        log: {
+          source: 'store -> canvas',
+          reason: '修改组件的z-index值',
+        },
+        update: () => {
+          w1.container.style.zIndex = w2.container.style.zIndex
+          w2.container.style.zIndex = zIndex
+        },
+      })
+    },
+  }, { root: true })
+}
 
 export default {
   [TO_TOP]({ commit }, id) {
-    const node = mouseWidgetMap[id]
-    if (doubleLinkedList.head === node) {
-      doubleLinkedList.head = node.next
-      commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-      commit(`snapshot/${ADD_SNAPSHOT}`, {
-        undo: () => {
-          doubleLinkedList.head = node
-          commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-        },
-        redo: () => {
-          doubleLinkedList.head = node.next
-          commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-        },
-      }, { root: true })
-      return
-    }
-    const { next } = node
-    doubleLinkedList.move(node, doubleLinkedList.head)
-    commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-    commit(`snapshot/${ADD_SNAPSHOT}`, {
-      undo: () => {
-        doubleLinkedList.move(node, next)
-        commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-      },
-      redo: () => {
-        doubleLinkedList.move(node, doubleLinkedList.head)
-        commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-      },
-    }, { root: true })
+    // const node = mouseWidgetMap[id]
+    // if (doubleLinkedList.head === node) {
+    //   doubleLinkedList.head = node.next
+    //   commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //   commit(`snapshot/${ADD_SNAPSHOT}`, {
+    //     undo: () => {
+    //       doubleLinkedList.head = node
+    //       commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //     },
+    //     redo: () => {
+    //       doubleLinkedList.head = node.next
+    //       commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //     },
+    //   }, { root: true })
+    //   return
+    // }
+    // const { next } = node
+    // doubleLinkedList.move(node, doubleLinkedList.head)
+    // commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    // commit(`snapshot/${ADD_SNAPSHOT}`, {
+    //   undo: () => {
+    //     doubleLinkedList.move(node, next)
+    //     commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //   },
+    //   redo: () => {
+    //     doubleLinkedList.move(node, doubleLinkedList.head)
+    //     commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //   },
+    // }, { root: true })
+    toTop(commit, mouseWidgetMap[id].data, doubleLinkedList.head.prev.data)
   },
   [TO_BOTTOM]({ commit }, id) {
-    const node = mouseWidgetMap[id]
-    const head = doubleLinkedList.head
-    doubleLinkedList.head = node
-    commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-    commit(`snapshot/${ADD_SNAPSHOT}`, {
-      undo: () => {
-        doubleLinkedList.head = head
-        commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-      },
-      redo: () => {
-        doubleLinkedList.head = node
-        commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
-      },
-    }, { root: true })
+    // const node = mouseWidgetMap[id]
+    // const head = doubleLinkedList.head
+    // doubleLinkedList.head = node
+    // commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    // commit(`snapshot/${ADD_SNAPSHOT}`, {
+    //   undo: () => {
+    //     doubleLinkedList.head = head
+    //     commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //   },
+    //   redo: () => {
+    //     doubleLinkedList.head = node
+    //     commit(UPDATE_CANVAS_WIDGET_LIST_DATA)
+    //   },
+    // }, { root: true })
+    toTop(commit, mouseWidgetMap[id].data, doubleLinkedList.head.data)
   },
   [ADD_WIDGET]({ commit, state }, widget) {
+    // 添加z-index样式
+    widget.container.style.zIndex = state.zIndex
+    commit(UPDATE_CANVAS_DATE, {
+      update: (state) => {
+        state.zIndex += 1
+      },
+    })
     add(commit, state, widget)
     // 在新增组件mouted时显示resizer
     Bus.$on(CANVAS_WIDGET_BOOTSTRAP, bootstrap)

@@ -3,17 +3,23 @@ import Button from '../constructors/button'
 export default {
   'primary-button': new Button({
     id: 'primary-button',
-    props: {
-      type: 'primary',
-    },
     text: '按钮',
+    draggable: true,
+    component: {
+      props: {
+        type: 'primary',
+      },
+    },
   }),
   'search-primary-button': new Button({
     id: 'search-primary-button',
-    props: {
-      type: 'primary',
-      icon: 'search',
-    },
     text: '搜索',
+    draggable: true,
+    component: {
+      props: {
+        type: 'primary',
+        icon: 'search',
+      },
+    },
   }),
 }
