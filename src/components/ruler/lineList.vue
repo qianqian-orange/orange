@@ -16,11 +16,8 @@
 
 <script>
 import { on, off } from '@/utils/dom'
-import { SCROLL_END } from './const/event'
-import {
-  RULER_LINE_MAP,
-  RULER_BACK_BTN,
-} from './ruler'
+import { SCROLL_END, MOVE_RULER_LINE_VISIBLE } from './const/event'
+import { RULER_LINE_MAP } from './ruler'
 import ReferenceLine from './line'
 
 export default {
@@ -28,7 +25,7 @@ export default {
   components: {
     ReferenceLine,
   },
-  inject: ['store', 'eventEmitter', 'direction'],
+  inject: ['store', 'direction'],
   props: {
     boundary: { // 记录当前刻度的边界值
       type: Object,
@@ -51,6 +48,7 @@ export default {
       startY: 0,
       clientX: 0,
       clientY: 0,
+      toggle: null, // 切换移动参考线显示状态
     }
   },
   computed: {
@@ -77,11 +75,11 @@ export default {
     },
   },
   mounted() {
-    this.eventEmitter.on(SCROLL_END, this.scrollEnd)
+    this.store.on(SCROLL_END, this.scrollEnd)
     this.addEventListener()
   },
   beforeDestroyed() {
-    this.eventEmitter.off(SCROLL_END, this.scrollEnd)
+    this.store.off(SCROLL_END, this.scrollEnd)
     this.removeEventListener()
   },
   methods: {
@@ -98,19 +96,20 @@ export default {
       this.move = true
       RULER_LINE_MAP[this.direction].mousedown(this, (target) => {
         this.num = +target.dataset.num
+        this.toggle = (visible) => {
+          target.style.display = visible ? '' : 'none'
+        }
+        this.store.on(MOVE_RULER_LINE_VISIBLE, this.toggle)
       }, evt)
     },
     mousemove(evt) {
       if (!this.move) return
-      RULER_LINE_MAP[this.direction].mousemove(this, (target) => {
-        // 当刻度线移动到返回按钮时进行隐藏
-        if (evt.target.dataset.identification === RULER_BACK_BTN) target.style.display = 'none'
-        else target.style.display = ''
-      }, evt)
+      RULER_LINE_MAP[this.direction].mousemove(this, evt)
     },
     mouseup() {
       if (!this.move) return
       this.move = false
+      this.store.off(MOVE_RULER_LINE_VISIBLE, this.toggle)
       RULER_LINE_MAP[this.direction].mouseup((target) => {
         const num = target.dataset.num
         const id = target.dataset.id

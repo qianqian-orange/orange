@@ -34,7 +34,7 @@ export default {
       if (!this.$el.contains(evt.target)) return
       // 显示悬浮菜单
       const menu = this[MENU_INSTANCE]
-      this.eventEmitter.emit(CONTEXTMENU, {
+      this.store.emit(CONTEXTMENU, {
         menus: menu.items,
         position: {
           top: evt.clientY,

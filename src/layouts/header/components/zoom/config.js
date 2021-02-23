@@ -2,9 +2,9 @@ import store from '@/store'
 import { noop } from '@/utils'
 import MenuItem from '@/components/menu/constructors/menuItem'
 import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
-import { UPDATE_CANVAS_DATE } from '@/store/modules/canvas/mutation-types'
-import { scale } from '@/store/modules/canvas/util'
+import { UPDATE_CANVAS_DATA } from '@/store/modules/canvas/mutation-types'
 
+// 画布组件数据的变更由material store处理
 function update(zoom, log) {
   store.commit(`global/${UPDATE_GLOBAL_DATA}`, {
     log: {
@@ -17,7 +17,7 @@ function update(zoom, log) {
       container.height = parseInt(container.height) * percent + 'px'
     },
   })
-  store.commit(`canvas/${UPDATE_CANVAS_DATE}`, {
+  store.commit(`canvas/${UPDATE_CANVAS_DATA}`, {
     log: {
       source: 'zoom -> menu',
       reason: `当点击缩放菜单的${log}子菜单项时需要更改zoom值和画布宽高`,
@@ -27,9 +27,6 @@ function update(zoom, log) {
       state.zoom = zoom
       state.width = parseInt(state.width) * percent + 'px'
       state.height = parseInt(state.height) * percent + 'px'
-      state.mouseWidgetList.forEach(({ container: { style } }) => {
-        scale(style, zoom, percent)
-      })
     },
   })
 }

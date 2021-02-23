@@ -1,5 +1,5 @@
 <template>
-  <widget>
+  <widget :data-source="dataSource">
     <drag-widget
       v-for="widget in dataSource.children"
       :key="widget.id"
@@ -16,11 +16,6 @@ export default {
   name: 'DragWidget',
   components: {
     Widget,
-  },
-  provide() {
-    return {
-      dataSource: this.dataSource,
-    }
   },
   props: {
     dataSource: {

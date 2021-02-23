@@ -1,12 +1,11 @@
 <template>
   <div
     class="screen-canvas-container"
-    :data-identification="identification"
     @drop="drop"
     @dragover="dragover"
   >
     <mouse-widget
-      v-for="widget in canvasState.mouseWidgetList"
+      v-for="widget in widgets"
       :key="widget.id"
       :data-source="widget"
     />
@@ -14,8 +13,9 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
-import { ADD_WIDGET } from '@/store/modules/canvas/action-types'
+import { mapState, mapGetters } from 'vuex'
+import store from '@/material/store'
+import { ADD_WIDGET } from '@/material/store/mutation-types'
 import menu from './mixins/menu'
 import MouseWidget from '@/components/widget/mouseWidget'
 
@@ -25,14 +25,12 @@ export default {
     MouseWidget,
   },
   mixins: [menu],
-  data() {
-    return {
-      identification: 'screen-canvas',
-    }
-  },
   computed: {
+    widgets() {
+      return store.widgets
+    },
     ...mapState('canvas', {
-      canvasState: state => state,
+      zoom: state => state.zoom,
     }),
     ...mapGetters('widget', [
       'widgetMap',
@@ -47,22 +45,23 @@ export default {
         offsetY,
       } = JSON.parse(evt.dataTransfer.getData('dataSource'))
       const widget = this.widgetMap[id].clone()
-      widget.draggable = false
-      widget.children.forEach((item) => { item.draggable = false })
       const { style } = widget.container
       style.position = 'absolute'
-      style.top = evt.offsetY - offsetY + 'px'
-      style.left = evt.offsetX - offsetX + 'px'
-      style.transformOrigin = '0 0'
-      style.transform = `scale(${this.canvasState.zoom})`
-      this[ADD_WIDGET](widget)
+      // widget的zoom属性做了set拦截，当值改变时会自动计算container, componet的样式值
+      style.top = (evt.offsetY - offsetY) / this.zoom + 'px'
+      style.left = (evt.offsetX - offsetX) / this.zoom + 'px'
+      widget.zoom = this.zoom
+      store.emit(ADD_WIDGET, {
+        widget,
+        log: {
+          source: 'layouts -> screen -> components -> canvas -> drop',
+          reason: '添加组件',
+        },
+      })
     },
     dragover(evt) {
       evt.preventDefault()
     },
-    ...mapActions('canvas', [
-      ADD_WIDGET,
-    ]),
   },
 }
 </script>

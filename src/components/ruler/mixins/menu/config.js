@@ -12,7 +12,6 @@ const config = {
     menu,
     title: '显示标尺',
     key: 'showRuler',
-    glass: true,
     icon: {
       right: {
         className: 'icon-success',
@@ -34,7 +33,6 @@ const config = {
     menu,
     title: '显示参考线',
     key: 'showLine',
-    glass: true,
     icon: {
       right: {
         className: 'icon-success',
@@ -78,7 +76,6 @@ const config = {
     menu,
     title: '删除所有纵向参考线',
     key: 'removeAllHorizontalLine',
-    glass: true,
     props: {
       disabled: true,
     },
@@ -108,7 +105,6 @@ const config = {
     menu,
     title: '删除所有横向参考线',
     key: 'removeAllVerticalLine',
-    glass: true,
     props: {
       disabled: true,
     },

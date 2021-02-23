@@ -23,7 +23,7 @@ export const MARKLINE_HANDLER_MAP = {
       line.style.left = data.locatePoint + 'px'
       line.style.height = data.endPoint - data.startPoint + 'px'
     },
-    setDistanceLine: (distanceLines, data, zoom) => {
+    setDistanceLine: (distanceLines, data) => {
       distanceLines.push(...data.distanceLines.map(line => ({
         style: {
           top: line.startPoint + 'px',
@@ -32,7 +32,7 @@ export const MARKLINE_HANDLER_MAP = {
           height: line.endPoint - line.startPoint + 'px',
         },
         direction: COORDINATE_DIRECTION_MAP.yAxis,
-        interval: Math.floor((line.endPoint - line.startPoint) / zoom),
+        interval: line.endPoint - line.startPoint,
       })))
     },
   },
@@ -56,7 +56,7 @@ export const MARKLINE_HANDLER_MAP = {
       line.style.left = data.startPoint + 'px'
       line.style.width = data.endPoint - data.startPoint + 'px'
     },
-    setDistanceLine: (distanceLines, data, zoom) => {
+    setDistanceLine: (distanceLines, data) => {
       distanceLines.push(...data.distanceLines.map(line => ({
         style: {
           top: line.locatePoint + 'px',
@@ -65,7 +65,7 @@ export const MARKLINE_HANDLER_MAP = {
           height: '1px',
         },
         direction: COORDINATE_DIRECTION_MAP.xAxis,
-        interval: Math.floor((line.endPoint - line.startPoint) / zoom),
+        interval: line.endPoint - line.startPoint,
       })))
     },
   },

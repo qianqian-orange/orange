@@ -3,7 +3,6 @@ import Icon from '../constructors/icon'
 export const icon = {
   'outlined-icon': new Icon({
     id: 'outlined-icon',
-    draggable: true,
     component: {
       style: {
         width: '18px',
@@ -18,7 +17,6 @@ export const icon = {
   }),
   'filled-icon': new Icon({
     id: 'filled-icon',
-    draggable: true,
     component: {
       style: {
         width: '18px',
@@ -33,7 +31,6 @@ export const icon = {
   }),
   'twoTone-icon': new Icon({
     id: 'twoTone-icon',
-    draggable: true,
     component: {
       style: {
         width: '18px',

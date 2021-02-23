@@ -22,9 +22,10 @@
       </template>
       <span
         class="back-btn"
-        :data-identification="identification"
         :style="{ width: size, height: size }"
         @click="back"
+        @mouseenter="mouseenter"
+        @mouseleave="mouseleave"
       />
     </a-tooltip>
   </div>
@@ -32,10 +33,12 @@
 
 <script>
 import createStore from './store'
-import EventEmitter from '@/lib/eventEmitter'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
-import { SCROLL_END, CONTEXTMENU } from './const/event'
-import { RULER_BACK_BTN } from './ruler'
+import {
+  SCROLL_END,
+  CONTEXTMENU,
+  MOVE_RULER_LINE_VISIBLE,
+} from './const/event'
 import Bar from './bar'
 
 export default {
@@ -46,7 +49,6 @@ export default {
   provide() {
     return {
       store: this.store,
-      eventEmitter: this.eventEmitter,
     }
   },
   props: {
@@ -77,28 +79,32 @@ export default {
   data() {
     return {
       store: createStore(),
-      eventEmitter: new EventEmitter(),
       direction: {
         yAxis: COORDINATE_DIRECTION_MAP.yAxis,
       },
-      identification: RULER_BACK_BTN,
     }
   },
   mounted() {
-    this.eventEmitter.on(CONTEXTMENU, this.contextmenu)
+    this.store.on(CONTEXTMENU, this.contextmenu)
   },
   beforeDestroyed() {
-    this.eventEmitter.off(CONTEXTMENU, this.contextmenu)
+    this.store.on(CONTEXTMENU, this.contextmenu)
   },
   methods: {
     back() {
       this.$emit('back')
     },
     scrollEnd() {
-      this.eventEmitter.emit(SCROLL_END)
+      this.store.emit(SCROLL_END)
     },
     contextmenu(data) {
       this.$emit('contextmenu', data)
+    },
+    mouseenter() {
+      this.store.emit(MOVE_RULER_LINE_VISIBLE, false)
+    },
+    mouseleave() {
+      this.store.emit(MOVE_RULER_LINE_VISIBLE, true)
     },
   },
 }

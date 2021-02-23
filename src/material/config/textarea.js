@@ -5,13 +5,11 @@ import Line from '../constructors/line'
 function factory({
   id,
   lines,
-  draggable,
   component,
   children,
 }) {
   return new Textarea({
     id,
-    draggable,
     component,
     lines,
     children: [
@@ -24,7 +22,6 @@ function factory({
 export const textarea = {
   textarea: factory({
     id: 'textarea',
-    draggable: true,
     component: {
       style: {
         position: 'relative',
@@ -44,12 +41,12 @@ export const textarea = {
     lines: [
       new Line({
         id: 'longLine',
-        draggable: true,
         container: {
           style: {
             position: 'absolute',
             top: '24px',
             left: '134px',
+            zIndex: 1,
           },
         },
         component: {
@@ -64,12 +61,12 @@ export const textarea = {
       }),
       new Line({
         id: 'shortLine',
-        draggable: true,
         container: {
           style: {
             position: 'absolute',
             top: '26px',
             left: '140px',
+            zIndex: 2,
           },
         },
         component: {
@@ -86,17 +83,17 @@ export const textarea = {
     children: [
       new Text({
         id: 'text',
-        draggable: true,
         container: {
           style: {
             position: 'absolute',
             top: '4px',
             left: '11px',
+            zIndex: 3,
           },
         },
         component: {
           style: {
-            width: '55px',
+            width: '54px',
             height: '20px',
             color: '#bfbfbf',
           },

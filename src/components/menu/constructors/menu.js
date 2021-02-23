@@ -1,17 +1,17 @@
 export default class Menu {
   constructor({ vm }) {
-    this.target = null
+    this.dataSource = null
     this.event = null
     this.items = []
     this.vm = vm
   }
 
   setData({
-    target = null,
+    dataSource = null,
     event = null,
     items = [],
   }) {
-    this.target = target
+    this.dataSource = dataSource
     this.event = event
     this.items = items
     items.forEach((item) => {
@@ -20,7 +20,7 @@ export default class Menu {
   }
 
   destroy() {
-    this.target = null
+    this.dataSource = null
     this.event = null
     this.vm = null
     this.items.forEach((item) => {

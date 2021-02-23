@@ -1,3 +1,5 @@
+import * as R from 'ramda'
+
 export const noop = () => {}
 
 function extend(to, _from) {
@@ -15,4 +17,12 @@ export function toObject(arr) {
     }
   }
   return res
+}
+
+export function defineProperty(object, property, descriptor) {
+  Object.defineProperty(object, property, R.mergeDeepRight({
+    enumerable: false,
+    writable: false,
+    configurable: false,
+  }, descriptor))
 }

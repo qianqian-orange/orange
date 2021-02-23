@@ -26,7 +26,6 @@ import Bus, {
 } from '@/utils/bus'
 import { sleep } from '@/utils/timer'
 import {
-  MENU_ITEM,
   MENU_DEFAULT_WIDTH,
   MENU_SIZE,
 } from '@/const/menu'
@@ -92,8 +91,7 @@ export default {
       }
     },
     mousedown(evt) {
-      // 利用glass类给menu-item添加一个伪元素，方便将evt.tagret指向menu-item
-      if (evt.target.dataset.identification === MENU_ITEM) return
+      if (this.$el.contains(evt.target)) return
       this.visible = false
     },
     setData(data) {

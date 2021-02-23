@@ -3,8 +3,6 @@ import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 // 记录当前移动的参考线节点
 let target = null
 
-export const RULER_BACK_BTN = 'RULER_BACK_BTN'
-
 export const RULER_LINE_MAP = {
   [COORDINATE_DIRECTION_MAP.xAxis]: {
     mousedown(vm, executor, evt) {
@@ -13,8 +11,7 @@ export const RULER_LINE_MAP = {
       vm.startX = parseInt(target.style.left, 10)
       vm.clientX = evt.clientX
     },
-    mousemove(vm, executor, evt) {
-      executor(target)
+    mousemove(vm, evt) {
       const interval = evt.clientX - vm.clientX
       target.style.left = vm.startX + interval + 'px'
       target.dataset.num = vm.num + Math.floor(interval / vm.zoom)
@@ -41,8 +38,7 @@ export const RULER_LINE_MAP = {
       vm.startY = parseInt(target.style.top, 10)
       vm.clientY = evt.clientY
     },
-    mousemove(vm, executor, evt) {
-      executor(target)
+    mousemove(vm, evt) {
       const interval = evt.clientY - vm.clientY
       target.style.top = vm.startY + interval + 'px'
       target.dataset.num = vm.num + Math.floor(interval / vm.zoom)

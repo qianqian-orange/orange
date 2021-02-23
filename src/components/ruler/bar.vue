@@ -42,7 +42,7 @@ export default {
     ReferenceLineList,
   },
   mixins: [menu],
-  inject: ['store', 'eventEmitter'],
+  inject: ['store'],
   provide() {
     return {
       direction: this.direction,

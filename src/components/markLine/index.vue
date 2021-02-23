@@ -39,13 +39,9 @@ const cache = {
 export default {
   name: 'MarkLine',
   props: {
-    target: {
+    rect: {
       type: Object,
       required: true,
-    },
-    zoom: {
-      type: Number,
-      default: 1,
     },
   },
   data() {
@@ -93,7 +89,7 @@ export default {
           setPlainLine,
           setDistanceLine,
         } = MARKLINE_HANDLER_MAP[direction]
-        markline.target = targetFilter(this.target)
+        markline.target = targetFilter(this.rect)
         markline.neighbors = cache[direction].neighbors
         MARKLINE_LINE_MAP[direction].forEach((identification) => {
           const line = this.plainLine[identification]
@@ -102,7 +98,7 @@ export default {
           line.adsorb = markline.adsorb(line.adsorb, (interval) => {
             this.$emit('adsorb', direction, interval)
             // 这里注意需要更新target值
-            markline.target = targetFilter(this.target)
+            markline.target = targetFilter(this.rect)
           })
           const data = markline.line()
           if (!data) {
@@ -111,7 +107,7 @@ export default {
           }
           line.visible = true
           setPlainLine(line, data)
-          setDistanceLine(this.distanceLines, data, this.zoom)
+          setDistanceLine(this.distanceLines, data)
         })
       })
     },

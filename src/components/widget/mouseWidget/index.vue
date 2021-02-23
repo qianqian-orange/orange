@@ -1,5 +1,8 @@
 <template>
-  <widget>
+  <widget
+    ref="widget"
+    :data-source="dataSource"
+  >
     <mouse-widget
       v-for="widget in dataSource.children"
       :key="widget.id"
@@ -9,10 +12,6 @@
 </template>
 
 <script>
-import {
-  mapState,
-  mapActions,
-} from 'vuex'
 import { on, off } from '@/utils/dom'
 import { leftMousedown } from '@/utils/check'
 import { setTarget } from '@/lib/document'
@@ -20,7 +19,6 @@ import Bus, {
   DOCUMENT_MOUSE_UP,
   CANVAS_WIDGET_MOUSEDOWN,
 } from '@/utils/bus'
-import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import menu from './mixins/menu'
 import Widget from '@/components/widget'
 
@@ -30,34 +28,25 @@ export default {
     Widget,
   },
   mixins: [menu],
-  provide() {
-    return {
-      dataSource: this.dataSource,
-    }
-  },
   props: {
     dataSource: {
       type: Object,
       required: true,
     },
   },
-  computed: {
-    ...mapState('canvas', {
-      zoom: state => state.zoom,
-    }),
-  },
   mounted() {
+    // 绑定获取vm实例的方法
+    this.dataSource.container.emit('bootstrap', { vm: this.$refs.widget })
     this.addEventListener()
-    Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
   },
   beforeDestroy() {
     this.removeEventListener()
-    Bus.$off(DOCUMENT_MOUSE_UP, this.mouseup)
   },
   methods: {
     mousedown(evt) {
       // 只有鼠标左键点击的情况下才触发
       if (!leftMousedown(evt)) return
+      // 由于事件冒泡机制这里需要加判断
       if (evt.target !== this.$el) return
       const target = evt.target
       target.position = {
@@ -68,33 +57,37 @@ export default {
       }
       setTarget(target)
       Bus.$emit(CANVAS_WIDGET_MOUSEDOWN)
+      Bus.$on(DOCUMENT_MOUSE_UP, this.mouseup)
     },
     mouseup(target, move) {
-      if (target !== this.$el) return
+      // 移除DOCUMENT_MOUSE_UP监听事件
+      Bus.$off(DOCUMENT_MOUSE_UP, this.mouseup)
+      // 如果没有移动过那么不添加快照
+      if (!move) return
       // 更新widget信息和添加快照
       const {
-        id,
         style: { top, left },
         position: { startX, startY },
       } = target
-      // 如果没有移动过那么不添加快照
-      if (!move) return
       // 保留添加快照时缩放因子的值
-      const zoom = this.zoom
-      this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
-        id,
+      const prev = this.dataSource.zoom
+      this.dataSource.container.emit('snapshot', {
+        log: {
+          source: 'mouseWidget -> mouseup',
+          reason: '移动组件后修改样式并添加快照',
+        },
         update: ({ widget: { container: { style } } }) => {
           style.top = top
           style.left = left
         },
         snapshot: {
-          undo: ({ state, widget: { container: { style } } }) => {
-            const percent = state.zoom / zoom
+          undo: ({ widget: { zoom, container: { style } } }) => {
+            const percent = zoom / prev
             style.top = Math.floor(startY * percent) + 'px'
             style.left = Math.floor(startX * percent) + 'px'
           },
-          redo: ({ state, widget: { container: { style } } }) => {
-            const percent = state.zoom / zoom
+          redo: ({ widget: { zoom, container: { style } } }) => {
+            const percent = zoom / prev
             style.top = Math.floor(parseInt(top, 10) * percent) + 'px'
             style.left = Math.floor(parseInt(left, 10) * percent) + 'px'
           },
@@ -109,9 +102,6 @@ export default {
       const el = this.$el
       off(el, 'mousedown', this.mousedown)
     },
-    ...mapActions('canvas', [
-      ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT,
-    ]),
   },
 }
 </script>

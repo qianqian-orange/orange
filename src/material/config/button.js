@@ -1,11 +1,10 @@
-import Rectangle from '../constructors/rectangle'
+import Button from '../constructors/button'
 import Icon from '../constructors/icon'
 import Text from '../constructors/text'
 
 export const button = {
-  'search-primary-button': new Rectangle({
+  'search-primary-button': new Button({
     id: 'search-primary-button',
-    draggable: true,
     component: {
       style: {
         position: 'relative',
@@ -30,12 +29,12 @@ export const button = {
     children: [
       new Icon({
         id: 'icon',
-        draggable: true,
         container: {
           style: {
             position: 'absolute',
             top: '8px',
             left: '15px',
+            zIndex: 1,
           },
         },
         component: {
@@ -52,13 +51,13 @@ export const button = {
       }),
       new Text({
         id: 'text',
-        draggable: true,
         richText: '<p>搜索</p>',
         container: {
           style: {
             position: 'absolute',
             top: '5px',
             left: '37px',
+            zIndex: 2,
           },
         },
         component: {

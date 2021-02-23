@@ -6,8 +6,7 @@ export default {
   mixins: [base],
   methods: {
     contextmenu(evt) {
-      const identification = evt.target.dataset.identification
-      if (!identification || identification !== this.identification) return
+      if (evt.target !== this.$el) return
       // 设置数据源
       const menu = this[MENU_INSTANCE]
       menu.setData({

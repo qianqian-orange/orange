@@ -4,7 +4,6 @@ import { compose } from '@/utils/functional'
 export default class Resizer {
   constructor() {
     this.el = null
-    this.zoom = 1
     this.update = {
       width: noop,
       height: noop,
@@ -40,21 +39,19 @@ export default class Resizer {
     update,
     minWidth,
     minHeight,
-    zoom,
   }) {
     this.el = el
     this.update = update
     this.minWidth = minWidth
     this.minHeight = minHeight
-    this.zoom = zoom
   }
 
   getLines() {
     const rect = this.rect()
     const top = rect.top + 'px'
     const left = rect.left + 'px'
-    const width = rect.width * this.zoom
-    const height = rect.height * this.zoom
+    const width = rect.width
+    const height = rect.height
     const lines = []
     lines.push({
       id: 'n-line',
@@ -96,12 +93,12 @@ export default class Resizer {
     const rect = this.rect()
     const top = rect.top
     const left = rect.left
-    const right = rect.left + Math.floor(rect.width * this.zoom)
-    const bottom = rect.top + Math.floor(rect.height * this.zoom)
-    const width = Math.floor(rect.width * this.zoom)
-    const height = Math.floor(rect.height * this.zoom)
+    const right = rect.left + rect.width
+    const bottom = rect.top + rect.height
+    const width = rect.width
+    const height = rect.height
     const circulars = []
-    if (rect.width >= this.minimum / this.zoom) {
+    if (rect.width >= this.minimum) {
       circulars.push({
         id: 'n-resize',
         style: {
@@ -126,7 +123,7 @@ export default class Resizer {
         },
       })
     }
-    if (rect.height >= this.minimum / this.zoom) {
+    if (rect.height >= this.minimum) {
       circulars.push({
         id: 'e-resize',
         style: {
@@ -237,12 +234,12 @@ export default class Resizer {
     }
     if (this.resizeEnable.width) {
       queue.push(({ intervalX, intervalY }) => {
-        const width = this.width + Math.floor(intervalX / this.zoom)
+        const width = this.width + intervalX
         if (width > this.minWidth) this.update.width(width + 'px')
         else {
           this.update.width(this.minWidth + 'px')
           if (this.resizeEnable.left) {
-            this.update.left(this.right - Math.floor(this.minWidth * this.zoom) + 'px')
+            this.update.left(this.right - this.minWidth + 'px')
           }
         }
         return {
@@ -253,12 +250,12 @@ export default class Resizer {
     }
     if (this.resizeEnable.height) {
       queue.push(({ intervalX, intervalY }) => {
-        const height = this.height + Math.floor(intervalY / this.zoom)
+        const height = this.height + intervalY
         if (height > this.minHeight) this.update.height(height + 'px')
         else {
           this.update.height(this.minHeight + 'px')
           if (this.resizeEnable.top) {
-            this.update.top(this.bottom - Math.floor(this.minHeight * this.zoom) + 'px')
+            this.update.top(this.bottom - this.minHeight + 'px')
           }
         }
         return {
@@ -279,8 +276,8 @@ export default class Resizer {
     this.left = left
     this.width = width
     this.height = height
-    this.right = left + Math.floor(width * this.zoom)
-    this.bottom = top + Math.floor(height * this.zoom)
+    this.right = left + width
+    this.bottom = top + height
     this.executor = this.collectExecutor()
   }
 

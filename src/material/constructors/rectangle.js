@@ -30,5 +30,9 @@ export default class Rectangle extends Base {
         },
       },
     }, dataSource))
+
+    this.children.forEach((item) => {
+      item.parent = this
+    })
   }
 }

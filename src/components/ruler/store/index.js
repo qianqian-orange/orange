@@ -1,7 +1,8 @@
+import { eventEmitterDecorator } from '@/decorators'
 import { splice } from '@/utils/array'
 import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 
-class RulerStore {
+const RulerStore = eventEmitterDecorator(class RulerStore {
   constructor() {
     this.visible = true // 全局控制标尺的显示
     this.referenceLine = {
@@ -30,7 +31,7 @@ class RulerStore {
   update({ update }) {
     update(this)
   }
-}
+})
 
 export default function createStore() {
   return new RulerStore()

@@ -1,19 +1,16 @@
 <template>
   <resizer
     ref="resizer"
-    :zoom="zoom"
     @mouseup="mouseup"
   />
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
 import Bus, {
   CANVAS_WIDGET_RESIZE,
   DOCUMENT_MOUSE_MOVE,
   CANVAS_WIDGET_RESIZER_VISIBLE,
 } from '@/utils/bus'
-import { ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT } from '@/store/modules/canvas/action-types'
 import Resizer from '@/components/resizer'
 
 export default {
@@ -22,9 +19,9 @@ export default {
     Resizer,
   },
   computed: {
-    ...mapState('canvas', {
-      zoom: state => state.zoom,
-    }),
+    resizer() {
+      return this.$refs.resizer
+    },
   },
   mounted() {
     Bus.$on(CANVAS_WIDGET_RESIZER_VISIBLE, this.toggle)
@@ -44,6 +41,10 @@ export default {
       this.$refs.resizer.visible = false
     },
     setData(el) {
+      this.$emit('adjust', {
+        widget: el[el.id],
+        el: this.resizer.$el,
+      })
       const {
         style: {
           minWidth,
@@ -62,10 +63,25 @@ export default {
         },
       })
     },
-    mouseup(id, prev, current) {
-      const zoom = this.zoom
-      this[ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]({
-        id,
+    mouseup(el, prev, current) {
+      const widget = el[el.id]
+      const val = widget.zoom
+      const update = ({
+        widget: { zoom, container, component },
+        rect: { top, left, width, height },
+      }) => {
+        const computed = (value, percent) => Math.floor(parseInt(value, 10) * percent) + 'px'
+        const percent = zoom / val
+        container.style.top = computed(top, percent)
+        container.style.left = computed(left, percent)
+        component.style.width = computed(width, percent)
+        component.style.height = computed(height, percent)
+      }
+      widget.container.emit('snapshot', {
+        log: {
+          source: 'layouts -> screen -> components -> resizer',
+          reason: '调节组件大小后修改样式并且添加快照',
+        },
         update: ({ widget: { container, component } }) => {
           container.style.top = current.top
           container.style.left = current.left
@@ -73,19 +89,17 @@ export default {
           component.style.height = current.height
         },
         snapshot: {
-          undo: ({ state, widget: { container, component } }) => {
-            const percent = state.zoom / zoom
-            container.style.top = Math.floor(parseInt(prev.top, 10) * percent) + 'px'
-            container.style.left = Math.floor(parseInt(prev.left, 10) * percent) + 'px'
-            component.style.width = prev.width
-            component.style.height = prev.height
+          undo: ({ widget }) => {
+            update({
+              widget,
+              rect: prev,
+            })
           },
-          redo: ({ state, widget: { container, component } }) => {
-            const percent = state.zoom / zoom
-            container.style.top = Math.floor(parseInt(current.top, 10) * percent) + 'px'
-            container.style.left = Math.floor(parseInt(current.left, 10) * percent) + 'px'
-            component.style.width = current.width
-            component.style.height = current.height
+          redo: ({ widget }) => {
+            update({
+              widget,
+              rect: current,
+            })
           },
           free: () => {
             prev = null
@@ -94,7 +108,6 @@ export default {
         },
       })
     },
-    ...mapActions('canvas', [ADD_CANVAS_WIDGET_UPDATE_SNAPSHOT]),
   },
 }
 </script>

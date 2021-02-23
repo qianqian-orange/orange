@@ -1,6 +1,5 @@
 import { CANVAS_MINIMUM_INTERVAL } from '@/const/canvas'
 import DoubleLinkedList from '@/lib/dataStructure/doubleLinkedList'
-import actions from './actions'
 import mutations from './mutations'
 
 export const doubleLinkedList = new DoubleLinkedList()
@@ -23,10 +22,8 @@ export default {
     height: '1024px', // 1024
     interval: CANVAS_MINIMUM_INTERVAL, // 最小区间间隔
     zoom: 1, // 画布缩放因子
-    zIndex: 1, // 记录组件的z-index样式值
-    mouseWidgetList: [],
+    widgets: [],
   }),
   getters,
-  actions,
   mutations,
 }

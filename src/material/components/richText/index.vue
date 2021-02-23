@@ -1,8 +1,16 @@
 <template>
   <div
     :id="id"
-    class="rich-text-container"
-  />
+    class="rich-text-wrapper"
+  >
+    <div
+      class="rich-text-container"
+      :style="{
+        width: `${100 / zoom}%`,
+        transform: `scale(${zoom})`,
+      }"
+    />
+  </div>
 </template>
 
 <script>
@@ -26,6 +34,10 @@ export default {
       type: String,
       required: true,
     },
+    zoom: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
@@ -40,7 +52,7 @@ export default {
     },
   },
   mounted() {
-    this.getInstance = () => new E(this.$el)
+    this.getInstance = () => new E(this.$el.firstChild)
     this.editor.config.focus = false
     this.editor.config.placeholder = this.placeholder
     this.editor.config.onchange = (html) => {
@@ -71,10 +83,14 @@ export default {
 </script>
 
 <style lang="less">
-  .rich-text-container {
+  .rich-text-wrapper {
     // 这里需要z-index的值，因为富文本的层级要比glass要高
     position: relative;
     z-index: 0;
+  }
+
+  .rich-text-container {
+    transform-origin: 0 0;
   }
 
   .rich-text-container .w-e-toolbar {
@@ -82,7 +98,6 @@ export default {
   }
 
   .rich-text-container .w-e-text-container {
-    width: 100%; // 这里设置width为100%是因为rich-text-container设置为display为flex会导致w-e-text-container容器宽度收缩
     height: auto !important;
     border: none !important;
     background-color: transparent;

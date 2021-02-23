@@ -7,10 +7,10 @@ import Bus, {
   CANVAS_WIDGET_RESIZER_VISIBLE,
 } from '@/utils/bus'
 import {
-  GLASS,
   OVERFLOW_HIDDEN,
   BORDER_DASHED_LINE,
 } from '@/components/widget/const/classes'
+import { dblclickEvent } from '@/material/events'
 
 export default class Text extends Base {
   constructor(dataSource) {
@@ -33,6 +33,7 @@ export default class Text extends Base {
         props: {
           lineHeight: '20px',
           margin: '0 0 5px 0',
+          zoom: 1,
         },
       },
     }, dataSource))
@@ -41,8 +42,13 @@ export default class Text extends Base {
     } = dataSource
     this.richText = richText
 
+    dblclickEvent.glass.call(this)
+
+    this.on('zoom', (zoom) => {
+      this.component.props.zoom = zoom
+    })
+
     this.container.eventEmitter.on('dblclick', ({ vm }) => {
-      vm.removeClass(GLASS)
       vm.removeClass(OVERFLOW_HIDDEN)
       vm.addClass(BORDER_DASHED_LINE)
       // 文本内容全选
@@ -53,7 +59,6 @@ export default class Text extends Base {
       const mousedown = (evt) => {
         if (vm.$el.contains(evt.target)) return
         vm.removeClass(BORDER_DASHED_LINE)
-        vm.addClass(GLASS)
         vm.addClass(OVERFLOW_HIDDEN)
         // 取消文本全选
         vm.$refs.component.clearWindowSelectionRange()
@@ -71,15 +76,13 @@ export default class Text extends Base {
     })
 
     this.component.eventEmitter.on('change', (html) => {
-      if (this.draggable) return
       store.commit(`canvas/${UPDATE_CANVAS_WIDGET_DATA}`, {
         log: {
           source: 'material -> constructors -> text',
           reason: '修改文本内容',
         },
-        id: this.id,
-        update: ({ widget }) => {
-          widget.richText = html
+        update: () => {
+          this.richText = html
         },
       })
     })

@@ -1,14 +1,13 @@
 <template>
   <mark-line
     ref="markLine"
-    :target="target"
-    :zoom="zoom"
+    :rect="rect"
     @adsorb="adsorb"
   />
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import store from '@/material/store'
 import { getTarget } from '@/lib/document'
 import Bus, {
   DOCUMENT_MOUSE_MOVE,
@@ -24,7 +23,7 @@ export default {
   },
   data() {
     return {
-      target: {
+      rect: {
         top: 0,
         left: 0,
         width: 0,
@@ -33,10 +32,12 @@ export default {
     }
   },
   computed: {
-    ...mapState('canvas', {
-      zoom: state => state.zoom,
-      mouseWidgetList: state => state.mouseWidgetList,
-    }),
+    widgets() {
+      return store.widgets
+    },
+    markLine() {
+      return this.$refs.markLine
+    },
   },
   mounted() {
     Bus.$on(CANVAS_WIDGET_MOUSEDOWN, this.mousedown)
@@ -49,25 +50,29 @@ export default {
   methods: {
     mousedown() {
       const el = getTarget()
+      const widget = el[el.id]
+      this.$emit('adjust', {
+        widget,
+        el: this.markLine.$el,
+      })
       const {
-        id,
         offsetWidth,
         offsetHeight,
         offsetTop,
         offsetLeft,
       } = el
-      this.target.top = offsetTop
-      this.target.left = offsetLeft
-      this.target.width = Math.floor(offsetWidth * this.zoom)
-      this.target.height = Math.floor(offsetHeight * this.zoom)
-
-      this.$refs.markLine.setData({
-        neighbors: this.mouseWidgetList.filter(widget => widget.id !== id)
+      this.rect.top = offsetTop
+      this.rect.left = offsetLeft
+      this.rect.width = offsetWidth
+      this.rect.height = offsetHeight
+      const widgets = widget.parent ? widget.parent.children : this.widgets
+      this.markLine.setData({
+        neighbors: widgets.filter(item => item !== widget)
           .map(({ container, component }) => ({
             top: parseInt(container.style.top, 10),
             left: parseInt(container.style.left, 10),
-            width: Math.floor(parseInt(component.style.width, 10) * this.zoom),
-            height: Math.floor(parseInt(component.style.height, 10) * this.zoom),
+            width: parseInt(component.style.width, 10),
+            height: parseInt(component.style.height, 10),
           })),
       })
     },
@@ -77,18 +82,18 @@ export default {
         offsetTop,
         offsetLeft,
       } = el
-      this.target.top = offsetTop
-      this.target.left = offsetLeft
+      this.rect.top = offsetTop
+      this.rect.left = offsetLeft
     },
     adsorb(direction, interval) {
       const el = getTarget()
       if (direction === COORDINATE_DIRECTION_MAP.yAxis) {
-        this.target.left += interval
-        el.style.left = this.target.left + 'px'
+        this.rect.left += interval
+        el.style.left = this.rect.left + 'px'
         el.position.startX += interval
       } else {
-        this.target.top += interval
-        el.style.top = this.target.top + 'px'
+        this.rect.top += interval
+        el.style.top = this.rect.top + 'px'
         el.position.startY += interval
       }
     },

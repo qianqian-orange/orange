@@ -6,6 +6,7 @@
       @scroll-end="scrollEnd"
     >
       <div
+        ref="workspace-screen-container"
         class="workspace-screen-container"
         :style="{
           width: screen.container.width,
@@ -14,8 +15,8 @@
       >
         <screen-grid />
         <screen-canvas />
-        <screen-mark-line />
-        <screen-resizer />
+        <screen-mark-line @adjust="adjust" />
+        <screen-resizer @adjust="adjust" />
       </div>
     </el-scrollbar>
     <screen-ruler @scroll-to="scrollTo" />
@@ -67,6 +68,11 @@ export default {
     })
   },
   methods: {
+    adjust({ widget, el }) {
+      // 如果点击的组件在其它组件内，那么调整resizer或者markline节点的位置
+      if (widget.parent) widget.parent.getInstance().$el.appendChild(el)
+      else this.$refs['workspace-screen-container'].appendChild(el)
+    },
     ...mapMutations('global', [UPDATE_GLOBAL_DATA]),
   },
 }

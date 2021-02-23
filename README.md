@@ -3,6 +3,9 @@
 
 ### 踩坑
 1. 子组件的`mounted`执行时机优先于父组件的`mounted`,所以父组件需要在`created`钩子执行`Bus.$on`,这样子组件在`mounted`执行`Bus.$emit`的时候才会触发绑定的事件
+2. class原型上拓展方法，不能直接调用`class.prototype.xxx`的方式，应该使用`Object.defineProperty`, 原因可能是因为
+class的原型方法都是不可枚举的，所以需要拓展的方法也需要是不可枚举的
+3. `R.mergeDeepRight`方法回到对象的原型方法丢失，使用时需要注意
 
 ### 优化
 1. 标线距离显示待优化
@@ -36,3 +39,7 @@
   监听`mousedown`,根据`evt.button`或者`evt.which`的值进行判断
 2. 禁用鼠标右键弹窗
   监听`contextmenu`事件，调用`evt.preventDefault()`即可
+3. 利用`el.contains(target)`方法判断目标节点是否在el中，取代用`identification`验证方式
+
+### 正则
+1. `/scale\((.+?)\)/`

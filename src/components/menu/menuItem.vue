@@ -1,8 +1,7 @@
 <template>
   <a-menu-item
     :key="dataSource.key"
-    :data-identification="identification"
-    :class="[size, dataSource.glass && 'glass']"
+    :class="size"
     v-bind="$props"
     v-on="$listeners"
   >
@@ -20,7 +19,7 @@
 
 <script>
 import { Menu } from 'ant-design-vue'
-import { MENU_ITEM, MENU_SIZE } from '@/const/menu'
+import { MENU_SIZE } from '@/const/menu'
 
 export default {
   name: 'MenuItem',
@@ -35,12 +34,6 @@ export default {
       type: Object,
       required: true,
     },
-  },
-  data() {
-    return {
-      // 配置.glass类可以很轻松判断当前点击的节点是不是menu的item
-      identification: MENU_ITEM,
-    }
   },
 }
 </script>

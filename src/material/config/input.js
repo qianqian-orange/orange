@@ -4,7 +4,6 @@ import Text from '../constructors/text'
 export const input = {
   input: new Rectangle({
     id: 'input',
-    draggable: true,
     component: {
       style: {
         position: 'relative',
@@ -24,12 +23,12 @@ export const input = {
     children: [
       new Text({
         id: 'text',
-        draggable: true,
         container: {
           style: {
             position: 'absolute',
             top: '4px',
             left: '11px',
+            zIndex: 1,
           },
         },
         component: {

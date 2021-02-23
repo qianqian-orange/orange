@@ -22,21 +22,20 @@
 
 <script>
 import { splice } from '@/utils/array'
-import {
-  GLASS,
-} from './const/classes'
+import { GLASS } from './const/classes'
 
 export default {
   name: 'Widget',
-  inject: ['dataSource'],
+  props: {
+    dataSource: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       classList: [GLASS],
     }
-  },
-  mounted() {
-    const event = new CustomEvent('bootstrap', { detail: { vm: this } })
-    this.$el.dispatchEvent(event)
   },
   methods: {
     addClass(cls) {

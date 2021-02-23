@@ -20,7 +20,7 @@ export default {
       // 设置数据源
       const menu = this[MENU_INSTANCE]
       menu.setData({
-        target: this.dataSource,
+        dataSource: this.dataSource,
         event: evt,
         items: [cut, copy, paste, remove, toTop, toBottom],
       })

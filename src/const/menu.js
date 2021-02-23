@@ -5,5 +5,3 @@ export const MENU_SIZE = {
   normal: 'normal',
   small: 'small',
 }
-
-export const MENU_ITEM = 'MENU_ITEM'

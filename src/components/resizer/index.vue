@@ -14,7 +14,6 @@
       :key="circular.id"
       class="resizer-circular"
       :style="circular.style"
-      :data-identification="identification"
       @mousedown="circular.mousedown"
     />
   </div>
@@ -29,28 +28,12 @@ const resizer = new Resizer()
 
 export default {
   name: 'Resizer',
-  props: {
-    zoom: {
-      type: Number,
-      default: 1,
-    },
-  },
   data() {
     return {
       lines: [],
       circulars: [],
       visible: false,
-      identification: 'resizer',
     }
-  },
-  watch: {
-    zoom() {
-      if (!target) return
-      // 由于缩放会修改节点的样式值，为了获取到最新的样式值，需要在nextTick时在执行
-      this.$nextTick(() => {
-        this.setData(target)
-      })
-    },
   },
   mounted() {
     this.addEventListener()
@@ -59,7 +42,7 @@ export default {
     this.removeEventListener()
   },
   methods: {
-    setData({ el, minWidth, minHeight, update }) {
+    setData({ el, update, minWidth, minHeight }) {
       this.visible = true
       target = el
       resizer.setData({
@@ -67,7 +50,6 @@ export default {
         update,
         minWidth,
         minHeight,
-        zoom: this.zoom,
       })
       this.lines = resizer.getLines()
       this.circulars = resizer.getCirculars()
@@ -75,10 +57,9 @@ export default {
     mousedown(evt) {
       if (!target) return
       const el = evt.target
-      if (el !== target && el.dataset.identification !== this.identification) {
-        this.visible = false
-        target = null
-      }
+      if (el === target || this.$el.contains(el)) return
+      this.visible = false
+      target = null
     },
     mousemove(evt) {
       resizer.run(evt, () => {
@@ -88,9 +69,8 @@ export default {
     },
     mouseup(evt) {
       if (!target) return
-      const id = target.id
       resizer.end(evt, ({ prev, current }) => {
-        this.$emit('mouseup', id, prev, current)
+        this.$emit('mouseup', target, prev, current)
       })
     },
     addEventListener() {

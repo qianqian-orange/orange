@@ -1,0 +1,7 @@
+export const ADD_WIDGET = 'ADD_WIDGET'
+export const DELETE_WIDGET = 'DELETE_WIDGET'
+export const UPDATE_WIDGET = 'UPDATE_WIDGET'
+export const ADD_SNAPSHOT = 'ADD_SNAPSHOT'
+export const TO_TOP = 'TO_TOP'
+export const TO_BOTTOM = 'TO_BOTTOM'
+export const ZOOM = 'ZOOM'
