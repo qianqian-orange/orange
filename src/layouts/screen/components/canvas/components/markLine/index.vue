@@ -17,7 +17,7 @@ import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import MarkLine from '@/components/markLine'
 
 export default {
-  name: 'ScreenMarkLine',
+  name: 'CanvasMarkLine',
   components: {
     MarkLine,
   },

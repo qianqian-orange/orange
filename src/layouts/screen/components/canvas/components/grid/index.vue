@@ -1,12 +1,7 @@
 <template>
-  <div
-    class="grid-container"
-    :style="{
-      width,
-      height,
-    }"
-  >
+  <div class="grid-container">
     <grid
+      v-show="grid"
       :small-grid-size="smallGridSize"
       :big-grid-size="bigGridSize"
     />
@@ -18,7 +13,7 @@ import { mapState } from 'vuex'
 import Grid from '@/components/grid'
 
 export default {
-  name: 'ScreenGrid',
+  name: 'CanvasGrid',
   components: {
     Grid,
   },
@@ -30,10 +25,9 @@ export default {
       return this.smallGridSize * 5
     },
     ...mapState('canvas', {
-      width: state => state.width,
-      height: state => state.height,
       interval: state => state.interval,
       zoom: state => state.zoom,
+      grid: state => state.grid,
     }),
   },
 }
@@ -42,9 +36,6 @@ export default {
 <style lang="less" scoped>
   .grid-container {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: -1;
     background-color: #fff;
   }

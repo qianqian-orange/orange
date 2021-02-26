@@ -2,7 +2,6 @@ import Vue from 'vue'
 import { eventEmitterDecorator } from '@/decorators'
 import widget from './events/widget'
 import snapshot from './events/snapshot'
-import zoom from './events/zoom'
 
 const Store = eventEmitterDecorator(class Store {
   constructor() {
@@ -12,8 +11,6 @@ const Store = eventEmitterDecorator(class Store {
   }
 
   initEventEmitter() {
-    // 监听vuex store画布缩放因子的变化, 修改wdigets数据
-    zoom.call(this)
     // 新增组件
     widget.add.call(this)
     // 删除组件

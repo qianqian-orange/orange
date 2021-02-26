@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import { eventEmitterDecorator } from '@/decorators'
 import Component from './component'
-import factory from '@/material/constructors/util'
+import factory, { setStyle } from '@/material/constructors/util'
 import {
   bootstrap,
   click,
@@ -31,6 +31,7 @@ export default eventEmitterDecorator(class Base {
       style: R.mergeDeepRight({
         minWidth: '8px',
         minHeight: '8px',
+        borderRadius: 0,
       }, component.style || {}),
     })
     this.initEvents()
@@ -86,21 +87,19 @@ export default eventEmitterDecorator(class Base {
   }
 
   set zoom(value) {
-    if (value === this._zoom) return
-    const percent = value / this._zoom
-    const computed = value => Math.floor(parseFloat(value, 10) * percent) + 'px'
+    if (value === this.zoom) return
+    const percent = value / this.zoom
     const update = (widget) => {
-      widget._zoom = value
       const { container, component } = widget
-      container.style.top = computed(container.style.top)
-      container.style.left = computed(container.style.left)
-      component.style.width = computed(component.style.width)
-      component.style.height = computed(component.style.height)
-      component.style.minWidth = computed(component.style.minWidth)
-      component.style.minHeight = computed(component.style.minHeight)
+      setStyle(container.style, ['top', 'left'], percent)
+      // 下面两条语句是为了暂时处理textarea的线条显示问题，后续线条组件开发完毕后将其删除
+      if (container.style.right) setStyle(container.style, ['right'], percent)
+      if (container.style.bottom) setStyle(container.style, ['bottom'], percent)
+      setStyle(component.style, ['width', 'height', 'minWidth', 'minHeight', 'borderRadius'], percent)
+      // 有些子类如text和rectangle监听了zoom值的变化
+      widget.emit('zoom', value, widget._zoom)
+      widget._zoom = value
       widget.children.forEach((item) => { update(item) })
-      // text子类监听了zoom值的变化
-      widget.emit('zoom', value)
     }
     update(this)
   }

@@ -61,7 +61,7 @@ const config = {
     },
     init() {
       const { vm } = this.menu
-      this.dataSource.watch = vm.$watch(
+      this.dataSource.unwatch = vm.$watch(
         () => vm.store.referenceLine.visible,
         (visible) => {
           this.icon.right.visible = visible
@@ -69,7 +69,7 @@ const config = {
       )
     },
     destroy() {
-      this.dataSource.watch()
+      this.dataSource.unwatch()
     },
   }),
   [REMOVE_ALL_HORIZONTAL_LINE]: (menu) => new MenuItem({
@@ -90,7 +90,7 @@ const config = {
     },
     init() {
       const { vm } = this.menu
-      this.dataSource.watch = vm.$watch(
+      this.dataSource.unwatch = vm.$watch(
         () => vm.store.referenceLine[COORDINATE_DIRECTION_MAP.xAxis],
         (lines) => {
           this.props.disabled = !lines.length
@@ -98,7 +98,7 @@ const config = {
       )
     },
     destroy() {
-      this.dataSource.watch()
+      this.dataSource.unwatch()
     },
   }),
   [REMOVE_ALL_VERTICAL_LINE]: (menu) => new MenuItem({
@@ -119,7 +119,7 @@ const config = {
     },
     init() {
       const { vm } = this.menu
-      this.dataSource.watch = vm.$watch(
+      this.dataSource.unwatch = vm.$watch(
         () => vm.store.referenceLine[COORDINATE_DIRECTION_MAP.yAxis],
         (lines) => {
           this.props.disabled = !lines.length
@@ -127,7 +127,7 @@ const config = {
       )
     },
     destroy() {
-      this.dataSource.watch()
+      this.dataSource.unwatch()
     },
   }),
 }

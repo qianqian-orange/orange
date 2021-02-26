@@ -44,8 +44,10 @@ export const textarea = {
         container: {
           style: {
             position: 'absolute',
-            top: '24px',
-            left: '134px',
+            // top: '24px',
+            // left: '134px',
+            right: 0,
+            bottom: '5px',
             zIndex: 1,
           },
         },
@@ -53,6 +55,7 @@ export const textarea = {
           style: {
             transform: 'rotate(-45deg)',
             width: '12px',
+            height: 0,
             borderTopWidth: '1px',
             borderTopStyle: 'solid',
             borderTopColor: '#666',
@@ -64,8 +67,10 @@ export const textarea = {
         container: {
           style: {
             position: 'absolute',
-            top: '26px',
-            left: '140px',
+            // top: '26px',
+            // left: '140px',
+            right: 0,
+            bottom: '3px',
             zIndex: 2,
           },
         },
@@ -73,6 +78,7 @@ export const textarea = {
           style: {
             transform: 'rotate(-45deg)',
             width: '6px',
+            height: 0,
             borderTopWidth: '1px',
             borderTopStyle: 'solid',
             borderTopColor: '#666',
@@ -83,11 +89,12 @@ export const textarea = {
     children: [
       new Text({
         id: 'text',
+        richText: '<p>请输入&hellip;</p>',
         container: {
           style: {
             position: 'absolute',
-            top: '4px',
-            left: '11px',
+            top: '5px',
+            left: '12px',
             zIndex: 3,
           },
         },
@@ -96,10 +103,6 @@ export const textarea = {
             width: '54px',
             height: '20px',
             color: '#bfbfbf',
-          },
-          props: {
-            // 富文本的placholder的字符串中带有...会出现问题，所以改用实体字符的方式解决
-            placeholder: '<p>请输入&hellip;</p>',
           },
         },
       }),

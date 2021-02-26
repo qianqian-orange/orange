@@ -1,20 +1,32 @@
-import Bus, { CANVAS_HOVER_MENU } from '@/utils/bus'
-import { paste } from '@/components/widget/mouseWidget/mixins/menu/config'
+import {
+  cut,
+  copy,
+  paste,
+  remove,
+  toTop,
+  toBottom,
+} from './config'
 import base, { MENU_INSTANCE } from '@/components/menu/hoverMenu/mixins/base'
 
 export default {
   mixins: [base],
   methods: {
     contextmenu(evt) {
-      if (evt.target !== this.$el) return
+      const { target } = evt
+      if (!target.dataset.hovermenu) return
+      const widget = target[target.id]
       // 设置数据源
       const menu = this[MENU_INSTANCE]
+      let items = null
+      if (widget) items = [cut, copy, paste, remove, toTop, toBottom]
+      else items = [paste]
       menu.setData({
+        items,
+        dataSource: widget,
         event: evt,
-        items: [paste],
       })
       // 显示悬浮菜单
-      Bus.$emit(CANVAS_HOVER_MENU, {
+      this.$refs.hoverMenu.setData({
         menus: menu.items,
         position: {
           top: evt.clientY,

@@ -16,16 +16,15 @@
       theme="twoTone"
       two-tone-color="#f00"
     />
+    <!-- <chrome-picker v-model="color" /> -->
+    <color-picker />
   </div>
 </template>
 
 <script>
-import MouseWidget from '@/components/widget/mouseWidget'
 
 export default {
-  component: {
-    MouseWidget,
-  },
+
 }
 </script>
 

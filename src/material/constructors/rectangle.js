@@ -1,4 +1,6 @@
 import * as R from 'ramda'
+import { setStyle } from './util'
+import { dblclickEvent } from '@/material/events'
 import Base from './base'
 
 export default class Rectangle extends Base {
@@ -33,6 +35,14 @@ export default class Rectangle extends Base {
 
     this.children.forEach((item) => {
       item.parent = this
+    })
+
+    dblclickEvent.glass.call(this)
+
+    this.on('zoom', (cur, prev) => {
+      const percent = cur / prev
+      const { stroke } = this.component.props
+      setStyle(stroke.style, ['borderWidth'], percent)
     })
   }
 }

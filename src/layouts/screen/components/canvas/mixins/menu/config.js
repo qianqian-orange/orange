@@ -1,11 +1,12 @@
-import store from '@/material/store'
+import vuexStore from '@/store'
+import materialStore from '@/material/store'
+import { noop } from '@/utils'
 import MenuItem from '@/components/menu/constructors/menuItem'
 import {
   TO_TOP,
   TO_BOTTOM,
   ADD_WIDGET,
   DELETE_WIDGET,
-  ZOOM,
 } from '@/material/store/mutation-types'
 
 export const cut = new MenuItem({
@@ -13,7 +14,7 @@ export const cut = new MenuItem({
   key: 'cut',
   events: {
     click() {
-      store.emit(DELETE_WIDGET, {
+      materialStore.emit(DELETE_WIDGET, {
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> cut',
           reason: '剪切操作删除组件',
@@ -39,7 +40,7 @@ const paste2canvas = new MenuItem({
       const { position: { top, left } } = paste.dataSource
       widget.container.style.top = `${top}px`
       widget.container.style.left = `${left}px`
-      store.emit(ADD_WIDGET, {
+      materialStore.emit(ADD_WIDGET, {
         widget,
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> paste2canvas',
@@ -76,7 +77,7 @@ const paste2mouse = new MenuItem({
       // 所以添加这个组件的时候就不需要在进行位置调整了
       style.top = top + offsetY + 'px'
       style.left = left + offsetX + 'px'
-      store.emit(ADD_WIDGET, {
+      materialStore.emit(ADD_WIDGET, {
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> paste2mouse',
           reason: '新增组件',
@@ -93,17 +94,23 @@ export const paste = new MenuItem({
   props: {
     disabled: true,
   },
+  dataSource: {
+    widget: null,
+    position: null,
+    unwatch: noop,
+  },
   init() {
     const fn = () => {
+      this.dataSource.unwatch()
       const position = this.menu.dataSource.position2canvas()
       // 注意这里不要直接复制dataSource，而应该时dataSource的副本
       const widget = this.menu.dataSource.clone()
-      const zoom = widget.zoom
       // 当前的粘贴都是将组件直接添加到画布中，暂不支持添加到组件内，所以需要将parent指向设置为null
       widget.parent = null
-      store.on(ZOOM, (cur) => {
-        widget.zoom = cur
-        const percent = cur / zoom
+      const unwatch = vuexStore.watch((state) => state.canvas.zoom, (zoom) => {
+        const prev = widget.zoom
+        const percent = zoom / prev
+        widget.zoom = zoom
         const { top, left } = position
         position.top = Math.floor(top * percent)
         position.left = Math.floor(left * percent)
@@ -111,6 +118,7 @@ export const paste = new MenuItem({
       this.dataSource = {
         widget,
         position,
+        unwatch,
       }
       this.props.disabled = false
     }
@@ -121,6 +129,9 @@ export const paste = new MenuItem({
     paste2canvas,
     paste2mouse,
   ],
+  destroy() {
+    this.dataSource.unwatch()
+  },
 })
 
 export const remove = new MenuItem({
@@ -129,7 +140,7 @@ export const remove = new MenuItem({
   divider: true,
   events: {
     click() {
-      store.emit(DELETE_WIDGET, {
+      materialStore.emit(DELETE_WIDGET, {
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> remove',
           reason: '删除组件',
@@ -145,7 +156,7 @@ export const toTop = new MenuItem({
   key: 'toTop',
   events: {
     click() {
-      store.emit(TO_TOP, {
+      materialStore.emit(TO_TOP, {
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> toTop',
           reason: '修改组件的zIndex值',
@@ -161,7 +172,7 @@ export const toBottom = new MenuItem({
   key: 'toBottom',
   events: {
     click() {
-      store.emit(TO_BOTTOM, {
+      materialStore.emit(TO_BOTTOM, {
         log: {
           source: 'mouseWidget -> mixins -> menu -> config -> toBottom',
           reason: '修改组件的zIndex值',

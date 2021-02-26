@@ -3,7 +3,7 @@
     :class="['tool-container', !undoEnable && 'disabled']"
     @click="UNDO"
   >
-    <i class="iconfont icon-undo" />
+    <orange-icon type="icon-undo" />
     <span>撤销</span>
   </li>
 </template>

@@ -33,7 +33,7 @@ export const button = {
           style: {
             position: 'absolute',
             top: '8px',
-            left: '15px',
+            left: '14px',
             zIndex: 1,
           },
         },
@@ -56,7 +56,7 @@ export const button = {
           style: {
             position: 'absolute',
             top: '5px',
-            left: '37px',
+            left: '36px',
             zIndex: 2,
           },
         },

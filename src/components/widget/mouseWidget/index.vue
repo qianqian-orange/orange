@@ -7,6 +7,7 @@
       v-for="widget in dataSource.children"
       :key="widget.id"
       :data-source="widget"
+      data-hovermenu="true"
     />
   </widget>
 </template>
@@ -18,8 +19,10 @@ import { setTarget } from '@/lib/document'
 import Bus, {
   DOCUMENT_MOUSE_UP,
   CANVAS_WIDGET_MOUSEDOWN,
+  DOCUMENT_CONTEXT_MENU,
+  CANVAS_WIDGET_RESIZE,
+  APPERANCE_EVENT_DATASOURCE,
 } from '@/utils/bus'
-import menu from './mixins/menu'
 import Widget from '@/components/widget'
 
 export default {
@@ -27,7 +30,6 @@ export default {
   components: {
     Widget,
   },
-  mixins: [menu],
   props: {
     dataSource: {
       type: Object,
@@ -37,9 +39,11 @@ export default {
   mounted() {
     // 绑定获取vm实例的方法
     this.dataSource.container.emit('bootstrap', { vm: this.$refs.widget })
+    Bus.$on(DOCUMENT_CONTEXT_MENU, this.contextmenu)
     this.addEventListener()
   },
   beforeDestroy() {
+    Bus.$off(DOCUMENT_CONTEXT_MENU, this.contextmenu)
     this.removeEventListener()
   },
   methods: {
@@ -93,6 +97,13 @@ export default {
           },
         },
       })
+    },
+    contextmenu(evt) {
+      if (evt.target !== this.$el) return
+      // 显示resizer
+      Bus.$emit(CANVAS_WIDGET_RESIZE, this.$el)
+      // 显示左面板的外观和事件模块
+      Bus.$emit(APPERANCE_EVENT_DATASOURCE, this.dataSource)
     },
     addEventListener() {
       const el = this.$el

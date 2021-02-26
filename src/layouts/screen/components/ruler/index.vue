@@ -7,7 +7,6 @@
     :zoom="zoom"
     :size="`${size}px`"
     @back="back"
-    @contextmenu="contextmenu"
   />
 </template>
 
@@ -16,7 +15,6 @@ import { mapGetters, mapState } from 'vuex'
 import Bus, {
   SCREEN_SCROLL,
   SCREEN_SCROLL_END,
-  CANVAS_HOVER_MENU,
 } from '@/utils/bus'
 import Ruler from '@/components/ruler'
 
@@ -55,6 +53,9 @@ export default {
     zoom() {
       this.back()
     },
+    origin() {
+      this.back()
+    },
   },
   mounted() {
     // 先监听滚动事件在执行返回原点逻辑
@@ -78,9 +79,6 @@ export default {
     },
     back() {
       this.$emit('scroll-to', this.origin.x - this.size, this.origin.y - this.size)
-    },
-    contextmenu(data) {
-      Bus.$emit(CANVAS_HOVER_MENU, data)
     },
   },
 }

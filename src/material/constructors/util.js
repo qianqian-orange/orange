@@ -1,6 +1,13 @@
 import * as R from 'ramda'
 import uuid from '@/utils/uid'
 
+export const setStyle = (target, styles, percent) => {
+  const computed = value => Math.floor(parseFloat(value, 10) * percent) + 'px'
+  styles.forEach((key) => {
+    target[key] = computed(target[key])
+  })
+}
+
 export default function factory() {
   // 注意需要先clone children，这样才能正确绑定children的parent的指向
   const children = this.children.map((item) => item.clone())

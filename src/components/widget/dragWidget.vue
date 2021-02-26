@@ -10,6 +10,10 @@
 
 <script>
 import { on, off } from '@/utils/dom'
+import Bus, {
+  WIDGET_DRAG_START,
+  WIDGET_DRAG_END,
+} from '@/utils/bus'
 import Widget from './index'
 
 export default {
@@ -39,9 +43,11 @@ export default {
         offsetX: evt.offsetX,
         offsetY: evt.offsetY,
       }))
+      Bus.$emit(WIDGET_DRAG_START)
     },
     dragend(evt) {
       evt.target.style.transform = ''
+      Bus.$emit(WIDGET_DRAG_END)
     },
     addEventListener() {
       const el = this.$el

@@ -37,7 +37,3 @@ export default {
     }
   }
 </style>
-
-<style lang="less">
-@import "./reset.less";
-</style>

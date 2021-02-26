@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { setStyle } from './util'
 import Base from './base'
 
 export default class Line extends Base {
@@ -12,5 +13,10 @@ export default class Line extends Base {
         },
       },
     }, dataSource))
+
+    this.on('zoom', (cur, prev) => {
+      const percent = cur / prev
+      setStyle(this.component.style, ['borderTopWidth'], percent)
+    })
   }
 }

@@ -1,8 +1,6 @@
 import store from '@/material/store'
+import Bus, { CANVAS_WIDGET_RESIZE, APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
 import { UPDATE_WIDGET } from '@/material/store/mutation-types'
-import Bus, {
-  CANVAS_WIDGET_BOOTSTRAP,
-} from '@/utils/bus'
 
 export function bootstrap() {
   this.container.on('bootstrap', ({ vm }) => {
@@ -19,7 +17,9 @@ export function bootstrap() {
       },
     })
     if (this.parent) return
-    // 在新增组件的时候会依赖此事件，作用是显示resizer
-    Bus.$emit(CANVAS_WIDGET_BOOTSTRAP, vm)
+    // 显示resizer
+    Bus.$emit(CANVAS_WIDGET_RESIZE, vm.$el)
+    // 显示左面板的外观和事件模块
+    Bus.$emit(APPERANCE_EVENT_DATASOURCE, this)
   })
 }

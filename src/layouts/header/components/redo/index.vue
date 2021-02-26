@@ -3,7 +3,7 @@
     :class="['tool-container', !redoEnable && 'disabled']"
     @click="REDO"
   >
-    <i class="iconfont icon-redo" />
+    <orange-icon type="icon-redo" />
     <span>重做</span>
   </li>
 </template>

@@ -20,10 +20,7 @@
 </template>
 
 <script>
-import Bus, {
-  CANVAS_HOVER_MENU,
-  DOCUMENT_MOUSE_DOWN,
-} from '@/utils/bus'
+import { on, off } from '@/utils/dom'
 import { sleep } from '@/utils/timer'
 import {
   MENU_DEFAULT_WIDTH,
@@ -47,20 +44,18 @@ export default {
     }
   },
   mounted() {
-    Bus.$on(DOCUMENT_MOUSE_DOWN, this.mousedown)
-    Bus.$on(CANVAS_HOVER_MENU, this.setData)
+    document.body.appendChild(this.$el)
+    on(document, 'mousedown', this.mousedown)
   },
   beforeDestroy() {
-    Bus.$off(DOCUMENT_MOUSE_DOWN, this.mousedown)
-    Bus.$off(CANVAS_HOVER_MENU, this.setData)
+    off(document, 'mousedown', this.mousedown)
   },
   methods: {
     enter(el) {
-      const { top, left, width, height } = this.calcPosition()
-      el.style.top = top
-      el.style.left = left
-      el.style.width = width
-      el.style.height = height
+      const style = this.calcPosition()
+      ;['top', 'left', 'width', 'height'].forEach((key) => {
+        el.style[key] = style[key]
+      })
     },
     leave(el) {
       el.style.width = 0

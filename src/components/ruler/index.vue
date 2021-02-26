@@ -28,6 +28,7 @@
         @mouseleave="mouseleave"
       />
     </a-tooltip>
+    <hover-menu ref="hoverMenu" />
   </div>
 </template>
 
@@ -39,11 +40,13 @@ import {
   CONTEXTMENU,
   MOVE_RULER_LINE_VISIBLE,
 } from './const/event'
+import HoverMenu from '@/components/menu/hoverMenu'
 import Bar from './bar'
 
 export default {
   name: 'Ruler',
   components: {
+    HoverMenu,
     Bar,
   },
   provide() {
@@ -98,7 +101,7 @@ export default {
       this.store.emit(SCROLL_END)
     },
     contextmenu(data) {
-      this.$emit('contextmenu', data)
+      this.$refs.hoverMenu.setData(data)
     },
     mouseenter() {
       this.store.emit(MOVE_RULER_LINE_VISIBLE, false)

@@ -22,10 +22,6 @@ export default {
   name: 'OrangeRichText',
   mixins: [styleTag],
   props: {
-    placeholder: {
-      type: String,
-      default: '',
-    },
     lineHeight: {
       type: String,
       required: true,
@@ -54,7 +50,6 @@ export default {
   mounted() {
     this.getInstance = () => new E(this.$el.firstChild)
     this.editor.config.focus = false
-    this.editor.config.placeholder = this.placeholder
     this.editor.config.onchange = (html) => {
       const index = html.lastIndexOf('<p>')
       this.$emit('change',
@@ -90,6 +85,9 @@ export default {
   }
 
   .rich-text-container {
+    // 由于父元素使用flex布局，但缩放因子为50%时，子元素会因为父元素宽度不够而减少宽度
+    // 所以通过设置flex-shrink解决这个问题
+    flex-shrink: 0;
     transform-origin: 0 0;
   }
 

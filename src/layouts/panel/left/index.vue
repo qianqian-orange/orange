@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="left-panel"
-    class="workspace-left-panel"
-  >
+  <div class="workspace-left-panel">
     <a-tabs
       tab-position="left"
       :default-active-key="activeKey"
@@ -88,6 +85,32 @@ export default {
         padding: 0 8px;
         cursor: move;
       }
+    }
+  }
+</style>
+
+<style lang="less">
+  .workspace-left-panel {
+    .ant-tabs {
+      color: @textPrimaryColor;
+
+      .ant-tabs-left-bar {
+        border-right: none;
+
+        .ant-tabs-tab {
+          margin-bottom: 0;
+          text-align: center;
+        }
+      }
+
+      .ant-tabs-left-content {
+        padding-left: 0;
+        border-left: none;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      background-color: transparent;
     }
   }
 </style>

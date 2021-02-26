@@ -22,7 +22,8 @@ export default {
     height: '1024px', // 1024
     interval: CANVAS_MINIMUM_INTERVAL, // 最小区间间隔
     zoom: 1, // 画布缩放因子
-    widgets: [],
+    grid: true, // 是否显示网格
+    widgets: [], // 这个属性的作用是便于调试
   }),
   getters,
   mutations,

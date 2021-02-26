@@ -18,16 +18,6 @@ export default {
 </style>
 
 <style lang="less">
-  .ant-input-number {
-    .ant-input-number-input-wrap {
-      height: 100%;
-
-      .ant-input-number-input {
-        height: 100%;
-      }
-    }
-  }
-
   .anticon svg {
     width: 100%;
     height: 100%;

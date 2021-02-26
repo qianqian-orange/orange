@@ -5,10 +5,6 @@ import {
   logger,
 } from '@/material/store/util'
 import { splice } from '@/utils/array'
-import Bus, {
-  CANVAS_WIDGET_BOOTSTRAP,
-  CANVAS_WIDGET_RESIZE,
-} from '@/utils/bus'
 import {
   ADD_WIDGET,
   DELETE_WIDGET,
@@ -19,11 +15,6 @@ import {
 
 const doubleLinkedList = new DoubleLinkedList()
 const linkedListNodeMap = {}
-
-const bootstrap = (vm) => {
-  Bus.$emit(CANVAS_WIDGET_RESIZE, vm.$el)
-  Bus.$off(CANVAS_WIDGET_BOOTSTRAP, bootstrap)
-}
 
 function remove(id) {
   doubleLinkedList.remove(linkedListNodeMap[id])
@@ -74,7 +65,6 @@ export default {
       const { container: { style } } = widget
       style.zIndex = this.zIndex++
       add.call(this, widget)
-      Bus.$on(CANVAS_WIDGET_BOOTSTRAP, bootstrap)
       snapshot.add.call(this, {
         undo: () => {
           remove.call(this, widget.id)

@@ -14,7 +14,7 @@ import Bus, {
 import Resizer from '@/components/resizer'
 
 export default {
-  name: 'ScreenResizer',
+  name: 'CanvasResizer',
   components: {
     Resizer,
   },
@@ -65,13 +65,13 @@ export default {
     },
     mouseup(el, prev, current) {
       const widget = el[el.id]
-      const val = widget.zoom
+      const value = widget.zoom
       const update = ({
         widget: { zoom, container, component },
         rect: { top, left, width, height },
       }) => {
         const computed = (value, percent) => Math.floor(parseInt(value, 10) * percent) + 'px'
-        const percent = zoom / val
+        const percent = zoom / value
         container.style.top = computed(top, percent)
         container.style.left = computed(left, percent)
         component.style.width = computed(width, percent)

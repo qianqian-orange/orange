@@ -11,7 +11,10 @@
       >
         <div class="zoom-container">
           <span>{{ zoom * 100 }}%</span>
-          <i class="arrow iconfont icon-arrowup" />
+          <orange-icon
+            class="arrow"
+            type="icon-arrowup"
+          />
         </div>
         <span>缩放</span>
       </li>
@@ -23,7 +26,6 @@
 import { mapState } from 'vuex'
 import { MENU_SIZE } from '@/const/menu'
 import {
-  zoom50,
   zoom100,
   zoom200,
 } from './config'
@@ -38,7 +40,6 @@ export default {
     return {
       size: MENU_SIZE.large,
       menus: [
-        zoom50,
         zoom100,
         zoom200,
       ],
@@ -66,7 +67,6 @@ export default {
       transform: rotate(180deg);
       margin-left: 4px;
       font-size: 12px;
-      font-weight: 400;
     }
   }
 </style>

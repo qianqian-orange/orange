@@ -9,8 +9,9 @@
       class="move"
       data-action="move"
     />
-    <i
-      class="remove iconfont icon-clear"
+    <orange-icon
+      class="remove"
+      type="icon-clear"
       data-action="remove"
     />
   </div>
@@ -45,6 +46,8 @@ export default {
       .expand-click(2px);
 
       position: absolute;
+      width: 12px;
+      height: 12px;
       color: @textPrimaryColor;
       font-size: 12px;
       visibility: hidden;

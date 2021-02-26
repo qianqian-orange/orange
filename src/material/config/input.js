@@ -23,23 +23,20 @@ export const input = {
     children: [
       new Text({
         id: 'text',
+        richText: '<p>请输入&hellip;</p>',
         container: {
           style: {
             position: 'absolute',
-            top: '4px',
-            left: '11px',
+            top: '5px',
+            left: '12px',
             zIndex: 1,
           },
         },
         component: {
           style: {
-            width: '55px',
+            width: '54px',
             height: '20px',
             color: '#bfbfbf',
-          },
-          props: {
-            // 富文本的placholder的字符串中带有...会出现问题，所以改用实体字符的方式解决
-            placeholder: '<p>请输入&hellip;</p>',
           },
         },
       }),

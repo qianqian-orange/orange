@@ -20,7 +20,6 @@ export default class Text extends Base {
         style: {
           display: 'flex',
           alignItems: 'flex-start',
-          width: '84px',
           height: '20px',
           color: '#b8bcbf',
           fontSize: '14px',
@@ -31,7 +30,7 @@ export default class Text extends Base {
           letterSpace: '0px',
         },
         props: {
-          lineHeight: '20px',
+          lineHeight: '22px',
           margin: '0 0 5px 0',
           zoom: 1,
         },
@@ -46,6 +45,15 @@ export default class Text extends Base {
 
     this.on('zoom', (zoom) => {
       this.component.props.zoom = zoom
+    })
+
+    this.on('fontSize', (value) => {
+      const { component } = this
+      // 经过测试，当字体大小与行高的间距小于2px时会出现滚动条，为了解决这个问题需要保证行高与字体大小间距在2px以上
+      // 后续参考墨刀解决该问题
+      const interval = 8
+      if (parseInt(component.props.lineHeight, 10) >= value + interval) return
+      component.props.lineHeight = `${value + interval}px`
     })
 
     this.container.eventEmitter.on('dblclick', ({ vm }) => {
@@ -76,6 +84,9 @@ export default class Text extends Base {
     })
 
     this.component.eventEmitter.on('change', (html) => {
+      // dragWidget组件不要执行下面的逻辑，因为ricthText的值被修改后会
+      // 影响mouseWidget组件的富文本p标签就会带上line-height, margin的样式
+      if (!this.getInstance) return
       store.commit(`canvas/${UPDATE_CANVAS_WIDGET_DATA}`, {
         log: {
           source: 'material -> constructors -> text',

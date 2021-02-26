@@ -6,43 +6,30 @@
       @scroll-end="scrollEnd"
     >
       <div
-        ref="workspace-screen-container"
         class="workspace-screen-container"
         :style="{
           width: screen.container.width,
           height: screen.container.height,
         }"
       >
-        <screen-grid />
         <screen-canvas />
-        <screen-mark-line @adjust="adjust" />
-        <screen-resizer @adjust="adjust" />
       </div>
     </el-scrollbar>
     <screen-ruler @scroll-to="scrollTo" />
-    <hover-menu />
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { UPDATE_GLOBAL_DATA } from '@/store/modules/global/mutation-types'
-import ScreenGrid from './components/grid'
 import ScreenCanvas from './components/canvas'
-import ScreenMarkLine from './components/markLine'
-import ScreenResizer from './components/resizer'
-import HoverMenu from '@/components/menu/hoverMenu'
 import ScreenRuler from './components/ruler'
 import scroll from './mixins/scroll'
 
 export default {
   name: 'WorkspaceScreen',
   components: {
-    ScreenGrid,
     ScreenCanvas,
-    ScreenMarkLine,
-    ScreenResizer,
-    HoverMenu,
     ScreenRuler,
   },
   mixins: [scroll],
@@ -68,11 +55,6 @@ export default {
     })
   },
   methods: {
-    adjust({ widget, el }) {
-      // 如果点击的组件在其它组件内，那么调整resizer或者markline节点的位置
-      if (widget.parent) widget.parent.getInstance().$el.appendChild(el)
-      else this.$refs['workspace-screen-container'].appendChild(el)
-    },
     ...mapMutations('global', [UPDATE_GLOBAL_DATA]),
   },
 }
