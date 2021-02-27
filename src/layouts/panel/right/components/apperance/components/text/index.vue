@@ -3,12 +3,11 @@
     <div
       v-for="(components, index) in items"
       :key="index"
-      class="apperance-text-block"
+      :class="['apperance-text-row-container', `col-${components.length}`]"
     >
       <div
         v-for="item in components"
         :key="item.name"
-        :class="[`col-${components.length}`]"
       >
         <component :is="item" />
       </div>
@@ -40,7 +39,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .apperance-text-block {
+  .apperance-text-row-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,15 +52,15 @@ export default {
 
     > div {
       flex-basis: 100%;
+    }
 
-      &.col-2 {
-        &:nth-of-type(1) {
-          flex-basis: 50%;
-        }
+    &.col-2 > div {
+      &:nth-of-type(1) {
+        flex-basis: 50%;
+      }
 
-        &:nth-of-type(2) {
-          flex-basis: 40%;
-        }
+      &:nth-of-type(2) {
+        flex-basis: 40%;
       }
     }
   }

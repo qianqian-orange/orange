@@ -17,21 +17,20 @@
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'ApperanceGeneral',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     items() {
       const items = []
-      const { container, component, zoom, props: { editable } } = this.store.dataSource
+      const { zoom, props: { editable } } = this.store.dataSource
       const computed = value => Math.floor(parseInt(value, 10) / zoom)
-      const top = computed(container.style.top)
-      const left = computed(container.style.left)
-      const width = computed(component.style.width)
-      const height = computed(component.style.height)
+      const top = computed(this.container.style.top)
+      const left = computed(this.container.style.left)
+      const width = computed(this.component.style.width)
+      const height = computed(this.component.style.height)
       const { stretch, move } = editable
       items.push({
         props: {
@@ -42,8 +41,7 @@ export default {
           disabled: !move,
         },
         update: (value) => {
-          const { container } = this.store.dataSource
-          container.style.left = value
+          this.container.style.left = value
         },
       }, {
         props: {
@@ -54,8 +52,7 @@ export default {
           disabled: !move,
         },
         update: (value) => {
-          const { container } = this.store.dataSource
-          container.style.top = value
+          this.container.style.top = value
         },
       }, {
         props: {
@@ -66,8 +63,7 @@ export default {
           disabled: !(stretch.w || stretch.e),
         },
         update: (value) => {
-          const { component } = this.store.dataSource
-          component.style.width = value
+          this.component.style.width = value
         },
       }, {
         props: {
@@ -78,8 +74,7 @@ export default {
           disabled: !(stretch.n || stretch.s),
         },
         update: (value) => {
-          const { component } = this.store.dataSource
-          component.style.height = value
+          this.component.style.height = value
         },
       })
       return items
@@ -87,7 +82,7 @@ export default {
   },
   methods: {
     onChange(update, value) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> general',
           reason: '修改组件通用样式',

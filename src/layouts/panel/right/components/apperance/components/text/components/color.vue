@@ -6,28 +6,25 @@
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextColor',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     value() {
-      const { component } = this.store.dataSource
-      return component.style.color
+      return this.component.style.color
     },
   },
   methods: {
     onInput(value) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> color',
           reason: '修改文本字体颜色',
         },
         update: () => {
-          const { component } = this.store.dataSource
-          component.style.color = value
+          this.component.style.color = value
         },
       })
     },

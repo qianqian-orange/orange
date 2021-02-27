@@ -6,46 +6,53 @@
       :class="['text-operator-item', item.active && 'active']"
       @click="onClick(item)"
     >
-      <orange-icon :type="item.type" />
+      <a-tooltip placement="bottom">
+        <template #title>
+          <span>{{ item.tip }}</span>
+        </template>
+        <orange-icon :type="item.type" />
+      </a-tooltip>
     </li>
   </ul>
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextDecoration',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     items() {
-      const { component } = this.store.dataSource
-      const { style: { fontWeight, fontStyle, textDecoration } } = component
+      const { style: { fontWeight, fontStyle, textDecoration } } = this.component
       const items = []
       items.push({
         type: 'icon-bold',
+        tip: '加粗',
         active: fontWeight === 'bold',
         update: (active) => {
-          component.style.fontWeight = active ? 'normal' : 'bold'
+          this.component.style.fontWeight = active ? 'normal' : 'bold'
         },
       }, {
         type: 'icon-italic',
+        tip: '斜体',
         active: fontStyle === 'italic',
         update: (active) => {
-          component.style.fontStyle = active ? 'normal' : 'italic'
+          this.component.style.fontStyle = active ? 'normal' : 'italic'
         },
       }, {
         type: 'icon-underline',
+        tip: '下划线',
         active: textDecoration === 'underline',
         update: (active) => {
-          component.style.textDecoration = active ? 'none' : 'underline'
+          this.component.style.textDecoration = active ? 'none' : 'underline'
         },
       }, {
         type: 'icon-strikethrough',
+        tip: '删除线',
         active: textDecoration === 'line-through',
         update: (active) => {
-          component.style.textDecoration = active ? 'none' : 'line-through'
+          this.component.style.textDecoration = active ? 'none' : 'line-through'
         },
       })
       return items
@@ -53,7 +60,7 @@ export default {
   },
   methods: {
     onClick({ update, active }) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> decoration',
           reason: '修改文本字体外观',

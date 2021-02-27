@@ -34,9 +34,11 @@ export default class Rectangle extends Base {
           },
           shadow: {
             open: false,
-            style: {
-              boxShadow: 'rgb(0 0 0 / 40%) 0px 2px 6px 0px',
-            },
+            color: 'rgb(0 0 0 / 40%)',
+            x: 0,
+            y: 2,
+            dim: 6,
+            spread: 0,
           },
         },
       },

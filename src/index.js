@@ -6,6 +6,7 @@ import OrangeCheckbox from '@/components/checkbox'
 import OrangeInputNumber from '@/components/inputNumber'
 import OrangeInputSelect from '@/components/inputSelect'
 import ColorPicker from '@/components/colorpicker'
+import OrangeSelect from '@/components/select'
 import {
   OrangeRectangle,
   OrangeRichText,
@@ -29,12 +30,13 @@ Vue.use(OrangeLine)
 ;[
   OrangeCheckbox, OrangeInputNumber,
   OrangeInputSelect, ColorPicker,
+  OrangeSelect,
 ].forEach((component) => {
   Vue.component(component.name, component)
 })
 
 const OrangeIcon = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1878848_oeobtwi7ao.js',
+  scriptUrl: '//at.alicdn.com/t/font_1878848_8iefdpjja5j.js',
 })
 Vue.component('OrangeIcon', OrangeIcon)
 

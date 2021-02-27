@@ -6,40 +6,46 @@
       :class="['text-operator-item', item.active && 'active']"
       @click="onClick(item)"
     >
-      <orange-icon :type="item.type" />
+      <a-tooltip placement="bottom">
+        <template #title>
+          <span>{{ item.tip }}</span>
+        </template>
+        <orange-icon :type="item.type" />
+      </a-tooltip>
     </li>
   </ul>
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextVertical',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     items() {
-      const { component } = this.store.dataSource
-      const { style: { alignItems } } = component
+      const { style: { alignItems } } = this.component
       const items = []
       items.push({
         type: 'icon-dingduiqi',
+        tip: '顶对齐',
         active: alignItems === 'flex-start',
         update: (active) => {
-          component.style.alignItems = active ? 'normal' : 'flex-start'
+          this.component.style.alignItems = active ? 'normal' : 'flex-start'
         },
       }, {
         type: 'icon-vertical-align-middl',
+        tip: '垂直对齐',
         active: alignItems === 'center',
         update: (active) => {
-          component.style.alignItems = active ? 'normal' : 'center'
+          this.component.style.alignItems = active ? 'normal' : 'center'
         },
       }, {
         type: 'icon-diduiqi',
+        tip: '底对齐',
         active: alignItems === 'flex-end',
         update: (active) => {
-          component.style.alignItems = active ? 'normal' : 'flex-end'
+          this.component.style.alignItems = active ? 'normal' : 'flex-end'
         },
       })
       return items
@@ -47,7 +53,7 @@ export default {
   },
   methods: {
     onClick({ update, active }) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> flex',
           reason: '修改文本字体水平对齐方式',

@@ -19,12 +19,14 @@
 <script>
 import ApperanceGeneral from './components/general'
 import ApperanceText from './components/text'
+import ApperanceBorder from './components/border'
 
 export default {
   name: 'Apperance',
   components: {
     ApperanceGeneral,
     ApperanceText,
+    ApperanceBorder,
   },
   inject: ['store'],
   computed: {
@@ -36,6 +38,13 @@ export default {
           key: 'text',
           header: '文本',
           component: ApperanceText,
+        })
+      }
+      if (editable.border) {
+        items.push({
+          key: 'border',
+          header: '边框',
+          component: ApperanceBorder,
         })
       }
       return items

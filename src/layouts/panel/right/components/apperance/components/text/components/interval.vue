@@ -1,35 +1,41 @@
 <template>
   <div class="text-interval-container">
-    <orange-input-number
+    <a-tooltip
       v-for="item in items"
       :key="item.icon"
-      v-bind="item.props"
-      size="small"
-      @change="onChange(item.update, ...arguments)"
+      placement="bottom"
     >
-      <template #label>
-        <orange-icon
-          :type="item.icon"
-        />
+      <template #title>
+        <span>{{ item.tip }}</span>
       </template>
-    </orange-input-number>
+      <orange-input-number
+        v-bind="item.props"
+        size="small"
+        @change="onChange(item.update, ...arguments)"
+      >
+        <template #label>
+          <orange-icon
+            :type="item.icon"
+          />
+        </template>
+      </orange-input-number>
+    </a-tooltip>
   </div>
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextInterval',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     items() {
-      const { component } = this.store.dataSource
-      const { style: { letterSpacing }, props: { lineHeight, margin } } = component
+      const { style: { letterSpacing }, props: { lineHeight, margin } } = this.component
       const items = []
       items.push({
         icon: 'icon-zijianju',
+        tip: '字间距',
         props: {
           label: true,
           type: 'float',
@@ -40,10 +46,11 @@ export default {
           precision: 1,
         },
         update: (value) => {
-          component.style.letterSpacing = `${value}px`
+          this.component.style.letterSpacing = `${value}px`
         },
       }, {
         icon: 'icon-hangjianju',
+        tip: '行距',
         props: {
           label: true,
           type: 'int',
@@ -54,10 +61,11 @@ export default {
           precision: 0,
         },
         update: (value) => {
-          component.props.lineHeight = `${value}px`
+          this.component.props.lineHeight = `${value}px`
         },
       }, {
         icon: 'icon-duanla',
+        tip: '段落',
         props: {
           label: true,
           type: 'int',
@@ -68,7 +76,7 @@ export default {
           precision: 0,
         },
         update: (value) => {
-          component.props.margin = `${value}px`
+          this.component.props.margin = `${value}px`
         },
       })
       return items
@@ -76,7 +84,7 @@ export default {
   },
   methods: {
     onChange(update, value) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> interval',
           reason: '修改文本间隔',

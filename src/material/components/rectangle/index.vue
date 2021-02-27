@@ -29,7 +29,12 @@ export default {
       const styles = []
       if (this.fill.open) styles.push(this.fill.style)
       if (this.stroke.open) styles.push(this.stroke.style)
-      if (this.shadow.open) styles.push(this.shadow.style)
+      if (this.shadow.open) {
+        const { color, x, y, dim, spread } = this.shadow
+        styles.push({
+          boxShadow: `${color} ${x}px ${y}px ${dim}px ${spread}px`,
+        })
+      }
       return styles.reduce((res, cur) => Object.assign(res, cur), {})
     },
   },

@@ -6,40 +6,46 @@
       :class="['text-operator-item', item.active && 'active']"
       @click="onClick(item)"
     >
-      <orange-icon :type="item.type" />
+      <a-tooltip placement="bottom">
+        <template #title>
+          <span>{{ item.tip }}</span>
+        </template>
+        <orange-icon :type="item.type" />
+      </a-tooltip>
     </li>
   </ul>
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextAlign',
-  inject: ['store'],
+  mixins: [base],
   computed: {
     items() {
-      const { component } = this.store.dataSource
-      const { style: { textAlign } } = component
+      const { style: { textAlign } } = this.component
       const items = []
       items.push({
         type: 'icon-align-left',
+        tip: '左对齐',
         active: textAlign === 'left',
         update: (active) => {
-          component.style.textAlign = active ? 'inherit' : 'left'
+          this.component.style.textAlign = active ? 'inherit' : 'left'
         },
       }, {
         type: 'icon-align-center',
+        tip: '水平居中',
         active: textAlign === 'center',
         update: (active) => {
-          component.style.textAlign = active ? 'inherit' : 'center'
+          this.component.style.textAlign = active ? 'inherit' : 'center'
         },
       }, {
         type: 'icon-align-right',
+        tip: '右对齐',
         active: textAlign === 'right',
         update: (active) => {
-          component.style.textAlign = active ? 'inherit' : 'right'
+          this.component.style.textAlign = active ? 'inherit' : 'right'
         },
       })
       return items
@@ -47,7 +53,7 @@ export default {
   },
   methods: {
     onClick({ update, active }) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> align',
           reason: '修改文本字体水平对齐方式',

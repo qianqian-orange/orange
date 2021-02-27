@@ -16,12 +16,11 @@
 </template>
 
 <script>
-import store from '@/material/store'
-import { UPDATE_WIDGET } from '@/material/store/mutation-types'
+import base from '@/layouts/panel/right/components/apperance/mixins/base'
 
 export default {
   name: 'TextFontSize',
-  inject: ['store'],
+  mixins: [base],
   data() {
     return {
       options: [12, 14, 16, 18, 20, 28, 36, 48].map(item => ({
@@ -32,20 +31,18 @@ export default {
   },
   computed: {
     value() {
-      const { component } = this.store.dataSource
-      return parseInt(component.style.fontSize, 10)
+      return parseInt(this.component.style.fontSize, 10)
     },
   },
   methods: {
     onInput(value) {
-      store.emit(UPDATE_WIDGET, {
+      this.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> fontSize',
           reason: '修改文本字体大小',
         },
         update: () => {
-          const { component } = this.store.dataSource
-          component.style.fontSize = `${value}px`
+          this.component.style.fontSize = `${value}px`
           this.store.dataSource.emit('fontSize', value)
         },
       })
