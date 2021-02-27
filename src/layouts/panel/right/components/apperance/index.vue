@@ -2,20 +2,15 @@
   <div class="apperance-container">
     <apperance-general />
     <a-collapse
-      :default-active-key="['text', 'apperance']"
+      :active-key="items.map(({ key }) => key)"
       expand-icon-position="right"
     >
       <a-collapse-panel
-        key="text"
-        header="文本"
+        v-for="item in items"
+        :key="item.key"
+        :header="item.header"
       >
-        <apperance-text />
-      </a-collapse-panel>
-      <a-collapse-panel
-        key="apperance"
-        header="外观"
-      >
-        <p>外观</p>
+        <component :is="item.component" />
       </a-collapse-panel>
     </a-collapse>
   </div>
@@ -32,6 +27,20 @@ export default {
     ApperanceText,
   },
   inject: ['store'],
+  computed: {
+    items() {
+      const items = []
+      const { props: { editable } } = this.store.dataSource
+      if (editable.text) {
+        items.push({
+          key: 'text',
+          header: '文本',
+          component: ApperanceText,
+        })
+      }
+      return items
+    },
+  },
 }
 </script>
 

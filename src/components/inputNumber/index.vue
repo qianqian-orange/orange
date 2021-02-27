@@ -1,8 +1,10 @@
 <template>
   <div class="orange-input-number-container">
-    <span
-      :class="['label', size]"
-    >{{ label }}</span>
+    <span :class="['orange-input-number-label', size]">
+      <slot name="label">
+        {{ label }}
+      </slot>
+    </span>
     <a-input-number
       :class="[label && 'input-padding-left', hover && 'hover2show']"
       :value="value"
@@ -25,8 +27,12 @@ export default {
   },
   props: {
     ...InputNumber.props,
-    label: {
+    type: {
       type: String,
+      default: 'int',
+    },
+    label: {
+      type: [String, Boolean],
       default: '',
     },
     hover: {
@@ -41,7 +47,8 @@ export default {
   },
   methods: {
     onChange(value) {
-      value = parseInt(value, 10)
+      if (this.type === 'int') value = parseInt(value, 10)
+      if (this.type === 'float') value = parseFloat(value, 10)
       if (Number.isNaN(value)) return
       this.$emit('input', value)
       this.$emit('change', value)
@@ -51,10 +58,12 @@ export default {
 </script>
 
 <style lang="less">
-  .orange-input-number-container {
-    position: relative;
+  .orange-input-number {
+    &-container {
+      position: relative;
+    }
 
-    .label {
+    &-label {
       position: absolute;
       top: 50%;
       left: 6px;

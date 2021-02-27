@@ -1,8 +1,8 @@
-import Rectangle from '../constructors/rectangle'
+import Input from '../constructors/input'
 import Text from '../constructors/text'
 
 export const input = {
-  input: new Rectangle({
+  input: new Input({
     id: 'input',
     component: {
       style: {
@@ -23,6 +23,15 @@ export const input = {
     children: [
       new Text({
         id: 'text',
+        props: {
+          editable: {
+            text: false,
+            stretch: {
+              e: true,
+            },
+            move: false,
+          },
+        },
         richText: '<p>请输入&hellip;</p>',
         container: {
           style: {
@@ -35,7 +44,6 @@ export const input = {
         component: {
           style: {
             width: '54px',
-            height: '20px',
             color: '#bfbfbf',
           },
         },

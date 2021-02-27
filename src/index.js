@@ -34,7 +34,7 @@ Vue.use(OrangeLine)
 })
 
 const OrangeIcon = Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1878848_lwdll2jbips.js',
+  scriptUrl: '//at.alicdn.com/t/font_1878848_oeobtwi7ao.js',
 })
 Vue.component('OrangeIcon', OrangeIcon)
 

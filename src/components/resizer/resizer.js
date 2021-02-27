@@ -10,6 +10,16 @@ export default class Resizer {
       top: noop,
       left: noop,
     }
+    this.direction = { // 判断哪些方向可以移动
+      n: true,
+      s: true,
+      w: true,
+      e: true,
+      nw: true,
+      ne: true,
+      sw: true,
+      se: true,
+    }
     this.resize = false // 判断是否执行调节器逻辑
     this.move = false // 判断是否有移动过
     // 判断可以调节属性值
@@ -36,14 +46,16 @@ export default class Resizer {
 
   setData({
     el,
-    update,
+    direction,
     minWidth,
     minHeight,
+    update,
   }) {
     this.el = el
-    this.update = update
+    this.direction = direction
     this.minWidth = minWidth
     this.minHeight = minHeight
+    this.update = update
   }
 
   getLines() {
@@ -99,100 +111,121 @@ export default class Resizer {
     const height = rect.height
     const circulars = []
     if (rect.width >= this.minimum) {
-      circulars.push({
-        id: 'n-resize',
-        style: {
-          top: top + 'px',
-          left: left + width / 2 + 'px',
-          cursor: 'n-resize',
-        },
-        mousedown: (evt) => {
-          ;['top', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-          this.start(evt)
-        },
-      }, {
-        id: 's-resize',
-        style: {
-          top: bottom + 'px',
-          left: left + width / 2 + 'px',
-          cursor: 's-resize',
-        },
-        mousedown: (evt) => {
-          this.resizeEnable.height = true
-          this.start(evt)
-        },
-      })
+      if (this.direction.n) {
+        circulars.push({
+          id: 'n-resize',
+          style: {
+            top: top + 'px',
+            left: left + width / 2 + 'px',
+            cursor: 'n-resize',
+          },
+          mousedown: (evt) => {
+            ;['top', 'height'].forEach((key) => { this.resizeEnable[key] = true })
+            this.start(evt)
+          },
+        })
+      }
+      if (this.direction.s) {
+        circulars.push({
+          id: 's-resize',
+          style: {
+            top: bottom + 'px',
+            left: left + width / 2 + 'px',
+            cursor: 's-resize',
+          },
+          mousedown: (evt) => {
+            this.resizeEnable.height = true
+            this.start(evt)
+          },
+        })
+      }
     }
     if (rect.height >= this.minimum) {
+      if (this.direction.e) {
+        circulars.push({
+          id: 'e-resize',
+          style: {
+            top: top + height / 2 + 'px',
+            left: right + 'px',
+            cursor: 'e-resize',
+          },
+          mousedown: (evt) => {
+            this.resizeEnable.width = true
+            this.start(evt)
+          },
+        })
+      }
+      if (this.direction.w) {
+        circulars.push({
+          id: 'w-resize',
+          style: {
+            top: top + height / 2 + 'px',
+            left: left + 'px',
+            cursor: 'w-resize',
+          },
+          mousedown: (evt) => {
+            ;['left', 'width'].forEach((key) => { this.resizeEnable[key] = true })
+            this.start(evt)
+          },
+        })
+      }
+    }
+    if (this.direction.nw) {
       circulars.push({
-        id: 'e-resize',
+        id: 'nw-resize',
         style: {
-          top: top + height / 2 + 'px',
-          left: right + 'px',
-          cursor: 'e-resize',
-        },
-        mousedown: (evt) => {
-          this.resizeEnable.width = true
-          this.start(evt)
-        },
-      }, {
-        id: 'w-resize',
-        style: {
-          top: top + height / 2 + 'px',
+          top: top + 'px',
           left: left + 'px',
-          cursor: 'w-resize',
+          cursor: 'nw-resize',
         },
         mousedown: (evt) => {
-          ;['left', 'width'].forEach((key) => { this.resizeEnable[key] = true })
+          ;['top', 'left', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
           this.start(evt)
         },
       })
     }
-    circulars.push({
-      id: 'nw-resize',
-      style: {
-        top: top + 'px',
-        left: left + 'px',
-        cursor: 'nw-resize',
-      },
-      mousedown: (evt) => {
-        ;['top', 'left', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    }, {
-      id: 'ne-resize',
-      style: {
-        top: top + 'px',
-        left: right + 'px',
-        cursor: 'ne-resize',
-      },
-      mousedown: (evt) => {
-        ;['top', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    }, {
-      id: 'se-resize',
-      style: {
-        top: bottom + 'px',
-        left: right + 'px',
-        cursor: 'se-resize',
-      },
-      mousedown: (evt) => {
-        ;['width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    }, {
-      id: 'sw-resize',
-      style: {
-        top: bottom + 'px',
-        left: left + 'px',
-        cursor: 'sw-resize',
-      },
-      mousedown: (evt) => {
-        ['left', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
-        this.start(evt)
-      },
-    })
+    if (this.direction.ne) {
+      circulars.push({
+        id: 'ne-resize',
+        style: {
+          top: top + 'px',
+          left: right + 'px',
+          cursor: 'ne-resize',
+        },
+        mousedown: (evt) => {
+          ;['top', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
+          this.start(evt)
+        },
+      })
+    }
+    if (this.direction.se) {
+      circulars.push({
+        id: 'se-resize',
+        style: {
+          top: bottom + 'px',
+          left: right + 'px',
+          cursor: 'se-resize',
+        },
+        mousedown: (evt) => {
+          ;['width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
+          this.start(evt)
+        },
+      })
+    }
+    if (this.direction.sw) {
+      circulars.push({
+        id: 'sw-resize',
+        style: {
+          top: bottom + 'px',
+          left: left + 'px',
+          cursor: 'sw-resize',
+        },
+        mousedown: (evt) => {
+          ['left', 'width', 'height'].forEach((key) => { this.resizeEnable[key] = true })
+          this.start(evt)
+        },
+      })
+    }
     return circulars
   }
 

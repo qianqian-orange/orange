@@ -112,5 +112,10 @@ export default {
     .ant-tabs-ink-bar {
       background-color: transparent;
     }
+
+    .anticon svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 </style>

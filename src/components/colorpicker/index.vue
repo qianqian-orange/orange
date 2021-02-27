@@ -16,12 +16,12 @@
         @click="hide"
       />
     </template>
-    <div
-      class="color-picker-block"
-      :style="{
-        backgroundColor: value,
-      }"
-    />
+    <div class="color-picker-block-container">
+      <div
+        class="color-picker-block"
+        :style="{ backgroundColor: value }"
+      />
+    </div>
   </a-popover>
 </template>
 
@@ -68,17 +68,30 @@ export default {
 </script>
 
 <style lang="less">
-  .color-picker-block {
-    width: 14px;
-    height: 14px;
+  .color-picker-block-container {
+    width: 16px;
+    height: 16px;
     border: 1px solid @deepGrey;
-    transition: border-color 0.2s ease-out 0;
-    border-radius: 2px;
+    background-image:
+      linear-gradient(45deg, rgb(204, 204, 204) 25%, transparent 0),
+      linear-gradient(-45deg, rgb(204, 204, 204) 25%, transparent 0),
+      linear-gradient(45deg, transparent 75%, rgb(204, 204, 204) 0),
+      linear-gradient(-45deg, transparent 75%, rgb(204, 204, 204) 0);
+    background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+    background-size: 10px 10px;
+    transition: border-color 0.2s ease-out;
+    border-radius: 1px;
+    background-clip: padding-box;
     cursor: pointer;
 
     &:hover {
       border-color: @textSecondaryColor;
     }
+  }
+
+  .color-picker-block {
+    width: 100%;
+    height: 100%;
   }
 
   .color-picker-popover {

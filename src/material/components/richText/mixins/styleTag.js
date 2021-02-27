@@ -29,10 +29,10 @@ export default {
       const selector = `#${this.id} p`
       text += selector +
         '{' +
-          `margin: ${this.margin};` +
+          `margin-bottom: ${this.margin};` +
           `line-height: ${this.lineHeight};` +
         '}'
-      text += `${selector}:last-child { margin: 0px; }`
+      text += `${selector}:last-child { margin-bottom: 0px; }`
       this.styleTag.innerText = text
     },
   },

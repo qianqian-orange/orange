@@ -49,6 +49,7 @@ export default {
   },
   mounted() {
     this.getInstance = () => new E(this.$el.firstChild)
+    this.editor.config.placeholder = ''
     this.editor.config.focus = false
     this.editor.config.onchange = (html) => {
       const index = html.lastIndexOf('<p>')
@@ -104,6 +105,7 @@ export default {
       padding: 0;
 
       p {
+        margin: 0;
         white-space: pre-wrap;
         word-break: break-word;
       }

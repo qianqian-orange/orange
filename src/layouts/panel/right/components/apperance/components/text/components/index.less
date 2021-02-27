@@ -1,0 +1,26 @@
+.text-operator {
+  &-list {
+    display: flex;
+    width: 100%;
+    border: 1px solid @deepGrey;
+    background-color: @black;
+  }
+
+  &-item {
+    flex: 1;
+    height: 20px;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover {
+      color: @deepBlue;
+    }
+
+    &.active {
+      color: @lightGreyWhite;
+      background-color: @deepBlue;
+    }
+  }
+}

@@ -86,7 +86,7 @@ export default {
         background-color: @lightBlack;
 
         .ant-select-arrow-icon {
-          width: 8px;
+          font-size: 8px;
         }
       }
     }

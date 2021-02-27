@@ -16,10 +16,3 @@ export default {
     height: 100%;
   }
 </style>
-
-<style lang="less">
-  .anticon svg {
-    width: 100%;
-    height: 100%;
-  }
-</style>

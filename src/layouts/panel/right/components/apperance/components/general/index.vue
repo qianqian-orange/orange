@@ -8,12 +8,9 @@
         v-for="item in items"
         :key="item.label"
         :style="{ marginBottom: '4px' }"
-        :label="item.label"
-        :value="item.value"
-        :min="item.min"
-        :max="item.max"
+        v-bind="item.props"
         size="small"
-        @change="onChange(item, ...arguments)"
+        @change="onChange(item.update, ...arguments)"
       />
     </div>
   </div>
@@ -26,93 +23,79 @@ import { UPDATE_WIDGET } from '@/material/store/mutation-types'
 export default {
   name: 'ApperanceGeneral',
   inject: ['store'],
-  data() {
-    return {
-      items: [],
-    }
-  },
   computed: {
-    rect() {
-      const {
-        zoom,
-        container: {
-          style: {
-            top,
-            left,
-          },
-        },
-        component: {
-          style: {
-            width,
-            height,
-          },
-        },
-      } = this.store.dataSource
+    items() {
+      const items = []
+      const { container, component, zoom, props: { editable } } = this.store.dataSource
       const computed = value => Math.floor(parseInt(value, 10) / zoom)
-      return {
-        top: computed(top),
-        left: computed(left),
-        width: computed(width),
-        height: computed(height),
-      }
+      const top = computed(container.style.top)
+      const left = computed(container.style.left)
+      const width = computed(component.style.width)
+      const height = computed(component.style.height)
+      const { stretch, move } = editable
+      items.push({
+        props: {
+          label: 'X',
+          value: left,
+          min: -1000,
+          max: 3000,
+          disabled: !move,
+        },
+        update: (value) => {
+          const { container } = this.store.dataSource
+          container.style.left = value
+        },
+      }, {
+        props: {
+          label: 'Y',
+          value: top,
+          min: -1000,
+          max: 3000,
+          disabled: !move,
+        },
+        update: (value) => {
+          const { container } = this.store.dataSource
+          container.style.top = value
+        },
+      }, {
+        props: {
+          label: 'W',
+          value: width,
+          min: 8,
+          max: 3000,
+          disabled: !(stretch.w || stretch.e),
+        },
+        update: (value) => {
+          const { component } = this.store.dataSource
+          component.style.width = value
+        },
+      }, {
+        props: {
+          label: 'H',
+          value: height,
+          min: 8,
+          max: 3000,
+          disabled: !(stretch.n || stretch.s),
+        },
+        update: (value) => {
+          const { component } = this.store.dataSource
+          component.style.height = value
+        },
+      })
+      return items
     },
-  },
-  watch: {
-    rect() {
-      this.setData()
-    },
-  },
-  mounted() {
-    this.setData()
   },
   methods: {
-    setData() {
-      const { top, left, width, height } = this.rect
-      this.items = [{
-        label: 'X',
-        value: left,
-        min: -1000,
-        max: 3000,
-      }, {
-        label: 'Y',
-        value: top,
-        min: -1000,
-        max: 3000,
-      }, {
-        label: 'W',
-        value: width,
-        min: 8,
-        max: 3000,
-      }, {
-        label: 'H',
-        value: height,
-        min: 8,
-        max: 3000,
-      }]
-    },
-    onChange(item, value) {
+    onChange(update, value) {
       store.emit(UPDATE_WIDGET, {
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> general',
           reason: '修改组件通用样式',
         },
         update: () => {
-          const { container, component, zoom } = this.store.dataSource
+          const { zoom } = this.store.dataSource
           const computed = value => Math.floor(value * zoom) + 'px'
-          switch (item.label) {
-            case 'X':
-              container.style.left = computed(value)
-              break
-            case 'Y':
-              container.style.top = computed(value)
-              break
-            case 'W':
-              component.style.width = computed(value)
-              break
-            case 'H':
-              component.style.height = computed(value)
-              break
-          }
+          update(computed(value))
         },
       })
     },
@@ -123,7 +106,7 @@ export default {
 <style lang="less" scoped>
   .general {
     &-container {
-      padding: 10px 14px 6px 10px;
+      padding: 14px 14px 6px 10px;
       border-bottom: 1px solid @deepBlack;
     }
 

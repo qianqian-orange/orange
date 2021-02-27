@@ -16,18 +16,27 @@ export default class Text extends Base {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       is: 'orange-rich-text',
+      props: {
+        editable: {
+          text: true,
+          border: false,
+          icon: false,
+          stretch: true,
+          move: true,
+        },
+      },
       component: {
         style: {
           display: 'flex',
           alignItems: 'flex-start',
-          height: '20px',
+          height: '22px',
           color: '#b8bcbf',
           fontSize: '14px',
           fontWeight: 'normal',
           fontStyle: 'normal', // 可选值: italic
           textAlign: 'left',
           textDecoration: 'none', // 可选值: line-through underline
-          letterSpace: '0px',
+          letterSpacing: '0px',
         },
         props: {
           lineHeight: '22px',
@@ -52,11 +61,10 @@ export default class Text extends Base {
       // 经过测试，当字体大小与行高的间距小于2px时会出现滚动条，为了解决这个问题需要保证行高与字体大小间距在2px以上
       // 后续参考墨刀解决该问题
       const interval = 8
-      if (parseInt(component.props.lineHeight, 10) >= value + interval) return
       component.props.lineHeight = `${value + interval}px`
     })
 
-    this.container.eventEmitter.on('dblclick', ({ vm }) => {
+    this.container.on('dblclick', ({ vm }) => {
       vm.removeClass(OVERFLOW_HIDDEN)
       vm.addClass(BORDER_DASHED_LINE)
       // 文本内容全选
@@ -75,15 +83,15 @@ export default class Text extends Base {
       Bus.$on(DOCUMENT_MOUSE_DOWN, mousedown)
     })
 
-    this.container.eventEmitter.on('bootstrap', ({ vm }) => {
+    this.container.on('bootstrap', ({ vm }) => {
       vm.addClass(OVERFLOW_HIDDEN) // 设置容器的overflow为hidden
     })
 
-    this.component.eventEmitter.on('bootstrap', (vm) => {
+    this.component.on('bootstrap', (vm) => {
       vm.setContent(this.richText) // 设置编辑器内容
     })
 
-    this.component.eventEmitter.on('change', (html) => {
+    this.component.on('change', (html) => {
       // dragWidget组件不要执行下面的逻辑，因为ricthText的值被修改后会
       // 影响mouseWidget组件的富文本p标签就会带上line-height, margin的样式
       if (!this.getInstance) return

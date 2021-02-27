@@ -4,7 +4,7 @@ import { GLASS } from '@/components/widget/const/classes'
 export const dblclickEvent = {
   // 双击组件时移除glass类
   glass() {
-    this.container.eventEmitter.on('dblclick', ({ evt, vm }) => {
+    this.container.on('dblclick', ({ evt, vm }) => {
       vm.removeClass(GLASS)
       // 监听mousedown事件，当点击mouseWidget组件以外的元素时恢复glass类
       const mousedown = (evt) => {

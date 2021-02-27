@@ -40,11 +40,13 @@ export default {
     // 绑定获取vm实例的方法
     this.dataSource.container.emit('bootstrap', { vm: this.$refs.widget })
     Bus.$on(DOCUMENT_CONTEXT_MENU, this.contextmenu)
-    this.addEventListener()
+    const { props: { editable } } = this.dataSource
+    if (editable.move) this.addEventListener()
   },
   beforeDestroy() {
     Bus.$off(DOCUMENT_CONTEXT_MENU, this.contextmenu)
-    this.removeEventListener()
+    const { props: { editable } } = this.dataSource
+    if (editable.move) this.removeEventListener()
   },
   methods: {
     mousedown(evt) {

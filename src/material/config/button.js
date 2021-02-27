@@ -29,6 +29,12 @@ export const button = {
     children: [
       new Icon({
         id: 'icon',
+        props: {
+          editable: {
+            stretch: false,
+            move: false,
+          },
+        },
         container: {
           style: {
             position: 'absolute',
@@ -51,11 +57,21 @@ export const button = {
       }),
       new Text({
         id: 'text',
+        props: {
+          editable: {
+            // 只能右拉伸
+            text: false,
+            stretch: {
+              e: true,
+            },
+            move: false,
+          },
+        },
         richText: '<p>搜索</p>',
         container: {
           style: {
             position: 'absolute',
-            top: '5px',
+            top: '4px',
             left: '36px',
             zIndex: 2,
           },
@@ -63,7 +79,6 @@ export const button = {
         component: {
           style: {
             width: '28px',
-            height: '20px',
             color: '#fff',
           },
         },

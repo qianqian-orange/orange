@@ -100,3 +100,12 @@ export default {
     z-index: 0;
   }
 </style>
+
+<style lang="less">
+  .screen-canvas-container {
+    .anticon svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+</style>

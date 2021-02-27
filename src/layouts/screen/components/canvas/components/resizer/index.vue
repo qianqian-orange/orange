@@ -41,8 +41,9 @@ export default {
       this.$refs.resizer.visible = false
     },
     setData(el) {
+      const widget = el[el.id]
       this.$emit('adjust', {
-        widget: el[el.id],
+        widget,
         el: this.resizer.$el,
       })
       const {
@@ -51,8 +52,10 @@ export default {
           minHeight,
         },
       } = el.firstChild
+      const { editable: { stretch } } = widget.props
       this.$refs.resizer.setData({
         el,
+        direction: stretch,
         minWidth: parseInt(minWidth, 10),
         minHeight: parseInt(minHeight, 10),
         update: {

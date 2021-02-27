@@ -13,6 +13,7 @@ export default eventEmitterDecorator(class Base {
     id = '',
     is = '',
     _zoom = 1,
+    props = {},
     parent = null,
     children = [],
     container = {},
@@ -21,6 +22,7 @@ export default eventEmitterDecorator(class Base {
     this.id = id
     this.is = is
     this._zoom = _zoom
+    this.props = props
     this.parent = parent
     this.children = children
     // 这里不要直接绑定vm实例，不然clone的时候消耗性能
@@ -34,11 +36,24 @@ export default eventEmitterDecorator(class Base {
         borderRadius: 0,
       }, component.style || {}),
     })
+    const { editable } = props
+    const { stretch } = editable
+    editable.stretch = stretch === false ? {} : (typeof stretch === 'object' ? stretch : {
+      n: true,
+      s: true,
+      e: true,
+      w: true,
+      ne: true,
+      nw: true,
+      se: true,
+      sw: true,
+    })
     this.initEvents()
     this.initEventEmitter()
   }
 
   initEvents() {
+    // container的事件是绑定在div上，对于自定义事件需要通过手动派发Event事件
     ;['click', 'dblclick'].forEach((event) => {
       this.container.events[event] = (evt) => {
         // 如果是dragWidget组件，那么不需要执行下面的逻辑
@@ -48,7 +63,8 @@ export default eventEmitterDecorator(class Base {
         this.container.emit(event, { evt, vm })
       }
     })
-    ;['bootstrap', 'change'].forEach((event) => {
+    // component事件是绑定在组件上的，需要通过vm.$emit的方式触发
+    ;['bootstrap', 'change', 'click'].forEach((event) => {
       this.component.events[event] = (...args) => {
         this.component.emit(event, ...args)
       }

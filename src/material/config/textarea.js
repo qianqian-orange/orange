@@ -89,6 +89,15 @@ export const textarea = {
     children: [
       new Text({
         id: 'text',
+        props: {
+          editable: {
+            text: false,
+            stretch: {
+              e: true,
+            },
+            move: false,
+          },
+        },
         richText: '<p>请输入&hellip;</p>',
         container: {
           style: {
@@ -101,7 +110,6 @@ export const textarea = {
         component: {
           style: {
             width: '54px',
-            height: '20px',
             color: '#bfbfbf',
           },
         },

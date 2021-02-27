@@ -7,6 +7,15 @@ export default class Rectangle extends Base {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       is: 'orange-rectangle',
+      props: {
+        editable: {
+          text: false,
+          border: true,
+          icon: false,
+          stretch: true,
+          move: true,
+        },
+      },
       component: {
         props: {
           fill: {

@@ -1,6 +1,7 @@
 <template>
   <div
     :style="rectangleStyle"
+    @click.self="onClick"
   >
     <slot />
   </div>
@@ -30,6 +31,11 @@ export default {
       if (this.stroke.open) styles.push(this.stroke.style)
       if (this.shadow.open) styles.push(this.shadow.style)
       return styles.reduce((res, cur) => Object.assign(res, cur), {})
+    },
+  },
+  methods: {
+    onClick(evt) {
+      this.$emit('click', evt)
     },
   },
 }

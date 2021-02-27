@@ -42,14 +42,21 @@ export default {
     this.removeEventListener()
   },
   methods: {
-    setData({ el, update, minWidth, minHeight }) {
+    setData({
+      el,
+      minWidth,
+      minHeight,
+      direction,
+      update,
+    }) {
       this.visible = true
       target = el
       resizer.setData({
         el,
-        update,
+        direction,
         minWidth,
         minHeight,
+        update,
       })
       this.lines = resizer.getLines()
       this.circulars = resizer.getCirculars()

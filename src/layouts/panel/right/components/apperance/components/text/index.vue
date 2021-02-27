@@ -1,11 +1,16 @@
 <template>
   <div>
-    <div class="apperance-text-block">
-      <div>
-        <text-font-size />
-      </div>
-      <div>
-        <text-color />
+    <div
+      v-for="(components, index) in items"
+      :key="index"
+      class="apperance-text-block"
+    >
+      <div
+        v-for="item in components"
+        :key="item.name"
+        :class="[`col-${components.length}`]"
+      >
+        <component :is="item" />
       </div>
     </div>
   </div>
@@ -14,12 +19,22 @@
 <script>
 import TextFontSize from './components/fontSize'
 import TextColor from './components/color'
+import TextDecoration from './components/decoration'
+import TextAlign from './components/align'
+import TextVertical from './components/vertical'
+import TextInterval from './components/interval'
 
 export default {
   name: 'ApperanceText',
-  components: {
-    TextFontSize,
-    TextColor,
+  data() {
+    return {
+      items: [
+        [TextFontSize, TextColor],
+        [TextDecoration, TextAlign],
+        [TextVertical],
+        [TextInterval],
+      ],
+    }
   },
 }
 </script>
@@ -33,15 +48,20 @@ export default {
 
     &:last-child {
       margin-bottom: 0;
+      margin-left: -4px;
     }
 
     > div {
-      &:first-child {
-        flex-basis: 60%;
-      }
+      flex-basis: 100%;
 
-      &:last-child {
-        flex-basis: 40%;
+      &.col-2 {
+        &:nth-of-type(1) {
+          flex-basis: 50%;
+        }
+
+        &:nth-of-type(2) {
+          flex-basis: 40%;
+        }
       }
     }
   }
