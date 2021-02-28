@@ -10,7 +10,7 @@
       </li>
     </ul>
     <orange-input-number
-      :value="value"
+      :value="store.borderRadius"
       :min="0"
       :max="1000"
       size="small"
@@ -20,32 +20,17 @@
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'BorderRadius',
-  mixins: [base],
+  inject: ['store'],
   data() {
     return {
       items: ['icon-yuanjiao1'],
     }
   },
-  computed: {
-    value() {
-      return parseInt(this.component.style.borderRadius, 10)
-    },
-  },
   methods: {
     onChange(value) {
-      this.update({
-        log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> border -> components -> radius',
-          reason: '修改方框圆角',
-        },
-        update: () => {
-          this.component.style.borderRadius = `${value}px`
-        },
-      })
+      this.store.borderRadius = value
     },
   },
 }

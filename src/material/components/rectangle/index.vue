@@ -30,9 +30,9 @@ export default {
       if (this.fill.open) styles.push(this.fill.style)
       if (this.stroke.open) styles.push(this.stroke.style)
       if (this.shadow.open) {
-        const { color, x, y, dim, spread } = this.shadow
+        const { shadowColor, shadowOffsetX, shadowOffsetY, shadowBlur, shadowSpread } = this.shadow
         styles.push({
-          boxShadow: `${color} ${x}px ${y}px ${dim}px ${spread}px`,
+          boxShadow: `${shadowColor} ${shadowOffsetX} ${shadowOffsetY} ${shadowBlur} ${shadowSpread}`,
         })
       }
       return styles.reduce((res, cur) => Object.assign(res, cur), {})

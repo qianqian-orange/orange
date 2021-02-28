@@ -48,9 +48,7 @@
       />
     </div> -->
     <!-- <input type="color"> -->
-    <div style="padding-left: 400px;">
-      <color-picker />
-    </div>
+    <orange-select />
   </div>
 </template>
 

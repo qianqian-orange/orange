@@ -1,17 +1,17 @@
 <template>
   <color-picker
-    :value="store.color"
+    :value="store.iconColor"
     @input="onInput"
   />
 </template>
 
 <script>
 export default {
-  name: 'TextColor',
+  name: 'IconColor',
   inject: ['store'],
   methods: {
     onInput(value) {
-      this.store.color = value
+      this.store.iconColor = value
     },
   },
 }

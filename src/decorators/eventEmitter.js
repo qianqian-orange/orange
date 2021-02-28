@@ -16,7 +16,7 @@ export function eventEmitterDecorator(Constructor) {
   })
 
   constructor.prototype.on = function (type, fn) {
-    this.eventEmitter.on(type, fn)
+    return this.eventEmitter.on(type, fn)
   }
 
   constructor.prototype.off = function (type, fn) {

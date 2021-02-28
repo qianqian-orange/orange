@@ -10,89 +10,67 @@
         :style="{ marginBottom: '4px' }"
         v-bind="item.props"
         size="small"
-        @change="onChange(item.update, ...arguments)"
+        @change="item.update"
       />
     </div>
   </div>
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'ApperanceGeneral',
-  mixins: [base],
+  inject: ['store'],
   computed: {
     items() {
       const items = []
-      const { zoom, props: { editable } } = this.store.dataSource
-      const computed = value => Math.floor(parseInt(value, 10) / zoom)
-      const top = computed(this.container.style.top)
-      const left = computed(this.container.style.left)
-      const width = computed(this.component.style.width)
-      const height = computed(this.component.style.height)
+      const { props: { editable } } = this.store.dataSource
       const { stretch, move } = editable
       items.push({
         props: {
           label: 'X',
-          value: left,
+          value: this.store.left,
           min: -1000,
           max: 3000,
           disabled: !move,
         },
         update: (value) => {
-          this.container.style.left = value
+          this.store.left = value
         },
       }, {
         props: {
           label: 'Y',
-          value: top,
+          value: this.store.top,
           min: -1000,
           max: 3000,
           disabled: !move,
         },
         update: (value) => {
-          this.container.style.top = value
+          this.store.top = value
         },
       }, {
         props: {
           label: 'W',
-          value: width,
+          value: this.store.width,
           min: 8,
           max: 3000,
           disabled: !(stretch.w || stretch.e),
         },
         update: (value) => {
-          this.component.style.width = value
+          this.store.width = value
         },
       }, {
         props: {
           label: 'H',
-          value: height,
+          value: this.store.height,
           min: 8,
           max: 3000,
           disabled: !(stretch.n || stretch.s),
         },
         update: (value) => {
-          this.component.style.height = value
+          this.store.height = value
         },
       })
       return items
-    },
-  },
-  methods: {
-    onChange(update, value) {
-      this.update({
-        log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> general',
-          reason: '修改组件通用样式',
-        },
-        update: () => {
-          const { zoom } = this.store.dataSource
-          const computed = value => Math.floor(value * zoom) + 'px'
-          update(computed(value))
-        },
-      })
     },
   },
 }

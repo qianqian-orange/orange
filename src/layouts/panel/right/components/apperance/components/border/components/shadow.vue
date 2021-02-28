@@ -2,12 +2,12 @@
   <div class="border-item-container">
     <div>
       <orange-checkbox
-        :checked="shadow.open"
-        @change="onChange(shadow, 'open', value => value.target.checked, ...arguments)"
+        :checked="store.shadow.open"
+        @change="onChange"
       />
       <color-picker
-        :value="shadow.color"
-        @input="onChange(shadow, 'color', value => value, ...arguments)"
+        :value="store.shadowColor"
+        @input="update('shadowColor', ...arguments)"
       />
       <span class="border-item-text">阴影</span>
     </div>
@@ -21,7 +21,7 @@
           :hover="false"
           size="small"
           v-bind="item.props"
-          @change="onChange(shadow, item.key, value => value, ...arguments)"
+          @change="update(item.key, ...arguments)"
         />
         <span class="border-shaow-input-number-label">{{ item.label }}</span>
       </li>
@@ -30,47 +30,42 @@
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'BorderShadow',
-  mixins: [base],
+  inject: ['store'],
   computed: {
-    shadow() {
-      return this.component.props.shadow
-    },
     items() {
       const items = []
-      const { x, y, dim, spread } = this.shadow
+      const { shadowOffsetX, shadowOffsetY, shadowBlur, shadowSpread } = this.store
       items.push({
-        key: 'x',
+        key: 'shadowOffsetX',
         label: 'X',
         props: {
-          value: x,
+          value: shadowOffsetX,
           min: -100,
           max: 100,
         },
       }, {
-        key: 'y',
+        key: 'shadowOffsetY',
         label: 'Y',
         props: {
-          value: y,
+          value: shadowOffsetY,
           min: -100,
           max: 100,
         },
       }, {
-        key: 'dim',
+        key: 'shadowBlur',
         label: '模糊',
         props: {
-          value: dim,
+          value: shadowBlur,
           min: 0,
           max: 100,
         },
       }, {
-        key: 'spread',
+        key: 'shadowSpread',
         label: '扩散',
         props: {
-          value: spread,
+          value: shadowSpread,
           min: -100,
           max: 100,
         },
@@ -79,16 +74,22 @@ export default {
     },
   },
   methods: {
-    onChange(target, key, computed, value) {
-      this.update({
+    onChange({ target: { checked } }) {
+      this.store.update({
         log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> border -> components -> stroke',
-          reason: '修改边框阴影样式',
+          source: 'layouts -> panel -> right -> components -> apperance -> components -> border -> components -> shadow',
+          reason: '是否显示方框阴影',
+          detail: {
+            open: checked,
+          },
         },
         update: () => {
-          target[key] = computed(value)
+          this.store.shadow.open = checked
         },
       })
+    },
+    update(key, value) {
+      this.store[key] = value
     },
   },
 }

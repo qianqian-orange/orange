@@ -15,9 +15,7 @@
 </template>
 
 <script>
-import store from '@/material/store'
-import { DELETE_WIDGET } from '@/material/store/mutation-types'
-import Bus, { APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
+import createStore from './store'
 import OrangeProject from './components/project'
 import OrangeApperance from './components/apperance'
 import OrangeEvent from './components/event'
@@ -36,10 +34,7 @@ export default {
   },
   data() {
     return {
-      // 由于store是响应式对象，当dataSource变化后就可以触发子组件重新渲染
-      store: {
-        dataSource: null,
-      },
+      store: createStore(),
     }
   },
   computed: {
@@ -65,21 +60,8 @@ export default {
       return tabPanels
     },
   },
-  mounted() {
-    Bus.$on(APPERANCE_EVENT_DATASOURCE, this.setData)
-    store.on(DELETE_WIDGET, this.reset)
-  },
   beforeDestroy() {
-    Bus.$off(APPERANCE_EVENT_DATASOURCE, this.setData)
-    store.off(DELETE_WIDGET, this.reset)
-  },
-  methods: {
-    setData(dataSource) {
-      this.store.dataSource = dataSource
-    },
-    reset() {
-      this.store.dataSource = null
-    },
+    this.store.destroy()
   },
 }
 </script>

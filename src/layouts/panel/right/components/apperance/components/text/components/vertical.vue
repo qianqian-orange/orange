@@ -4,64 +4,49 @@
       v-for="item in items"
       :key="item.type"
       :class="['text-operator-item', item.active && 'active']"
-      @click="onClick(item)"
+      @click="item.update(item.active)"
     >
       <a-tooltip placement="bottom">
         <template #title>
           <span>{{ item.tip }}</span>
         </template>
-        <orange-icon :type="item.type" />
+        <a-icon :type="item.type" />
       </a-tooltip>
     </li>
   </ul>
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'TextVertical',
-  mixins: [base],
+  inject: ['store'],
   computed: {
     items() {
-      const { style: { alignItems } } = this.component
+      const { alignItems } = this.store
       const items = []
       items.push({
-        type: 'icon-dingduiqi',
+        type: 'vertical-align-top',
         tip: '顶对齐',
         active: alignItems === 'flex-start',
         update: (active) => {
-          this.component.style.alignItems = active ? 'normal' : 'flex-start'
+          this.store.alignItems = active ? 'normal' : 'flex-start'
         },
       }, {
-        type: 'icon-vertical-align-middl',
+        type: 'vertical-align-middle',
         tip: '垂直对齐',
         active: alignItems === 'center',
         update: (active) => {
-          this.component.style.alignItems = active ? 'normal' : 'center'
+          this.store.alignItems = active ? 'normal' : 'center'
         },
       }, {
-        type: 'icon-diduiqi',
+        type: 'vertical-align-bottom',
         tip: '底对齐',
         active: alignItems === 'flex-end',
         update: (active) => {
-          this.component.style.alignItems = active ? 'normal' : 'flex-end'
+          this.store.alignItems = active ? 'normal' : 'flex-end'
         },
       })
       return items
-    },
-  },
-  methods: {
-    onClick({ update, active }) {
-      this.update({
-        log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> flex',
-          reason: '修改文本字体水平对齐方式',
-        },
-        update: () => {
-          update(active)
-        },
-      })
     },
   },
 }

@@ -22,4 +22,19 @@ export const SCREEN_SCROLL_END = 'SCREEN_SCROLL_END'
 // apperance and event
 export const APPERANCE_EVENT_DATASOURCE = 'APPERANCE_EVENT_DATASOURCE'
 
-export default new Vue()
+const bus = new Vue()
+
+export default {
+  $on: (event, callback) => {
+    bus.$on(event, callback)
+    return () => {
+      bus.$off(event, callback)
+    }
+  },
+  $off: (...args) => {
+    bus.$off(...args)
+  },
+  $emit: (...args) => {
+    bus.$emit(...args)
+  },
+}

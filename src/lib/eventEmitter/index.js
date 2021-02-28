@@ -8,6 +8,9 @@ export default class EventEmitter {
   on(type, fn) {
     if (!this.event[type]) this.event[type] = []
     this.event[type].push(fn)
+    return () => {
+      this.off(type, fn)
+    }
   }
 
   off(type, fn) {

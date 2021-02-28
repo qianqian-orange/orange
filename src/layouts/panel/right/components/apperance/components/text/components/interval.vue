@@ -11,7 +11,7 @@
       <orange-input-number
         v-bind="item.props"
         size="small"
-        @change="onChange(item.update, ...arguments)"
+        @change="item.update"
       >
         <template #label>
           <orange-icon
@@ -24,14 +24,12 @@
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'TextInterval',
-  mixins: [base],
+  inject: ['store'],
   computed: {
     items() {
-      const { style: { letterSpacing }, props: { lineHeight, margin } } = this.component
+      const { letterSpacing, lineHeight, margin } = this.store
       const items = []
       items.push({
         icon: 'icon-zijianju',
@@ -39,14 +37,14 @@ export default {
         props: {
           label: true,
           type: 'float',
-          value: parseFloat(letterSpacing, 10),
+          value: letterSpacing,
           min: 0,
           max: 100,
           step: 0.1,
           precision: 1,
         },
         update: (value) => {
-          this.component.style.letterSpacing = `${value}px`
+          this.store.letterSpacing = value
         },
       }, {
         icon: 'icon-hangjianju',
@@ -54,14 +52,14 @@ export default {
         props: {
           label: true,
           type: 'int',
-          value: parseInt(lineHeight, 10),
+          value: lineHeight,
           min: 0,
           max: 100,
           step: 1,
           precision: 0,
         },
         update: (value) => {
-          this.component.props.lineHeight = `${value}px`
+          this.store.lineHeight = value
         },
       }, {
         icon: 'icon-duanla',
@@ -69,30 +67,17 @@ export default {
         props: {
           label: true,
           type: 'int',
-          value: parseInt(margin, 10),
+          value: margin,
           min: 0,
           max: 100,
           step: 1,
           precision: 0,
         },
         update: (value) => {
-          this.component.props.margin = `${value}px`
+          this.store.margin = value
         },
       })
       return items
-    },
-  },
-  methods: {
-    onChange(update, value) {
-      this.update({
-        log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> interval',
-          reason: '修改文本间隔',
-        },
-        update: () => {
-          update(value)
-        },
-      })
     },
   },
 }

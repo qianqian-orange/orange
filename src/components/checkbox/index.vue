@@ -3,7 +3,9 @@
     class="orange-checkbox"
     v-bind="$props"
     v-on="$listeners"
-  />
+  >
+    <slot />
+  </a-checkbox>
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template>
   <orange-input-select
-    :value="value"
+    :value="store.fontSize"
     :min="12"
     :max="48"
     @input="onInput"
@@ -16,11 +16,9 @@
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'TextFontSize',
-  mixins: [base],
+  inject: ['store'],
   data() {
     return {
       options: [12, 14, 16, 18, 20, 28, 36, 48].map(item => ({
@@ -29,23 +27,9 @@ export default {
       })),
     }
   },
-  computed: {
-    value() {
-      return parseInt(this.component.style.fontSize, 10)
-    },
-  },
   methods: {
     onInput(value) {
-      this.update({
-        log: {
-          source: 'layouts -> panel -> right -> components -> apperance -> components -> text -> components -> fontSize',
-          reason: '修改文本字体大小',
-        },
-        update: () => {
-          this.component.style.fontSize = `${value}px`
-          this.store.dataSource.emit('fontSize', value)
-        },
-      })
+      this.store.fontSize = value
     },
   },
 }

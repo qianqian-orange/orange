@@ -20,6 +20,7 @@
 import ApperanceGeneral from './components/general'
 import ApperanceText from './components/text'
 import ApperanceBorder from './components/border'
+import ApperanceIcon from './components/icon'
 
 export default {
   name: 'Apperance',
@@ -27,6 +28,7 @@ export default {
     ApperanceGeneral,
     ApperanceText,
     ApperanceBorder,
+    ApperanceIcon,
   },
   inject: ['store'],
   computed: {
@@ -45,6 +47,13 @@ export default {
           key: 'border',
           header: '边框',
           component: ApperanceBorder,
+        })
+      }
+      if (editable.icon) {
+        items.push({
+          key: 'icon',
+          header: '图标',
+          component: ApperanceIcon,
         })
       }
       return items

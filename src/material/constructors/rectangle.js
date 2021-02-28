@@ -34,11 +34,11 @@ export default class Rectangle extends Base {
           },
           shadow: {
             open: false,
-            color: 'rgb(0 0 0 / 40%)',
-            x: 0,
-            y: 2,
-            dim: 6,
-            spread: 0,
+            shadowColor: 'rgb(0 0 0 / 40%)',
+            shadowOffsetX: '0px',
+            shadowOffsetY: '2px',
+            shadowBlur: '6px',
+            shadowSpread: '0px',
           },
         },
       },
@@ -52,8 +52,9 @@ export default class Rectangle extends Base {
 
     this.on('zoom', (cur, prev) => {
       const percent = cur / prev
-      const { stroke } = this.component.props
+      const { stroke, shadow } = this.component.props
       setStyle(stroke.style, ['borderWidth'], percent)
+      setStyle(shadow, ['shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'shadowSpread'], percent)
     })
   }
 }

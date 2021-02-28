@@ -22,7 +22,11 @@ export function toObject(arr) {
 export function defineProperty(object, property, descriptor) {
   Object.defineProperty(object, property, R.mergeDeepRight({
     enumerable: false,
-    writable: false,
     configurable: false,
   }, descriptor))
+}
+
+export const props = (keys, target) => {
+  keys.forEach((key) => { target = target[key] })
+  return target
 }

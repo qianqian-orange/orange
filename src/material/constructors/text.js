@@ -61,7 +61,7 @@ export default class Text extends Base {
       // 经过测试，当字体大小与行高的间距小于2px时会出现滚动条，为了解决这个问题需要保证行高与字体大小间距在2px以上
       // 后续参考墨刀解决该问题
       const interval = 8
-      component.props.lineHeight = `${value + interval}px`
+      component.props.lineHeight = `${parseInt(value, 10) + interval}px`
     })
 
     this.container.on('dblclick', ({ vm }) => {

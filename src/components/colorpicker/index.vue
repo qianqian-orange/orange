@@ -4,7 +4,7 @@
     :title="title"
     trigger="click"
     :placement="placement"
-    overlay-class-name="color-picker-popover"
+    overlay-class-name="orange-popover"
   >
     <template #content>
       <chrome-picker
@@ -94,37 +94,9 @@ export default {
     height: 100%;
   }
 
-  .color-picker-popover {
-    .ant-popover-arrow {
-      display: none;
-    }
-
-    .ant-popover-inner {
-      background-color: @lightBlack;
-
-      .ant-popover-title {
-        padding: 5px 10px 4px;
-        border-bottom: none;
-        color: @textPrimaryColor;
-        font-size: 12px;
-        line-height: 23px;
-      }
-
-      .ant-popover-inner-content {
-        padding: 10px;
-      }
-    }
-
+  .orange-popover {
     .vc-chrome {
       box-shadow: none;
-    }
-
-    .anticon-close {
-      position: absolute;
-      top: 10px;
-      right: 18px;
-      color: @textPrimaryColor;
-      font-size: 12px;
     }
   }
 </style>

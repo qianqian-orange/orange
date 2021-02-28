@@ -13,6 +13,8 @@ import Bus, {
 } from '@/utils/bus'
 import Resizer from '@/components/resizer'
 
+const fns = []
+
 export default {
   name: 'CanvasResizer',
   components: {
@@ -24,23 +26,14 @@ export default {
     },
   },
   mounted() {
-    Bus.$on(CANVAS_WIDGET_RESIZER_VISIBLE, this.toggle)
-    Bus.$on(DOCUMENT_MOUSE_MOVE, this.mousemove)
-    Bus.$on(CANVAS_WIDGET_RESIZE, this.setData)
-  },
-  beforeDestroy() {
-    Bus.$off(DOCUMENT_MOUSE_MOVE, this.mousemove)
-    Bus.$off(CANVAS_WIDGET_RESIZE, this.setData)
-  },
-  methods: {
-    toggle(visible) {
-      this.$refs.resizer.visible = visible
-    },
-    mousemove() {
-      // 拖拽组件时隐藏resizer
-      this.$refs.resizer.visible = false
-    },
-    setData(el) {
+    fns.push(Bus.$on(CANVAS_WIDGET_RESIZER_VISIBLE, (visible) => {
+      this.resizer.visible = visible
+    }))
+    // 拖拽组件时隐藏resizer
+    fns.push(Bus.$on(DOCUMENT_MOUSE_MOVE, () => {
+      this.resizer.visible = false
+    }))
+    fns.push(Bus.$on(CANVAS_WIDGET_RESIZE, (el) => {
       const widget = el[el.id]
       this.$emit('adjust', {
         widget,
@@ -65,7 +58,13 @@ export default {
           left: (val) => { el.style.left = val },
         },
       })
-    },
+    }))
+  },
+  beforeDestroy() {
+    fns.forEach(fn => fn())
+    fns.length = 0
+  },
+  methods: {
     mouseup(el, prev, current) {
       const widget = el[el.id]
       const value = widget.zoom

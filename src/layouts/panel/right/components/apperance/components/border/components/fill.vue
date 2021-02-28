@@ -1,42 +1,38 @@
 <template>
   <div class="border-item-container">
     <orange-checkbox
-      :checked="fill.open"
-      @change="onChange(fill, 'open', value => value.target.checked, ...arguments)"
+      :checked="store.fill.open"
+      @change="onChange"
     />
     <color-picker
-      :value="color"
-      @input="onChange(fill.style, 'backgroundColor', value => value, ...arguments)"
+      :value="store.backgroundColor"
+      @input="onInput"
     />
     <span class="border-item-text">填充</span>
   </div>
 </template>
 
 <script>
-import base from '@/layouts/panel/right/components/apperance/mixins/base'
-
 export default {
   name: 'BorderFill',
-  mixins: [base],
-  computed: {
-    fill() {
-      return this.component.props.fill
-    },
-    color() {
-      return this.fill.style.backgroundColor
-    },
-  },
+  inject: ['store'],
   methods: {
-    onChange(target, key, computed, value) {
-      this.update({
+    onChange({ target: { checked } }) {
+      this.store.update({
         log: {
           source: 'layouts -> panel -> right -> components -> apperance -> components -> border -> components -> fill',
-          reason: '修改边框背景色数据和样式',
+          reason: '是否显示方框背景',
+          detail: {
+            open: checked,
+          },
         },
         update: () => {
-          target[key] = computed(value)
+          this.store.fill.open = checked
         },
       })
+    },
+    onInput(value) {
+      this.store.backgroundColor = value
     },
   },
 }
