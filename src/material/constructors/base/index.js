@@ -13,6 +13,7 @@ export default eventEmitterDecorator(class Base {
     id = '',
     is = '',
     _zoom = 1,
+    events = [],
     props = {},
     parent = null,
     children = [],
@@ -22,6 +23,7 @@ export default eventEmitterDecorator(class Base {
     this.id = id
     this.is = is
     this._zoom = _zoom
+    this.events = events
     this.props = props
     this.parent = parent
     this.children = children
@@ -59,12 +61,11 @@ export default eventEmitterDecorator(class Base {
         // 如果是dragWidget组件，那么不需要执行下面的逻辑
         if (!this.getInstance) return
         const vm = this.getInstance()
-        if (evt.target !== vm.$el) return
         this.container.emit(event, { evt, vm })
       }
     })
     // component事件是绑定在组件上的，需要通过vm.$emit的方式触发
-    ;['bootstrap', 'change', 'click'].forEach((event) => {
+    ;['bootstrap', 'change'].forEach((event) => {
       this.component.events[event] = (...args) => {
         this.component.emit(event, ...args)
       }

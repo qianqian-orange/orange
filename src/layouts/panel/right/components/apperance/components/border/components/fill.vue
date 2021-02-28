@@ -1,6 +1,6 @@
 <template>
   <div class="border-item-container">
-    <orange-checkbox
+    <a-checkbox
       :checked="store.fill.open"
       @change="onChange"
     />

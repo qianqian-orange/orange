@@ -64,7 +64,8 @@ export default class Text extends Base {
       component.props.lineHeight = `${parseInt(value, 10) + interval}px`
     })
 
-    this.container.on('dblclick', ({ vm }) => {
+    this.container.on('dblclick', ({ evt, vm }) => {
+      if (evt.target !== vm.$el) return
       vm.removeClass(OVERFLOW_HIDDEN)
       vm.addClass(BORDER_DASHED_LINE)
       // 文本内容全选

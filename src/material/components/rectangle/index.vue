@@ -1,8 +1,5 @@
 <template>
-  <div
-    :style="rectangleStyle"
-    @click.self="onClick"
-  >
+  <div :style="rectangleStyle">
     <slot />
   </div>
 </template>
@@ -36,11 +33,6 @@ export default {
         })
       }
       return styles.reduce((res, cur) => Object.assign(res, cur), {})
-    },
-  },
-  methods: {
-    onClick(evt) {
-      this.$emit('click', evt)
     },
   },
 }

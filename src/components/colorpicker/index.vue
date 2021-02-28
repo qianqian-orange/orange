@@ -4,7 +4,6 @@
     :title="title"
     trigger="click"
     :placement="placement"
-    overlay-class-name="orange-popover"
   >
     <template #content>
       <chrome-picker
@@ -94,7 +93,7 @@ export default {
     height: 100%;
   }
 
-  .orange-popover {
+  .ant-popover {
     .vc-chrome {
       box-shadow: none;
     }

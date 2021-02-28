@@ -1,8 +1,9 @@
 <template>
   <div class="icon-theme-container">
     <span class="icon-theme-text">主题</span>
-    <orange-select
+    <a-select
       :value="store.iconTheme"
+      size="small"
       @select="update"
     >
       <a-select-option
@@ -12,7 +13,7 @@
       >
         {{ item.label }}
       </a-select-option>
-    </orange-select>
+    </a-select>
   </div>
 </template>
 
@@ -49,7 +50,7 @@ export default {
       align-items: center;
       margin-top: 14px;
 
-      .orange-select {
+      .ant-select {
         width: 120px;
       }
     }

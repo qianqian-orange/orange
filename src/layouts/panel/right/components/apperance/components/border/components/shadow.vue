@@ -1,7 +1,7 @@
 <template>
   <div class="border-item-container">
     <div>
-      <orange-checkbox
+      <a-checkbox
         :checked="store.shadow.open"
         @change="onChange"
       />

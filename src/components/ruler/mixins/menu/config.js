@@ -14,7 +14,7 @@ const config = {
     key: 'showRuler',
     icon: {
       right: {
-        className: 'icon-success',
+        type: 'check',
         visible: true,
       },
     },
@@ -35,7 +35,7 @@ const config = {
     key: 'showLine',
     icon: {
       right: {
-        className: 'icon-success',
+        type: 'check',
         visible: true,
       },
     },

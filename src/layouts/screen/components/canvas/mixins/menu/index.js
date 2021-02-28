@@ -1,15 +1,16 @@
-import {
-  cut,
-  copy,
-  paste,
-  remove,
-  toTop,
-  toBottom,
-} from './config'
+import factory from './config'
 import base, { MENU_INSTANCE } from '@/components/menu/hoverMenu/mixins/base'
 
 export default {
   mixins: [base],
+  data() {
+    return {
+      config: null,
+    }
+  },
+  mounted() {
+    this.config = factory()
+  },
   methods: {
     contextmenu(evt) {
       const { target } = evt
@@ -17,6 +18,7 @@ export default {
       const widget = target[target.id]
       // 设置数据源
       const menu = this[MENU_INSTANCE]
+      const { cut, copy, paste, remove, toTop, toBottom } = this.config
       let items = null
       if (widget) items = [cut, copy, paste, remove, toTop, toBottom]
       else items = [paste]

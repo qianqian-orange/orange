@@ -4,7 +4,7 @@
       网格
     </p>
     <div>
-      <orange-checkbox
+      <a-checkbox
         :checked="grid"
         @change="onChange"
       />

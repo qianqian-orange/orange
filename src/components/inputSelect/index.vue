@@ -3,7 +3,7 @@
     class="orange-input-select-container"
     :style="{ width }"
   >
-    <orange-select
+    <a-select
       :value="value"
       :size="size"
       @select="update"
@@ -11,7 +11,7 @@
       <template #default>
         <slot />
       </template>
-    </orange-select>
+    </a-select>
     <orange-input-number
       :value="value"
       size="small"

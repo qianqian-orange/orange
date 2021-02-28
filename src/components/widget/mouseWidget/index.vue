@@ -53,8 +53,8 @@ export default {
       // 只有鼠标左键点击的情况下才触发
       if (!leftMousedown(evt)) return
       // 由于事件冒泡机制这里需要加判断
-      if (evt.target !== this.$el) return
-      const target = evt.target
+      if (evt.target !== this.$el && evt.target !== this.$el.firstChild) return
+      const target = this.$el
       target.position = {
         startX: target.offsetLeft,
         startY: target.offsetTop,

@@ -87,7 +87,7 @@ const factory = (zoom) => new MenuItem({
   key: `zoom${zoom * 100}`,
   icon: {
     left: {
-      className: 'icon-success',
+      type: 'check',
       visible: false,
     },
   },

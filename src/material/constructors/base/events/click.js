@@ -4,14 +4,11 @@ import Bus, {
 } from '@/utils/bus'
 
 export function click() {
-  const click = () => {
-    const vm = this.getInstance()
+  this.container.on('click', ({ evt, vm }) => {
+    if (evt.target !== vm.$el && evt.target !== vm.$el.firstChild) return
     // 显示resizer
     Bus.$emit(CANVAS_WIDGET_RESIZE, vm.$el)
     // 显示左面板的外观和事件模块
     Bus.$emit(APPERANCE_EVENT_DATASOURCE, this)
-  }
-
-  this.container.on('click', click)
-  this.component.on('click', click)
+  })
 }

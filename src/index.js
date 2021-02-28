@@ -2,11 +2,10 @@ import Vue from 'vue'
 import * as R from 'ramda'
 import Antd, { Icon } from 'ant-design-vue'
 import Scroll from './components/scrollbar'
-import OrangeCheckbox from '@/components/checkbox'
 import OrangeInputNumber from '@/components/inputNumber'
 import OrangeInputSelect from '@/components/inputSelect'
 import ColorPicker from '@/components/colorpicker'
-import OrangeSelect from '@/components/select'
+import CodeEditor from '@/components/codeEditor'
 import {
   OrangeRectangle,
   OrangeRichText,
@@ -27,11 +26,7 @@ Vue.use(OrangeRectangle)
 Vue.use(OrangeRichText)
 Vue.use(OrangeLine)
 
-;[
-  OrangeCheckbox, OrangeInputNumber,
-  OrangeInputSelect, ColorPicker,
-  OrangeSelect,
-].forEach((component) => {
+;[OrangeInputNumber, OrangeInputSelect, ColorPicker, CodeEditor].forEach((component) => {
   Vue.component(component.name, component)
 })
 

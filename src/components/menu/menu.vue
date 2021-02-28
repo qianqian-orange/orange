@@ -66,17 +66,20 @@ export default {
     background-color: @lightBlack;
     transition: none;
 
-    .left-icon {
+    .left-icon,
+    .right-icon {
       position: absolute;
       top: 50%;
-      left: 12px;
       transform: translateY(-50%);
       font-size: 12px;
     }
 
+    .left-icon {
+      left: 12px;
+    }
+
     .right-icon {
-      float: right;
-      font-size: 12px;
+      right: 4px;
     }
 
     .ant-menu-item {

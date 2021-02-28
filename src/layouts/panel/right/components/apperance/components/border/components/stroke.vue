@@ -2,7 +2,7 @@
   <div class="border-item-container">
     <!-- 边框颜色 -->
     <div>
-      <orange-checkbox
+      <a-checkbox
         :checked="store.stroke.open"
         @change="onChange"
       />
@@ -14,9 +14,10 @@
     </div>
     <div>
       <!-- 边框样式 -->
-      <orange-select
+      <a-select
         class="border-style-select"
         :value="store.borderStyle"
+        size="small"
         @select="update('borderStyle', ...arguments)"
       >
         <a-select-option
@@ -26,7 +27,7 @@
         >
           <div :class="`border-style-${item}`" />
         </a-select-option>
-      </orange-select>
+      </a-select>
       <!-- 边框宽度 -->
       <orange-input-select
         width="50px"
@@ -93,7 +94,7 @@ export default {
     &:last-child {
       margin-top: 10px;
 
-      ::v-deep.border-style-select {
+      ::v-deep.ant-select.border-style-select {
         width: 118px;
         margin: 0 6px 0 26px;
 

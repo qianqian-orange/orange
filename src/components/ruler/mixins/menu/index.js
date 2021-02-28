@@ -2,7 +2,6 @@ import { COORDINATE_DIRECTION_MAP } from '@/const/canvas'
 import { MENU_SIZE } from '@/const/menu'
 import { CONTEXTMENU } from 'ruler/const/event'
 import context, {
-  SHOW_RULER,
   SHOW_LINE,
   REMOVE_ALL_HORIZONTAL_LINE,
   REMOVE_ALL_VERTICAL_LINE,
@@ -15,17 +14,16 @@ export default {
   mounted() {
     const menu = this[MENU_INSTANCE]
     const factory = context(menu)
-    const showRuler = factory(SHOW_RULER)
     const showLine = factory(SHOW_LINE)
     if (this.direction === COORDINATE_DIRECTION_MAP.xAxis) {
       const removeAllHorizontalLine = factory(REMOVE_ALL_HORIZONTAL_LINE)
       menu.setData({
-        items: [showRuler, showLine, removeAllHorizontalLine],
+        items: [showLine, removeAllHorizontalLine],
       })
     } else {
       const removeAllVerticalLine = factory(REMOVE_ALL_VERTICAL_LINE)
       menu.setData({
-        items: [showRuler, showLine, removeAllVerticalLine],
+        items: [showLine, removeAllVerticalLine],
       })
     }
   },

@@ -98,9 +98,9 @@ export default {
     }
 
     .anticon {
-      margin-top: 4px;
+      margin-top: 2px;
       color: @textPrimaryColor;
-      font-size: 14px;
+      font-size: 16px;
     }
   }
 </style>
