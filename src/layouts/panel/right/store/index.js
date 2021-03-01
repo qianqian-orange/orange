@@ -7,7 +7,8 @@ import {
   border,
   shadow,
   icon,
-} from './attrs'
+} from './styles'
+import attrs from './attrs'
 import { DELETE_WIDGET, UPDATE_WIDGET } from '@/material/store/mutation-types'
 import Bus, { APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
 
@@ -52,6 +53,14 @@ export class Store {
     return this.component.props.shadow
   }
 
+  get props() {
+    return this.dataSource.props
+  }
+
+  get events() {
+    return this.dataSource.events
+  }
+
   update(payload) {
     store.emit(UPDATE_WIDGET, payload)
   }
@@ -69,6 +78,7 @@ export class Store {
   ...border,
   ...shadow,
   ...icon,
+  ...attrs,
 ].forEach(({
   keys,
   attr,

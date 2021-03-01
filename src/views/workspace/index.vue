@@ -37,3 +37,7 @@ export default {
     }
   }
 </style>
+
+<style lang="less">
+@import url("./theme.less");
+</style>

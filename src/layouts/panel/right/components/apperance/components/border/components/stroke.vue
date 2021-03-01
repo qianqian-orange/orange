@@ -18,6 +18,7 @@
         class="border-style-select"
         :value="store.borderStyle"
         size="small"
+        dropdown-class-name="orange-select-dropdown"
         @select="update('borderStyle', ...arguments)"
       >
         <a-select-option

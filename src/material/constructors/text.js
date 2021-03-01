@@ -23,7 +23,9 @@ export default class Text extends Base {
           icon: false,
           stretch: true,
           move: true,
+          event: true,
         },
+        attr: {},
       },
       component: {
         style: {
@@ -39,6 +41,7 @@ export default class Text extends Base {
           letterSpacing: '0px',
         },
         props: {
+          disabled: false,
           lineHeight: '22px',
           margin: '0 0 5px 0',
           zoom: 1,

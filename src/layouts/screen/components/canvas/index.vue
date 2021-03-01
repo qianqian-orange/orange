@@ -2,8 +2,7 @@
   <div
     class="screen-canvas-wrap"
     data-hovermenu="true"
-    data-hide-apperance-event="true"
-    @click="onClick"
+    @click.self="onClick"
   >
     <grid :style="containerStyle" />
     <div
@@ -11,7 +10,7 @@
       class="screen-canvas-container"
       :style="containerStyle"
       data-hovermenu="true"
-      data-hide-apperance-event="true"
+      @click.self="onClick"
     >
       <mouse-widget
         v-for="widget in widgets"
@@ -72,9 +71,7 @@ export default {
     }),
   },
   methods: {
-    onClick(evt) {
-      const { target } = evt
-      if (!target.dataset.hideApperanceEvent) return
+    onClick() {
       // 隐藏左面板的外观和事件模块
       Bus.$emit(APPERANCE_EVENT_DATASOURCE, null)
     },

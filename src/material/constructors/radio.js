@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import Rectangle from './rectangle'
 
-export default class Button extends Rectangle {
+export default class Radio extends Rectangle {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       props: {
@@ -17,7 +17,7 @@ export default class Button extends Rectangle {
       component: {
         style: {
           position: 'relative',
-          zIndex: 0, // 这里设置层级的目的是为了产生层级上下文，这样container的glass遮罩就可以遮住compoent的子元素
+          zIndex: 0,
         },
       },
     }, dataSource))

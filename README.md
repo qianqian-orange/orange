@@ -7,6 +7,7 @@
 class的原型方法都是不可枚举的，所以需要拓展的方法也需要是不可枚举的
 3. `R.mergeDeepRight`方法回到对象的原型方法丢失，使用时需要注意
 4. 富文本复制的字符串中带有`...`会出现问题，所以改用实体字符的方式解决，例如：`&hellip;`
+5. 手动派发事件的时候创建的event对象上有很多属性都是没有的，如`pageX`,`pageY`等，那么`a-modal`组件会因为拿不到这些属性而报错，所以需要手动加上这些属性
 
 ### 优化
 1. 标线距离显示待优化
@@ -46,7 +47,10 @@ class的原型方法都是不可枚举的，所以需要拓展的方法也需要
   监听`contextmenu`事件，调用`evt.preventDefault()`即可
 3. 利用`el.contains(target)`方法判断目标节点是否在el中，取代用`identification`验证方式
 4. `document.elementFromPoint(x, y)`方法可以获取处于坐标位置的最顶层节点
+5. `JSON.stringify`格式化`json`代码:`JSON.stringify(data, null, 4)`
+
 ### 正则
 1. `/scale\((.+?)\)/`
+
 ### 方案抉择
 1. 画布缩放不使用`transform: scale(1)`是因为鼠标移动组件，组件会脱离鼠标位置，另外就是计算的时候需要时刻注意缩放因子是否有影响

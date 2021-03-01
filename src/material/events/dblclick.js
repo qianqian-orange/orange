@@ -18,6 +18,9 @@ export const dblclickEvent = {
       // 由于dblclick事件触发的时候glass还存在，所以需要在nextTick后在执行下面的逻辑
       vm.$nextTick(() => {
         const event = new Event('click')
+        // 由于a-modal组件会监听click事件，然后获取evt的pageX和pageY属性，所以这里需要加上，否则a-modal获取不到会报错
+        event.pageX = evt.pageX
+        event.pageY = evt.pageY
         const el = document.elementFromPoint(evt.clientX, evt.clientY)
         el.dispatchEvent(event)
       })

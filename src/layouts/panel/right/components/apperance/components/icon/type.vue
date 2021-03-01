@@ -104,8 +104,8 @@ export default {
 </style>
 
 <style lang="less">
-  .icon-popover.orange-popover .ant-popover-inner .ant-popover-inner-content {
+  .icon-popover .ant-popover-inner .ant-popover-inner-content {
     height: 300px;
-    padding: 10px 0;
+    padding: 10px 0 !important;
   }
 </style>

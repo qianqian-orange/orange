@@ -18,6 +18,7 @@
 import createStore from './store'
 import OrangeProject from './components/project'
 import OrangeApperance from './components/apperance'
+import OrangeAttribute from './components/attribute'
 import OrangeEvent from './components/event'
 
 export default {
@@ -25,6 +26,7 @@ export default {
   components: {
     OrangeProject,
     OrangeApperance,
+    OrangeAttribute,
     OrangeEvent,
   },
   provide() {
@@ -51,6 +53,10 @@ export default {
           is: 'orange-apperance',
           key: 'apperance',
           tab: '外观',
+        }, {
+          is: 'orange-attribute',
+          key: 'attribute',
+          tab: '属性',
         }, {
           is: 'orange-event',
           key: 'event',

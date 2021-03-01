@@ -8,6 +8,13 @@ export default class Textarea extends Rectangle {
         editable: {
           border: false,
         },
+        attr: {},
+      },
+      component: {
+        style: {
+          position: 'relative',
+          zIndex: 0,
+        },
       },
     }, dataSource))
     const {

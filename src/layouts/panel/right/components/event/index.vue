@@ -3,13 +3,14 @@
     <a-button
       type="primary"
       size="small"
+      :disabled="disabled"
       @click="onClick"
     >
       添加事件
     </a-button>
     <ul class="event-list">
       <li
-        v-for="item in events"
+        v-for="item in store.events"
         :key="item.id"
         class="event-item"
       >
@@ -42,22 +43,17 @@
         </div>
         <a-select
           :value="item.event"
+          :options="options"
+          dropdown-class-name="orange-select-dropdown"
           @select="onSelect(item, ...arguments)"
-        >
-          <a-select-option
-            v-for="option in options"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.label }}
-          </a-select-option>
-        </a-select>
+        />
       </li>
     </ul>
     <a-modal
       v-model="visible"
       title="代码"
       :width="528"
+      dialog-class="orange-modal"
       @ok="ensure"
     >
       <code-editor v-model="code" />
@@ -93,8 +89,8 @@ export default {
     }
   },
   computed: {
-    events() {
-      return this.store.dataSource.events
+    disabled() {
+      return !this.store.props.editable.event
     },
   },
   methods: {
@@ -105,7 +101,7 @@ export default {
           reason: '新增事件',
         },
         update: () => {
-          this.events.push({
+          this.store.events.push({
             id: uuid(),
             event: 'click',
             code: '(function (vm) {\n  console.log(\'hello world\')\n})(vm)',
@@ -136,7 +132,7 @@ export default {
           reason: '删除事件',
         },
         update: () => {
-          splice(this.events, event)
+          splice(this.store.events, event)
         },
       })
     },
@@ -164,8 +160,15 @@ export default {
       width: 100%;
       margin-bottom: 12px;
       border-color: @deepBlue;
+      color: #fff;
       font-size: 12px;
       background-color: @deepBlue;
+    }
+
+    .ant-btn-primary[disabled] {
+      border-color: @lightBlack;
+      color: @textSecondaryColor;
+      background-color: @lightBlack;
     }
 
     .event-item {

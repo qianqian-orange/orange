@@ -12,7 +12,9 @@ export default class Icon extends Base {
           icon: true,
           stretch: true,
           move: true,
+          event: true,
         },
+        attr: {},
       },
       container: {
         style: {

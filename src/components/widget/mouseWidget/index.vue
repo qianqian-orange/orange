@@ -7,7 +7,6 @@
       v-for="widget in dataSource.children"
       :key="widget.id"
       :data-source="widget"
-      data-hovermenu="true"
     />
   </widget>
 </template>
@@ -101,7 +100,7 @@ export default {
       })
     },
     contextmenu(evt) {
-      if (evt.target !== this.$el) return
+      if (evt.target !== this.$el && evt.target !== this.$el.firstChild) return
       // 显示resizer
       Bus.$emit(CANVAS_WIDGET_RESIZE, this.$el)
       // 显示左面板的外观和事件模块

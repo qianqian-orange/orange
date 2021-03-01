@@ -1,17 +1,17 @@
-import Input from '../constructors/input'
+import InputNumber from '../constructors/inputNumber'
 import Text from '../constructors/text'
 
-export const input = {
-  input: new Input({
-    id: 'input',
+export const inputNumber = {
+  inputNumber: new InputNumber({
+    id: 'inputNumber',
     props: {
       attr: {
-        group: 'username',
+        group: 'amount',
       },
     },
     component: {
       style: {
-        width: '148px',
+        width: '90px',
         height: '32px',
         borderRadius: '4px',
       },
@@ -29,14 +29,12 @@ export const input = {
         props: {
           editable: {
             text: false,
-            stretch: {
-              e: true,
-            },
+            stretch: false,
             move: false,
             event: false,
           },
         },
-        richText: '<p>请输入&hellip;</p>',
+        richText: '<p>0</p>',
         container: {
           style: {
             position: 'absolute',
@@ -47,8 +45,11 @@ export const input = {
         },
         component: {
           style: {
-            width: '54px',
+            width: '12px',
             color: '#bfbfbf',
+          },
+          props: {
+            disabled: true,
           },
         },
       }),

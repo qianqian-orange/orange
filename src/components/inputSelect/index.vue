@@ -6,6 +6,7 @@
     <a-select
       :value="value"
       :size="size"
+      dropdown-class-name="orange-select-dropdown"
       @select="update"
     >
       <template #default>

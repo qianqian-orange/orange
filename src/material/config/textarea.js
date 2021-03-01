@@ -2,30 +2,16 @@ import Textarea from '../constructors/textarea'
 import Text from '../constructors/text'
 import Line from '../constructors/line'
 
-function factory({
-  id,
-  lines,
-  component,
-  children,
-}) {
-  return new Textarea({
-    id,
-    component,
-    lines,
-    children: [
-      ...lines,
-      ...children,
-    ],
-  })
-}
-
 export const textarea = {
-  textarea: factory({
+  textarea: new Textarea({
     id: 'textarea',
+    props: {
+      attr: {
+        group: 'desc',
+      },
+    },
     component: {
       style: {
-        position: 'relative',
-        zIndex: 0,
         width: '148px',
         height: '32px',
         borderRadius: '4px',
@@ -38,14 +24,12 @@ export const textarea = {
         },
       },
     },
-    lines: [
+    children: [
       new Line({
         id: 'longLine',
         container: {
           style: {
             position: 'absolute',
-            // top: '24px',
-            // left: '134px',
             right: 0,
             bottom: '5px',
             zIndex: 1,
@@ -67,8 +51,6 @@ export const textarea = {
         container: {
           style: {
             position: 'absolute',
-            // top: '26px',
-            // left: '140px',
             right: 0,
             bottom: '3px',
             zIndex: 2,
@@ -85,8 +67,6 @@ export const textarea = {
           },
         },
       }),
-    ],
-    children: [
       new Text({
         id: 'text',
         props: {
@@ -96,6 +76,7 @@ export const textarea = {
               e: true,
             },
             move: false,
+            event: false,
           },
         },
         richText: '<p>请输入&hellip;</p>',

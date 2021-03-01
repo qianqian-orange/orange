@@ -1,7 +1,8 @@
 <template>
+  <!-- 这里两层结构是为了方便实现缩放效果 -->
   <div
     :id="id"
-    class="rich-text-wrapper"
+    :class="[disabled && 'glass']"
   >
     <div
       class="rich-text-container"
@@ -22,6 +23,10 @@ export default {
   name: 'OrangeRichText',
   mixins: [styleTag],
   props: {
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
     lineHeight: {
       type: String,
       required: true,
@@ -74,18 +79,21 @@ export default {
     setContent(content) {
       this.editor.txt.html(content)
     },
+    enable() {
+      this.editor.enable()
+    },
+    disable() {
+      this.editor.disable()
+    },
   },
 }
 </script>
 
 <style lang="less">
-  .rich-text-wrapper {
+  .rich-text-container {
     // 这里需要z-index的值，因为富文本的层级要比glass要高
     position: relative;
     z-index: 0;
-  }
-
-  .rich-text-container {
     // 由于父元素使用flex布局，但缩放因子为50%时，子元素会因为父元素宽度不够而减少宽度
     // 所以通过设置flex-shrink解决这个问题
     flex-shrink: 0;

@@ -98,6 +98,7 @@ export default {
         border-right: none;
 
         .ant-tabs-tab {
+          padding: 8px;
           margin-bottom: 0;
           text-align: center;
         }

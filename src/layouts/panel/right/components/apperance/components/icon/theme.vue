@@ -4,16 +4,10 @@
     <a-select
       :value="store.iconTheme"
       size="small"
+      :options="options"
+      dropdown-class-name="orange-select-dropdown"
       @select="update"
-    >
-      <a-select-option
-        v-for="item in items"
-        :key="item.value"
-        :value="item.value"
-      >
-        {{ item.label }}
-      </a-select-option>
-    </a-select>
+    />
   </div>
 </template>
 
@@ -23,7 +17,7 @@ export default {
   inject: ['store'],
   data() {
     return {
-      items: [{
+      options: [{
         value: 'filled',
         label: '实心',
       }, {

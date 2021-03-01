@@ -2,11 +2,13 @@
   <mark-line
     ref="markLine"
     :rect="rect"
+    :zoom="zoom"
     @adsorb="adsorb"
   />
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import store from '@/material/store'
 import { getTarget } from '@/lib/document'
 import Bus, {
@@ -38,6 +40,9 @@ export default {
     markLine() {
       return this.$refs.markLine
     },
+    ...mapState('canvas', {
+      zoom: state => state.zoom,
+    }),
   },
   mounted() {
     Bus.$on(CANVAS_WIDGET_MOUSEDOWN, this.mousedown)

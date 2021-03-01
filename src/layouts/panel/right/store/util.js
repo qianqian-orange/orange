@@ -31,6 +31,31 @@ export const attribute = {
   },
 }
 
+const filter = (translate) => {
+  if (translate.int) {
+    return {
+      get: value => parseInt(value, 10),
+      set: value => value + 'px',
+    }
+  }
+  if (translate.float) {
+    return {
+      get: value => parseFloat(value, 10),
+      set: value => value + 'px',
+    }
+  }
+  if (translate.json) {
+    return {
+      get: value => JSON.stringify(value, null, 4),
+      set: value => JSON.parse(value),
+    }
+  }
+  return {
+    get: value => value,
+    set: value => value,
+  }
+}
+
 export const factory = ({
   keys,
   attr,
@@ -42,13 +67,7 @@ export const factory = ({
     keys,
     attr,
     alias,
-    filter: (translate.int || translate.float) ? {
-      get: translate.int ? value => parseInt(value, 10) : value => parseFloat(value, 10),
-      set: value => value + 'px',
-    } : {
-      get: value => value,
-      set: value => value,
-    },
+    filter: filter(translate),
     computed: translate.zoom ? {
       set: (value, zoom) => Math.floor(value * zoom),
       get: (value, zoom) => Math.floor(value / zoom),

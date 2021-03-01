@@ -13,7 +13,9 @@ export default class Line extends Base {
           icon: false,
           stretch: false,
           move: false,
+          event: false,
         },
+        attr: {},
       },
       component: {
         style: {

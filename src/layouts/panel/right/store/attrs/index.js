@@ -1,7 +1,17 @@
-export * from './general'
-export * from './text'
-export * from './border'
-export * from './shadow'
-export * from './icon'
+import { factory } from '../util'
 
-export default {}
+export default [
+  factory({
+    keys: ['props', 'attr'],
+    attr: 'group',
+  }),
+  factory({
+    keys: ['props', 'attr'],
+    attr: 'value',
+  }),
+  factory({
+    keys: ['props', 'attr'],
+    attr: 'options',
+    translate: { json: true },
+  }),
+]

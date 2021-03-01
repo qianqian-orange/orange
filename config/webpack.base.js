@@ -103,6 +103,7 @@ module.exports = {
     alias: {
       '@': resolvePath('../src'),
       'ruler': resolvePath('../src/components/ruler'),
+      'vue': resolvePath('../node_modules/vue/dist/vue.esm.js'),
     },
     extensions: ['.js', '.vue'],
   },

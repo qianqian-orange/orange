@@ -39,6 +39,10 @@ const cache = {
 export default {
   name: 'MarkLine',
   props: {
+    zoom: {
+      type: Number,
+      default: 1,
+    },
     rect: {
       type: Object,
       required: true,
@@ -107,7 +111,7 @@ export default {
           }
           line.visible = true
           setPlainLine(line, data)
-          setDistanceLine(this.distanceLines, data)
+          setDistanceLine(this.distanceLines, data, this.zoom)
         })
       })
     },

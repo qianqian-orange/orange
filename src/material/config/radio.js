@@ -1,34 +1,36 @@
-import Button from '../constructors/button'
-import Icon from '../constructors/icon'
+import Radio from '../constructors/radio'
+import Rectangle from '../constructors/rectangle'
 import Text from '../constructors/text'
 
-export const button = {
-  'search-primary-button': new Button({
-    id: 'search-primary-button',
+export const radio = {
+  radio: new Radio({
+    id: 'radio',
+    props: {
+      attr: {
+        group: 'movie',
+        value: '罗小黑战记',
+      },
+    },
     component: {
       style: {
-        width: '82px',
-        height: '32px',
-        borderRadius: '4px',
+        width: '100px',
+        height: '22px',
       },
       props: {
         fill: {
-          style: {
-            backgroundColor: '#1890ff',
-          },
+          open: false,
         },
         stroke: {
-          style: {
-            borderColor: '#1890ff',
-          },
+          open: false,
         },
       },
     },
     children: [
-      new Icon({
-        id: 'icon',
+      new Rectangle({
+        id: 'rectangle',
         props: {
           editable: {
+            border: false,
             stretch: false,
             move: false,
             event: false,
@@ -37,20 +39,16 @@ export const button = {
         container: {
           style: {
             position: 'absolute',
-            top: '8px',
-            left: '14px',
+            top: '3px',
+            left: '2px',
             zIndex: 1,
           },
         },
         component: {
           style: {
-            width: '14px',
-            height: '14px',
-            color: '#fff',
-          },
-          props: {
-            type: 'search',
-            theme: 'outlined',
+            width: '16px',
+            height: '16px',
+            borderRadius: '8px',
           },
         },
       }),
@@ -67,19 +65,19 @@ export const button = {
             event: false,
           },
         },
-        richText: '<p>搜索</p>',
+        richText: '<p>罗小黑战记</p>',
         container: {
           style: {
             position: 'absolute',
-            top: '4px',
-            left: '36px',
+            top: '0px',
+            left: '26px',
             zIndex: 2,
           },
         },
         component: {
           style: {
-            width: '28px',
-            color: '#fff',
+            width: '72px',
+            color: '#b8bcbf',
           },
         },
       }),

@@ -14,7 +14,9 @@ export default class Rectangle extends Base {
           icon: false,
           stretch: true,
           move: true,
+          event: true,
         },
+        attr: {},
       },
       component: {
         props: {

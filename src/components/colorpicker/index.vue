@@ -4,6 +4,7 @@
     :title="title"
     trigger="click"
     :placement="placement"
+    overlay-class-name="orange-popover"
   >
     <template #content>
       <chrome-picker

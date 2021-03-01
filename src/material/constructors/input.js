@@ -12,6 +12,13 @@ export default class Input extends Rectangle {
             w: true,
           },
         },
+        attr: {},
+      },
+      component: {
+        style: {
+          position: 'relative',
+          zIndex: 0,
+        },
       },
     }, dataSource))
   }
