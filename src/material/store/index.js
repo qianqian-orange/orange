@@ -11,6 +11,8 @@ const Store = eventEmitterDecorator(class Store {
   }
 
   initEventEmitter() {
+    // 数据初始化
+    widget.init.call(this)
     // 新增组件
     widget.add.call(this)
     // 删除组件

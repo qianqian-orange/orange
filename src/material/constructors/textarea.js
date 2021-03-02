@@ -1,7 +1,7 @@
 import * as R from 'ramda'
-import Rectangle from './rectangle'
+import { Rectangle } from './index'
 
-export default class Textarea extends Rectangle {
+export class Textarea extends Rectangle {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       props: {
@@ -17,9 +17,5 @@ export default class Textarea extends Rectangle {
         },
       },
     }, dataSource))
-    const {
-      lines = [],
-    } = dataSource
-    this.lines = lines
   }
 }

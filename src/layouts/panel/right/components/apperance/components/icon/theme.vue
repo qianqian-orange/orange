@@ -2,6 +2,7 @@
   <div class="icon-theme-container">
     <span class="icon-theme-text">主题</span>
     <a-select
+      class="orange-select"
       :value="store.iconTheme"
       size="small"
       :options="options"

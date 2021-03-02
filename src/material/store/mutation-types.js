@@ -1,3 +1,4 @@
+export const INIT_WIDGET_DATA = 'INIT_WIDGET_DATA'
 export const ADD_WIDGET = 'ADD_WIDGET'
 export const DELETE_WIDGET = 'DELETE_WIDGET'
 export const UPDATE_WIDGET = 'UPDATE_WIDGET'

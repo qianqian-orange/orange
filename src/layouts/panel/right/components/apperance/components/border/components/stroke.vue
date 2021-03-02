@@ -3,6 +3,7 @@
     <!-- 边框颜色 -->
     <div>
       <a-checkbox
+        class="orange-checkbox"
         :checked="store.stroke.open"
         @change="onChange"
       />
@@ -15,7 +16,7 @@
     <div>
       <!-- 边框样式 -->
       <a-select
-        class="border-style-select"
+        class="orange-select border-style-select"
         :value="store.borderStyle"
         size="small"
         dropdown-class-name="orange-select-dropdown"

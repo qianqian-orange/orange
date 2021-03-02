@@ -1,6 +1,4 @@
-import Checkbox from '../constructors/checkbox'
-import Rectangle from '../constructors/rectangle'
-import Text from '../constructors/text'
+import { Checkbox, Rectangle, Text } from '../constructors'
 
 export const checkbox = {
   checkbox: new Checkbox({

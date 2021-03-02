@@ -58,6 +58,7 @@ export default {
           is: 'a-input',
           tip: '这个属性的作用是将group值相同的表单项归并到一起，修改同一个v-model绑定的数据源',
           props: {
+            class: 'orange-input',
             value: this.store.group,
             size: 'small',
           },
@@ -75,6 +76,7 @@ export default {
           is: 'a-input',
           tip: '提交给后端的表单项的值',
           props: {
+            class: 'orange-input',
             value: this.store.value,
             size: 'small',
           },

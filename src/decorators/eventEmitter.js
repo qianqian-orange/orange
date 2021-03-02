@@ -27,5 +27,8 @@ export function eventEmitterDecorator(Constructor) {
     this.eventEmitter.emit(type, ...args)
   }
 
+  // 绑定静态方法
+  Object.setPrototypeOf(constructor, Constructor)
+
   return constructor
 }

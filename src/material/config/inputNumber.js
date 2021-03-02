@@ -1,5 +1,4 @@
-import InputNumber from '../constructors/inputNumber'
-import Text from '../constructors/text'
+import { InputNumber, Text } from '../constructors'
 
 export const inputNumber = {
   inputNumber: new InputNumber({

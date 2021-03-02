@@ -1,5 +1,4 @@
-import Select from '../constructors/select'
-import Icon from '../constructors/icon'
+import { Select, Icon } from '../constructors'
 
 export const select = {
   select: new Select({

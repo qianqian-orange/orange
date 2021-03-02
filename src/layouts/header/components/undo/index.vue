@@ -1,7 +1,7 @@
 <template>
   <li
     :class="['tool-container', !undoEnable && 'disabled']"
-    @click="UNDO"
+    @click="undo"
   >
     <orange-icon type="icon-undo" />
     <span>撤销</span>
@@ -21,6 +21,10 @@ export default {
     ...mapGetters('snapshot', ['undoEnable']),
   },
   methods: {
+    undo() {
+      if (!this.undoEnable) return
+      this[UNDO]()
+    },
     ...mapMutations('snapshot', [UNDO]),
   },
 }

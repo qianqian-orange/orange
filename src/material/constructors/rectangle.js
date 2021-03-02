@@ -3,7 +3,7 @@ import { setStyle } from './util'
 import { dblclickEvent } from '@/material/events'
 import Base from './base'
 
-export default class Rectangle extends Base {
+export class Rectangle extends Base {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       is: 'orange-rectangle',

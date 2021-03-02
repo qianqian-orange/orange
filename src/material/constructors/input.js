@@ -1,7 +1,7 @@
 import * as R from 'ramda'
-import Rectangle from './rectangle'
+import { Rectangle } from './index'
 
-export default class Input extends Rectangle {
+export class Input extends Rectangle {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       props: {

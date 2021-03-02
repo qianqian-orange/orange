@@ -1,5 +1,4 @@
-import Cascader from '../constructors/cascader'
-import Icon from '../constructors/icon'
+import { Cascader, Icon } from '../constructors'
 
 export const cascader = {
   cascader: new Cascader({

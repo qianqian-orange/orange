@@ -1,6 +1,4 @@
-import Button from '../constructors/button'
-import Icon from '../constructors/icon'
-import Text from '../constructors/text'
+import { Button, Icon, Text } from '../constructors'
 
 export const button = {
   'search-primary-button': new Button({

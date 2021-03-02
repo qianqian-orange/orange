@@ -6,7 +6,7 @@
       </slot>
     </span>
     <a-input-number
-      :class="[label && 'input-padding-left', hover && 'hover2show']"
+      :class="[label && 'input-padding-left', hover && 'hide-border-color']"
       :value="value"
       v-bind="$props"
       v-on="listeners"
@@ -79,6 +79,72 @@ export default {
       &.small {
         font-size: 12px;
       }
+    }
+  }
+
+  .orange-input-number-container .ant-input-number {
+    border-color: @deepGrey;
+    color: @greyWhite;
+    background-color: @black;
+    transition: border 0.2s ease-out 0s;
+    box-shadow: none;
+
+    &.hide-border-color {
+      border-color: transparent;
+    }
+
+    &:hover {
+      border-color: @deepGrey;
+    }
+
+    &.ant-input-number-focused {
+      border-color: @deepBlue;
+      outline: 1px solid @deepBlue;
+      outline-offset: -2px;
+    }
+
+    &.input-padding-left {
+      .ant-input-number-input {
+        padding-left: 24px;
+      }
+    }
+
+    &.ant-input-number-sm {
+      .ant-input-number-input-wrap {
+        font-size: 12px;
+        line-height: 22px;
+      }
+    }
+
+    .ant-input-number-handler {
+      transition: none;
+
+      &:active {
+        background-color: transparent;
+      }
+    }
+
+    .ant-input-number-handler-wrap {
+      border-left: none;
+      background-color: transparent;
+
+      &:hover .ant-input-number-handler {
+        height: 50%;
+      }
+    }
+
+    .ant-input-number-handler-down {
+      border-top: 0;
+    }
+
+    .ant-input-number-handler-down:hover,
+    .ant-input-number-handler-up:hover {
+      height: 50% !important;
+    }
+
+    .ant-input-number-handler-down-inner,
+    .ant-input-number-handler-up-inner {
+      color: @textPrimaryColor;
     }
   }
 </style>

@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { setStyle } from './util'
 import Base from './base'
 
-export default class Line extends Base {
+export class Line extends Base {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       is: 'orange-line',

@@ -5,6 +5,7 @@
     </p>
     <div>
       <a-checkbox
+        class="orange-checkbox"
         :checked="grid"
         @change="onChange"
       />

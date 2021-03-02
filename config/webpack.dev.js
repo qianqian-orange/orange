@@ -15,7 +15,11 @@ module.exports = merge(baseConfig, {
     clientLogLevel: 'silent',
     contentBase: resolvePath('../dist'),
     overlay: false,
-    // proxy: {},
+    proxy: {
+      '/orange/api': {
+        target: 'http://localhost:9000',
+      },
+    },
     historyApiFallback: true,
   },
   devtool: '#source-map',

@@ -1,4 +1,4 @@
-import Text from '../constructors/text'
+import { Text } from '../constructors'
 
 export const text = {
   text: new Text({

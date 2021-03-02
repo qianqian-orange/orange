@@ -1,6 +1,7 @@
 import * as R from 'ramda'
 import { eventEmitterDecorator } from '@/decorators'
 import Component from './component'
+import * as CONSTRUCTOR_MAP from '../index'
 import factory, { setStyle } from '@/material/constructors/util'
 import {
   bootstrap,
@@ -124,5 +125,28 @@ export default eventEmitterDecorator(class Base {
   clone() {
     const widget = factory.call(this)
     return widget
+  }
+
+  save() {
+    const children = this.children.map(item => item.save())
+    const widget = this.clone()
+    widget.id = this.id
+    // 重置下组件的缩放因子, 重置前将children置空是为了提高性能
+    widget.children = []
+    widget.zoom = 1
+    widget.children = children
+    widget.parent = null
+    widget.eventEmitter = null
+    widget.container.eventEmitter = null
+    widget.component.eventEmitter = null
+    // 画布回显数据时需要数据对应的构造器
+    widget.__constructor__ = widget.constructor.name
+    return widget
+  }
+
+  static create(widget) {
+    const children = widget.children.map(item => Base.create(item))
+    widget.children = children
+    return new CONSTRUCTOR_MAP[widget.__constructor__](widget)
   }
 })

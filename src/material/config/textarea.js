@@ -1,6 +1,4 @@
-import Textarea from '../constructors/textarea'
-import Text from '../constructors/text'
-import Line from '../constructors/line'
+import { Textarea, Text, Line } from '../constructors'
 
 export const textarea = {
   textarea: new Textarea({

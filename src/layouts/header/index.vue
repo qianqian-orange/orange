@@ -4,6 +4,7 @@
       <undo />
       <redo />
       <zoom />
+      <save />
     </ul>
   </div>
 </template>
@@ -12,6 +13,7 @@
 import Undo from './components/undo'
 import Redo from './components/redo'
 import Zoom from './components/zoom'
+import Save from './components/save'
 
 export default {
   name: 'WorkspaceHeader',
@@ -19,6 +21,7 @@ export default {
     Undo,
     Redo,
     Zoom,
+    Save,
   },
 }
 </script>

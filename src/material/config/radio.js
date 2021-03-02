@@ -1,6 +1,4 @@
-import Radio from '../constructors/radio'
-import Rectangle from '../constructors/rectangle'
-import Text from '../constructors/text'
+import { Radio, Rectangle, Text } from '../constructors'
 
 export const radio = {
   radio: new Radio({

@@ -12,7 +12,7 @@ import {
 } from '@/components/widget/const/classes'
 import { dblclickEvent } from '@/material/events'
 
-export default class Text extends Base {
+export class Text extends Base {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       is: 'orange-rich-text',

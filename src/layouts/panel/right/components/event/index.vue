@@ -42,6 +42,7 @@
           </ul>
         </div>
         <a-select
+          class="orange-select"
           :value="item.event"
           :options="options"
           dropdown-class-name="orange-select-dropdown"

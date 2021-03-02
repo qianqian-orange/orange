@@ -1,11 +1,13 @@
 import store from '@/store'
 import DoubleLinkedList from '@/lib/dataStructure/doubleLinkedList'
+import Base from '@/material/constructors/base'
 import {
   snapshot,
   logger,
 } from '@/material/store/util'
 import { splice } from '@/utils/array'
 import {
+  INIT_WIDGET_DATA,
   ADD_WIDGET,
   DELETE_WIDGET,
   UPDATE_WIDGET,
@@ -59,6 +61,14 @@ function toTop({ widget, compare }) {
 }
 
 export default {
+  init() {
+    this.on(INIT_WIDGET_DATA, logger.call(this, (data) => {
+      this.zIndex = data.zIndex
+      data.widgets.forEach((widget) => {
+        add.call(this, Base.create(widget))
+      })
+    }))
+  },
   // 新增组件
   add() {
     this.on(ADD_WIDGET, logger.call(this, ({ widget }) => {

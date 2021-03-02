@@ -1,4 +1,4 @@
-import Icon from '../constructors/icon'
+import { Icon } from '../constructors'
 
 export const icon = {
   'outlined-icon': new Icon({

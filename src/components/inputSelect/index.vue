@@ -4,6 +4,7 @@
     :style="{ width }"
   >
     <a-select
+      class="orange-select"
       :value="value"
       :size="size"
       dropdown-class-name="orange-select-dropdown"

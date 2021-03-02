@@ -14,6 +14,7 @@ import {
 import router from './router'
 import store from './store'
 import App from './App.vue'
+import './config/axios'
 import './lib/document'
 import 'ant-design-vue/dist/antd.css'
 import './less/index.less'

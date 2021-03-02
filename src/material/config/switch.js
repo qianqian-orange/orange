@@ -1,5 +1,4 @@
-import Switch from '../constructors/switch'
-import Rectangle from '../constructors/rectangle'
+import { Switch, Rectangle } from '../constructors'
 
 export const orangeSwitch = {
   orangeSwitch: new Switch({

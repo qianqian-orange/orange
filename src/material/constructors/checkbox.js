@@ -1,7 +1,7 @@
 import * as R from 'ramda'
-import Rectangle from './rectangle'
+import { Rectangle } from './index'
 
-export default class Checkbox extends Rectangle {
+export class Checkbox extends Rectangle {
   constructor(dataSource) {
     super(R.mergeDeepRight({
       props: {

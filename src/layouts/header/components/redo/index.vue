@@ -1,7 +1,7 @@
 <template>
   <li
     :class="['tool-container', !redoEnable && 'disabled']"
-    @click="REDO"
+    @click="redo"
   >
     <orange-icon type="icon-redo" />
     <span>重做</span>
@@ -21,6 +21,10 @@ export default {
     ...mapGetters('snapshot', ['redoEnable']),
   },
   methods: {
+    redo() {
+      if (!this.redoEnable) return
+      this[REDO]()
+    },
     ...mapMutations('snapshot', [REDO]),
   },
 }

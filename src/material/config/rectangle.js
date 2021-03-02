@@ -1,4 +1,4 @@
-import Rectangle from '../constructors/rectangle'
+import { Rectangle } from '../constructors'
 
 export const rectangle = {
   rectangle: new Rectangle({

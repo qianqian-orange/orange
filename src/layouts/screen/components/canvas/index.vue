@@ -29,6 +29,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import store from '@/material/store'
+import { INIT_WIDGET_DATA } from '@/material/store/mutation-types'
 import Bus, { APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
 import menu from './mixins/menu'
 import Grid from './components/grid'
@@ -69,6 +70,16 @@ export default {
       width: state => state.width,
       height: state => state.height,
     }),
+  },
+  mounted() {
+    this.$axios.get('/api/data')
+      .then(({ data }) => {
+        if (data.code) {
+          this.$message.error('获取画布数据失败!')
+          return
+        }
+        store.emit(INIT_WIDGET_DATA, data.data)
+      })
   },
   methods: {
     onClick() {
