@@ -4,9 +4,9 @@ export const inputNumber = {
   inputNumber: new InputNumber({
     id: 'inputNumber',
     props: {
-      attr: {
-        group: 'amount',
-      },
+      bind: 'amount',
+      min: 0,
+      defaultValue: 0,
     },
     component: {
       style: {

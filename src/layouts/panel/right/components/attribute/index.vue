@@ -51,20 +51,20 @@ export default {
   computed: {
     items() {
       const items = []
-      if (typeof this.store.group !== 'undefined') {
+      if (typeof this.store.bind !== 'undefined') {
         items.push({
-          key: 'group',
-          label: '分组',
+          key: 'bind',
+          label: '数据源',
           is: 'a-input',
-          tip: '这个属性的作用是将group值相同的表单项归并到一起，修改同一个v-model绑定的数据源',
+          tip: 'v-model绑定的数据源',
           props: {
             class: 'orange-input',
-            value: this.store.group,
+            value: this.store.bind,
             size: 'small',
           },
           events: {
             change: (e) => {
-              this.store.group = e.target.value
+              this.store.bind = e.target.value
             },
           },
         })

@@ -4,34 +4,33 @@ export const cascader = {
   cascader: new Cascader({
     id: 'cascader',
     props: {
-      attr: {
-        group: 'location',
-        options: [{
-          label: '广东省',
-          value: '广东省',
+      bind: 'location',
+      options: [{
+        label: '广东省',
+        value: '广东省',
+        children: [{
+          label: '汕头市',
+          value: '汕头市',
           children: [{
-            label: '汕头市',
-            value: '汕头市',
-            children: [{
-              label: '潮南区',
-              value: '潮南区',
-            }, {
-              label: '潮阳区',
-              value: '潮阳区',
-            }],
+            label: '潮南区',
+            value: '潮南区',
           }, {
-            label: '深圳市',
-            value: '深圳市',
-            children: [{
-              label: '南山区',
-              value: '南山区',
-            }, {
-              label: '龙岗区',
-              value: '龙岗区',
-            }],
+            label: '潮阳区',
+            value: '潮阳区',
+          }],
+        }, {
+          label: '深圳市',
+          value: '深圳市',
+          children: [{
+            label: '南山区',
+            value: '南山区',
+          }, {
+            label: '龙岗区',
+            value: '龙岗区',
           }],
         }],
-      },
+      }],
+      placeholder: '',
     },
     component: {
       style: {

@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       items: [
-        'step-backward', 'step-forward', 'fast-backward', 'fast-forward',
+        'star', 'step-backward', 'step-forward', 'fast-backward', 'fast-forward',
         'shrink', 'arrows-alt', 'down', 'up',
         'left', 'right', 'caret-up', 'caret-down',
         'caret-left', 'caret-right', 'up-circle', 'down-circle',

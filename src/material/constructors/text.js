@@ -25,7 +25,6 @@ export class Text extends Base {
           move: true,
           event: true,
         },
-        attr: {},
       },
       component: {
         style: {
@@ -93,12 +92,13 @@ export class Text extends Base {
 
     this.component.on('bootstrap', (vm) => {
       vm.setContent(this.richText) // 设置编辑器内容
+      // p标签上的样式会有影响到新增的行
+      vm.$el.querySelectorAll('p').forEach((node) => {
+        node.removeAttribute('style')
+      })
     })
 
-    this.component.on('change', (html) => {
-      // dragWidget组件不要执行下面的逻辑，因为ricthText的值被修改后会
-      // 影响mouseWidget组件的富文本p标签就会带上line-height, margin的样式
-      if (!this.getInstance) return
+    this.component.on('change', ({ html, text }) => {
       store.commit(`canvas/${UPDATE_CANVAS_WIDGET_DATA}`, {
         log: {
           source: 'material -> constructors -> text',
@@ -106,8 +106,38 @@ export class Text extends Base {
         },
         update: () => {
           this.richText = html
+          // input和textarea需要获取修改后的数据去修改placeholder的值
+          this.emit('richText', { html, text })
         },
       })
     })
+  }
+
+  compile() {
+    const {
+      id,
+      container,
+      component,
+      richText,
+    } = this
+    return {
+      id,
+      is: 'div',
+      props: {
+        style: Object.assign({}, container.style, component.style),
+      },
+      events: {},
+      children: [{
+        is: 'div',
+        props: {
+          style: {
+            width: '100%',
+          },
+        },
+        events: {},
+        children: [],
+        html: richText,
+      }],
+    }
   }
 }

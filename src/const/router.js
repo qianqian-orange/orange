@@ -1,1 +1,2 @@
 export const WORKSPACE = 'WORKSPACE'
+export const WORKSPACE_RUN = 'WORKSPACE_RUN'

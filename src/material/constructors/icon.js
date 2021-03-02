@@ -14,7 +14,6 @@ export class Icon extends Base {
           move: true,
           event: true,
         },
-        attr: {},
       },
       container: {
         style: {
@@ -38,5 +37,23 @@ export class Icon extends Base {
       const { component } = this
       component.props.twoToneColor = value
     })
+  }
+
+  compile() {
+    const {
+      id,
+      container,
+      component,
+    } = this
+    return {
+      id,
+      is: 'a-icon',
+      props: {
+        style: Object.assign({}, container.style, component.style),
+        ...component.props,
+      },
+      events: {},
+      children: [],
+    }
   }
 }

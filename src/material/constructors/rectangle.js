@@ -1,6 +1,7 @@
 import * as R from 'ramda'
 import { setStyle } from './util'
 import { dblclickEvent } from '@/material/events'
+import compiler from '@/material/compiler'
 import Base from './base'
 
 export class Rectangle extends Base {
@@ -16,7 +17,6 @@ export class Rectangle extends Base {
           move: true,
           event: true,
         },
-        attr: {},
       },
       component: {
         props: {
@@ -58,5 +58,24 @@ export class Rectangle extends Base {
       setStyle(stroke.style, ['borderWidth'], percent)
       setStyle(shadow, ['shadowOffsetX', 'shadowOffsetY', 'shadowBlur', 'shadowSpread'], percent)
     })
+  }
+
+  compile(vm) {
+    const {
+      id,
+      container,
+      component,
+      events,
+    } = this
+    return {
+      id,
+      is: 'orange-rectangle',
+      props: {
+        style: Object.assign({}, container.style, component.style),
+        ...component.props,
+      },
+      events: compiler.event(events, vm),
+      children: [],
+    }
   }
 }

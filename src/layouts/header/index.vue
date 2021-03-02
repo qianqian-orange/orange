@@ -1,10 +1,11 @@
 <template>
   <div class="workspace-header">
     <ul class="toolbar">
-      <undo />
-      <redo />
-      <zoom />
-      <save />
+      <component
+        :is="item"
+        v-for="item in items"
+        :key="item.name"
+      />
     </ul>
   </div>
 </template>
@@ -14,21 +15,20 @@ import Undo from './components/undo'
 import Redo from './components/redo'
 import Zoom from './components/zoom'
 import Save from './components/save'
+import Run from './components/run'
 
 export default {
   name: 'WorkspaceHeader',
-  components: {
-    Undo,
-    Redo,
-    Zoom,
-    Save,
+  data() {
+    return {
+      items: [Undo, Redo, Zoom, Save, Run],
+    }
   },
 }
 </script>
 
 <style lang="less" scoped>
   .workspace-header {
-    box-sizing: border-box;
     height: 52px;
     padding-left: 248px;
     border-bottom: 1px solid @deepBlack;

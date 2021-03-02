@@ -16,7 +16,7 @@ import {
 import { UNDO } from '@/store/modules/snapshot/mutation-types'
 
 export default {
-  name: 'Redo',
+  name: 'Undo',
   computed: {
     ...mapGetters('snapshot', ['undoEnable']),
   },

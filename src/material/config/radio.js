@@ -4,10 +4,9 @@ export const radio = {
   radio: new Radio({
     id: 'radio',
     props: {
-      attr: {
-        group: 'movie',
-        value: '罗小黑战记',
-      },
+      bind: 'movie',
+      label: '罗小黑战记',
+      value: '罗小黑战记',
     },
     component: {
       style: {

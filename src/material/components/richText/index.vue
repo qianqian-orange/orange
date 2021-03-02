@@ -58,10 +58,11 @@ export default {
     this.editor.config.focus = false
     this.editor.config.onchange = (html) => {
       const index = html.lastIndexOf('<p>')
-      this.$emit('change',
-        html.substring(0, index).replace(/<p>/gim, `<p style="line-height: ${this.lineHeight}; margin: ${this.margin};">`) +
+      this.$emit('change', {
+        text: this.text(),
+        html: html.substring(0, index).replace(/<p>/gim, `<p style="line-height: ${this.lineHeight}; margin-bottom: ${this.margin};">`) +
         html.substring(index).replace(/<p>/gim, `<p style="line-height: ${this.lineHeight}; margin: 0px;">`),
-      )
+      })
     }
     this.editor.create()
     this.$emit('bootstrap', this)
@@ -78,6 +79,12 @@ export default {
     },
     setContent(content) {
       this.editor.txt.html(content)
+    },
+    html() {
+      return this.editor.txt.html()
+    },
+    text() {
+      return this.editor.txt.text()
     },
     enable() {
       this.editor.enable()

@@ -144,6 +144,10 @@ export default eventEmitterDecorator(class Base {
     return widget
   }
 
+  compile() {
+    throw Error('the method should be implement!')
+  }
+
   static create(widget) {
     const children = widget.children.map(item => Base.create(item))
     widget.children = children

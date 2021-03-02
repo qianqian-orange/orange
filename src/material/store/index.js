@@ -13,6 +13,8 @@ const Store = eventEmitterDecorator(class Store {
   initEventEmitter() {
     // 数据初始化
     widget.init.call(this)
+    // 数据销毁
+    widget.destroy.call(this)
     // 新增组件
     widget.add.call(this)
     // 删除组件
@@ -25,10 +27,6 @@ const Store = eventEmitterDecorator(class Store {
     widget.toBottom.call(this)
     // 添加快照
     snapshot.add.call(this)
-  }
-
-  destroy() {
-    this.unwatch()
   }
 })
 

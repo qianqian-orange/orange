@@ -65,6 +65,7 @@ export default {
     &-view {
       float: left;
       position: relative; // 给标尺定位用到
+      z-index: 0;
       overflow: hidden; // 隐藏标尺的参考线用到
       width: calc(100% - 251px - 230px);
       height: 100%;

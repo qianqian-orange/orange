@@ -70,6 +70,11 @@ export default class DoubleLinkedList {
     prev.next = node
   }
 
+  destroy() {
+    this.head = null
+    this.size = 0
+  }
+
   toArray() {
     const list = []
     if (!this.size) return list

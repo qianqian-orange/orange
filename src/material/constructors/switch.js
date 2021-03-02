@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import * as R from 'ramda'
 import { Rectangle } from './index'
 
@@ -7,12 +8,8 @@ export class Switch extends Rectangle {
       props: {
         editable: {
           border: false,
-          stretch: {
-            e: true,
-            w: true,
-          },
+          stretch: false,
         },
-        attr: {},
       },
       component: {
         style: {
@@ -21,5 +18,30 @@ export class Switch extends Rectangle {
         },
       },
     }, dataSource))
+  }
+
+  compile(vm) {
+    const {
+      id,
+      container,
+      component,
+      props,
+    } = this
+    const bind = props.bind
+    Vue.set(vm.dataSource, bind, props.defaultChecked)
+    return {
+      id,
+      is: 'a-switch',
+      props: {
+        style: Object.assign({}, component.style, container.style),
+        ...R.pick(['defaultChecked'], props),
+      },
+      events: {
+        change: (value) => {
+          vm.dataSource[bind] = value
+        },
+      },
+      children: [],
+    }
   }
 }

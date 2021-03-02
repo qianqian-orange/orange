@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import compiler from '@/material/compiler'
 import { Rectangle } from './index'
 
 export class Button extends Rectangle {
@@ -12,7 +13,6 @@ export class Button extends Rectangle {
             w: true,
           },
         },
-        attr: {},
       },
       component: {
         style: {
@@ -21,5 +21,27 @@ export class Button extends Rectangle {
         },
       },
     }, dataSource))
+  }
+
+  compile(vm) {
+    const {
+      id,
+      container,
+      component,
+      props,
+      events,
+    } = this
+    const children = this.children.map(item => item.compile())
+    return {
+      id,
+      is: 'a-button',
+      props: {
+        // 注意这里的合并顺序
+        style: Object.assign({}, component.style, container.style),
+        type: props.type,
+      },
+      events: compiler.event(events, vm),
+      children,
+    }
   }
 }

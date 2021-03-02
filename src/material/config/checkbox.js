@@ -4,10 +4,8 @@ export const checkbox = {
   checkbox: new Checkbox({
     id: 'checkbox',
     props: {
-      attr: {
-        group: 'type',
-        value: '治愈',
-      },
+      bind: 'type',
+      value: '治愈',
     },
     component: {
       style: {

@@ -15,7 +15,6 @@ export class Line extends Base {
           move: false,
           event: false,
         },
-        attr: {},
       },
       component: {
         style: {

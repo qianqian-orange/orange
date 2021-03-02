@@ -4,9 +4,8 @@ export const orangeSwitch = {
   orangeSwitch: new Switch({
     id: 'orangeSwitch',
     props: {
-      attr: {
-        group: 'remind',
-      },
+      bind: 'remind',
+      defaultChecked: true,
     },
     component: {
       style: {
@@ -40,7 +39,7 @@ export const orangeSwitch = {
           style: {
             position: 'absolute',
             top: '2px',
-            right: '2px',
+            left: '24px',
             zIndex: 1,
           },
         },

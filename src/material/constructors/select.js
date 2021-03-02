@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import * as R from 'ramda'
 import { Rectangle } from './index'
 
@@ -12,7 +13,6 @@ export class Select extends Rectangle {
             w: true,
           },
         },
-        attr: {},
       },
       component: {
         style: {
@@ -21,5 +21,30 @@ export class Select extends Rectangle {
         },
       },
     }, dataSource))
+  }
+
+  compile(vm) {
+    const {
+      id,
+      container,
+      component,
+      props,
+    } = this
+    const bind = props.bind
+    Vue.set(vm.dataSource, bind, '')
+    return {
+      id,
+      is: 'a-select',
+      props: {
+        style: Object.assign({}, component.style, container.style),
+        options: props.options,
+      },
+      events: {
+        change: (value) => {
+          vm.dataSource[bind] = value
+        },
+      },
+      children: [],
+    }
   }
 }

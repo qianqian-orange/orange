@@ -1,5 +1,6 @@
 import store from '@/store'
 import DoubleLinkedList from '@/lib/dataStructure/doubleLinkedList'
+import { isDev } from '@/config'
 import Base from '@/material/constructors/base'
 import {
   snapshot,
@@ -8,6 +9,7 @@ import {
 import { splice } from '@/utils/array'
 import {
   INIT_WIDGET_DATA,
+  DESTROY_WIDGET_DATA,
   ADD_WIDGET,
   DELETE_WIDGET,
   UPDATE_WIDGET,
@@ -63,10 +65,18 @@ function toTop({ widget, compare }) {
 export default {
   init() {
     this.on(INIT_WIDGET_DATA, logger.call(this, (data) => {
+      // 开发模式下，代码热更新会导致请求数据多次导致重复添加相同的数据，会导致报错
+      isDev && this.emit(DESTROY_WIDGET_DATA)
       this.zIndex = data.zIndex
       data.widgets.forEach((widget) => {
         add.call(this, Base.create(widget))
       })
+    }))
+  },
+  destroy() {
+    this.on(DESTROY_WIDGET_DATA, logger.call(this, () => {
+      doubleLinkedList.destroy()
+      this.widgets = []
     }))
   },
   // 新增组件

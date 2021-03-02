@@ -6,6 +6,7 @@
       <workspace-screen />
       <workspace-right-panel />
     </div>
+    <router-view />
   </div>
 </template>
 

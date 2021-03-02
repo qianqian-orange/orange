@@ -80,12 +80,6 @@ export default {
       }, {
         label: '双击',
         value: 'dblclick',
-      }, {
-        label: '鼠标移入',
-        value: 'mouseenter',
-      }, {
-        label: '鼠标移出',
-        value: 'mouseleave',
       }],
     }
   },

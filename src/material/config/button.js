@@ -3,6 +3,9 @@ import { Button, Icon, Text } from '../constructors'
 export const button = {
   'search-primary-button': new Button({
     id: 'search-primary-button',
+    props: {
+      type: 'primary',
+    },
     component: {
       style: {
         width: '82px',

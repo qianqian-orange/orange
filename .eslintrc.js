@@ -21,5 +21,7 @@ module.exports = {
     'vue/require-explicit-emits': 0,
     'vue/no-deprecated-dollar-listeners-api': 0,
     'no-prototype-builtins': 0,
+    'vue/no-v-html': 0,
+    'no-eval': 0,
   },
 }

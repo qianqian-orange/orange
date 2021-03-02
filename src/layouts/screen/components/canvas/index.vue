@@ -29,7 +29,8 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import store from '@/material/store'
-import { INIT_WIDGET_DATA } from '@/material/store/mutation-types'
+import canvasApi from '@/api/canvas'
+import { INIT_WIDGET_DATA, DESTROY_WIDGET_DATA } from '@/material/store/mutation-types'
 import Bus, { APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
 import menu from './mixins/menu'
 import Grid from './components/grid'
@@ -72,7 +73,7 @@ export default {
     }),
   },
   mounted() {
-    this.$axios.get('/api/data')
+    canvasApi.getCanvasData()
       .then(({ data }) => {
         if (data.code) {
           this.$message.error('获取画布数据失败!')
@@ -80,6 +81,9 @@ export default {
         }
         store.emit(INIT_WIDGET_DATA, data.data)
       })
+  },
+  beforeDestroy() {
+    store.emit(DESTROY_WIDGET_DATA)
   },
   methods: {
     onClick() {

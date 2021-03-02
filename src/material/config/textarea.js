@@ -4,9 +4,9 @@ export const textarea = {
   textarea: new Textarea({
     id: 'textarea',
     props: {
-      attr: {
-        group: 'desc',
-      },
+      bind: 'desc',
+      placeholder: '请输入...',
+      autoSize: true,
     },
     component: {
       style: {

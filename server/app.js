@@ -43,6 +43,14 @@ router.post('/save', (req, res) => {
   })
 })
 
+// 获取表单数据
+router.post('/form', (req, res) => {
+  res.json({
+    code: 0,
+    message: 'ok',
+  })
+})
+
 app.use('/orange/api', router)
 
 // app.use((req, res) => {

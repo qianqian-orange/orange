@@ -2,15 +2,15 @@ import { factory } from '../util'
 
 export default [
   factory({
-    keys: ['props', 'attr'],
-    attr: 'group',
+    keys: ['props'],
+    attr: 'bind',
   }),
   factory({
-    keys: ['props', 'attr'],
+    keys: ['props'],
     attr: 'value',
   }),
   factory({
-    keys: ['props', 'attr'],
+    keys: ['props'],
     attr: 'options',
     translate: { json: true },
   }),

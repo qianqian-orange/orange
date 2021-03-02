@@ -4,9 +4,8 @@ export const input = {
   input: new Input({
     id: 'input',
     props: {
-      attr: {
-        group: 'username',
-      },
+      bind: 'username',
+      placeholder: '请输入...',
     },
     component: {
       style: {

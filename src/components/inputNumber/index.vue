@@ -61,6 +61,7 @@ export default {
   .orange-input-number {
     &-container {
       position: relative;
+      z-index: 0;
     }
 
     &-label {

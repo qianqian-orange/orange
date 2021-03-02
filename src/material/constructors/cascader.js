@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import * as R from 'ramda'
 import { Rectangle } from './index'
 
@@ -12,7 +13,6 @@ export class Cascader extends Rectangle {
             w: true,
           },
         },
-        attr: {},
       },
       component: {
         style: {
@@ -21,5 +21,30 @@ export class Cascader extends Rectangle {
         },
       },
     }, dataSource))
+  }
+
+  compile(vm) {
+    const {
+      id,
+      container,
+      component,
+      props,
+    } = this
+    const bind = props.bind
+    Vue.set(vm.dataSource, bind, '')
+    return {
+      id,
+      is: 'a-cascader',
+      props: {
+        style: Object.assign({}, component.style, container.style),
+        ...R.pick(['options', 'placeholder'], props),
+      },
+      events: {
+        change: (value) => {
+          vm.dataSource[bind] = value
+        },
+      },
+      children: [],
+    }
   }
 }

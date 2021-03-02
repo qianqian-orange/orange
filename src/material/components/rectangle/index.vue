@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { on, off } from '@/utils/dom'
+
 export default {
   name: 'OrangeRectangle',
   props: {
@@ -21,6 +23,17 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      events: [{
+        event: 'click',
+        callback: null,
+      }, {
+        event: 'dblclick',
+        callback: null,
+      }],
+    }
+  },
   computed: {
     rectangleStyle() {
       const styles = []
@@ -34,6 +47,19 @@ export default {
       }
       return styles.reduce((res, cur) => Object.assign(res, cur), {})
     },
+  },
+  mounted() {
+    this.events.forEach((item) => {
+      item.callback = () => {
+        this.$emit(item.event)
+      }
+      on(this.$el, item.event, item.callback)
+    })
+  },
+  beforeDestroy() {
+    this.events.forEach((item) => {
+      off(this.$el, item.event, item.callback)
+    })
   },
 }
 </script>
