@@ -6,7 +6,7 @@ export default (events, vm) => {
   })
   return Object.keys(map).reduce((res, event) => {
     res[event] = () => {
-      ;(0, eval)(`(function (vm) {
+      ;(0, eval)(`;(function (vm) {
         ${map[event].reduce((res, code) => res + code, '')}
       }).bind(window['${vm.id}'])(window['${vm.id}'])`)
     }

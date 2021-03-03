@@ -99,7 +99,7 @@ export default {
           this.store.events.push({
             id: uuid(),
             event: 'click',
-            code: '(function (vm) {\n  console.log(\'hello world\')\n})(vm)',
+            code: ';(function (vm) {\n  console.log(\'hello world\')\n})(vm)',
           })
         },
       })
