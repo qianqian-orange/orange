@@ -11,14 +11,14 @@ module.exports = {
   },
   output: {
     filename: '[name].[hash:6].dll.js',
-    path: resolvePath('../dist/dll'),
+    path: resolvePath('../server/public/dll'),
     library: '[name]_dll',
   },
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.DllPlugin({
       name: '[name]_dll',
-      path: resolvePath('../dist', 'dll', 'manifest.json'),
+      path: resolvePath('../server/public', 'dll', 'manifest.json'),
     }),
   ],
 }

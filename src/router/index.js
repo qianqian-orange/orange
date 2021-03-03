@@ -23,5 +23,7 @@ const routes = [
 
 export default new VueRouter({
   mode: 'history',
+  // eslint-disable-next-line
+  base: PUBLICPATH,
   routes,
 })

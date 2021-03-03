@@ -1,18 +1,21 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const StyleLintPlugin = require('stylelint-webpack-plugin')
 
 const resolvePath = (...paths) => path.join(__dirname, ...paths)
 const isDev = process.env.NODE_ENV === 'development'
+const publicPath = isDev ? '/' : '/orange/'
 
 module.exports = {
   entry: resolvePath('../src/index.js'),
   output: {
-    filename: '[name].[hash:6].js',
-    path: resolvePath('../dist'),
-    publicPath: '/',
+    filename: 'static/[name].[hash:6].js',
+    path: resolvePath('../server/public'),
+    publicPath,
   },
   module: {
     rules: [
@@ -86,16 +89,28 @@ module.exports = {
       //   collapseWhitespace: false,
       // },
       config: {
+        publicPath,
         isDev,
       },
     }),
     new MiniCssExtractPlugin({
-      filename: isDev ? '[name].css' : '[name].[contenthash:6].css',
+      filename: isDev ? 'static/[name].css' : 'static/[name].[contenthash:6].css',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: resolvePath('../public/favicon.ico'),
+          to: resolvePath('../server/public/favicon.ico'),
+        },
+      ],
     }),
     new VueLoaderPlugin(),
     new StyleLintPlugin({
       context: resolvePath('../src'),
       files: ['**/*.{vue,htm,html,css,sss,less,scss,sass}'],
+    }),
+    new webpack.DefinePlugin({
+      PUBLICPATH: JSON.stringify(publicPath),
     }),
   ],
   resolve: {
@@ -103,7 +118,6 @@ module.exports = {
     alias: {
       '@': resolvePath('../src'),
       'ruler': resolvePath('../src/components/ruler'),
-      'vue': resolvePath('../node_modules/vue/dist/vue.esm.js'),
     },
     extensions: ['.js', '.vue'],
   },

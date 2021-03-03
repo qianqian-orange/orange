@@ -12,7 +12,7 @@ module.exports = merge(baseConfig, {
       cleanOnceBeforeBuildPatterns: ['**/*', '!dll/**'],
     }),
     new webpack.DllReferencePlugin({
-      manifest: resolvePath('../dist', 'dll', 'manifest.json'),
+      manifest: resolvePath('../server/public', 'dll', 'manifest.json'),
     }),
   ],
   devtool: '#source-map',

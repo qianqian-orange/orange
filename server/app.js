@@ -6,6 +6,8 @@ const favicon = require('serve-favicon')
 const app = express()
 
 app.use(favicon(path.join(__dirname, './public/favicon.ico')))
+app.use('/orange/dll/', express.static(path.join(__dirname, './public/dll')))
+app.use('/orange/static/', express.static(path.join(__dirname, './public/static')))
 
 /* application/x-www-form-urlencoded */
 app.use(express.urlencoded({ extended: false }))
@@ -53,14 +55,15 @@ router.post('/form', (req, res) => {
 
 app.use('/orange/api', router)
 
-// app.use((req, res) => {
-//   fs.readFile(path.join(__dirname, './public/index.html'), 'utf-8', (err, data) => {
-//     if (err) return res.json({ code: 1 })
-//     res.setHeader('Content-Type', 'text/html; charset=utf-8')
-//     res.send(data)
-//   })
-// })
+app.use((req, res) => {
+  fs.readFile(path.join(__dirname, './public/index.html'), 'utf-8', (err, data) => {
+    if (err) return res.json({ code: 1 })
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
+    res.send(data)
+  })
+})
 
-app.listen(9000, () => {
-  console.log('server start at port 9000!')
+const port = process.env.PORT
+app.listen(port, () => {
+  console.log(`server start at port ${port}!`)
 })

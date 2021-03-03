@@ -8,7 +8,7 @@
 <body>
   <div id="app"></div>
   <% if (!htmlWebpackPlugin.options.config.isDev) { %>
-    <script src="/dll/vendors.665eda.dll.js"></script>
+    <script src="<%= htmlWebpackPlugin.options.config.publicPath %>dll/vendors.816cb8.dll.js"></script>
   <% } %>
   <!-- js语法校验 -->
   <script src="https://cdn.bootcdn.net/ajax/libs/jshint/2.9.7/jshint.min.js"></script>
