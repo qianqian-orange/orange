@@ -20,6 +20,7 @@ export class Select extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Select',
     }, dataSource))
   }
 

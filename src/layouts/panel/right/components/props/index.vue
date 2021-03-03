@@ -54,7 +54,7 @@ export default {
       if (typeof this.store.bind !== 'undefined') {
         items.push({
           key: 'bind',
-          label: '数据源',
+          label: 'bind',
           is: 'a-input',
           tip: 'v-model绑定的数据源',
           props: {
@@ -90,7 +90,7 @@ export default {
       if (typeof this.store.options !== 'undefined') {
         items.push({
           key: 'options',
-          label: '数据源',
+          label: 'options',
           is: 'a-icon',
           tip: '设置表单项的数据源',
           props: {
@@ -142,7 +142,7 @@ export default {
     }
 
     &-text {
-      width: 36px;
+      min-width: 36px;
       margin-right: 8px;
       color: @textPrimaryColor;
       font-size: 12px;

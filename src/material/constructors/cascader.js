@@ -20,6 +20,7 @@ export class Cascader extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Cascader',
     }, dataSource))
   }
 

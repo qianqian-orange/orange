@@ -21,6 +21,7 @@ export class Input extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Input',
     }, dataSource))
 
     placeholder.call(this, ['props'], 'placeholder')

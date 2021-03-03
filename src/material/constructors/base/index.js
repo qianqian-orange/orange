@@ -20,6 +20,7 @@ export default eventEmitterDecorator(class Base {
     children = [],
     container = {},
     component = {},
+    __constructor__ = 'Base', // 画布回显数据时需要数据对应的构造器
   }) {
     this.id = id
     this.is = is
@@ -28,6 +29,7 @@ export default eventEmitterDecorator(class Base {
     this.props = props
     this.parent = parent
     this.children = children
+    this.__constructor__ = __constructor__
     // 这里不要直接绑定vm实例，不然clone的时候消耗性能
     this.getInstance = null
     this.container = new Component(container)
@@ -139,8 +141,6 @@ export default eventEmitterDecorator(class Base {
     widget.eventEmitter = null
     widget.container.eventEmitter = null
     widget.component.eventEmitter = null
-    // 画布回显数据时需要数据对应的构造器
-    widget.__constructor__ = widget.constructor.name
     return widget
   }
 

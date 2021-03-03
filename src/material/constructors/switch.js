@@ -17,6 +17,7 @@ export class Switch extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Switch',
     }, dataSource))
   }
 

@@ -31,6 +31,7 @@ export class Icon extends Base {
           twoToneColor: 'rgb(24, 144, 255)',
         },
       },
+      __constructor__: 'Icon',
     }, dataSource))
 
     this.on('color', (value) => {

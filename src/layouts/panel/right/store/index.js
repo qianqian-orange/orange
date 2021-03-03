@@ -8,7 +8,7 @@ import {
   shadow,
   icon,
 } from './styles'
-import attrs from './attrs'
+import attrs from './props'
 import { DELETE_WIDGET, UPDATE_WIDGET } from '@/material/store/mutation-types'
 import Bus, { APPERANCE_EVENT_DATASOURCE } from '@/utils/bus'
 

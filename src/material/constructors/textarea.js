@@ -17,6 +17,7 @@ export class Textarea extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Textarea',
     }, dataSource))
 
     placeholder.call(this, ['props'], 'placeholder')

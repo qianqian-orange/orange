@@ -20,6 +20,7 @@ export class InputNumber extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'InputNumber',
     }, dataSource))
   }
 

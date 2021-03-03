@@ -20,6 +20,7 @@ export class Button extends Rectangle {
           zIndex: 0, // 这里设置层级的目的是为了产生层级上下文，这样container的glass遮罩就可以遮住compoent的子元素
         },
       },
+      __constructor__: 'Button',
     }, dataSource))
   }
 

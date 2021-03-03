@@ -21,6 +21,7 @@ export class Checkbox extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Checkbox',
     }, dataSource))
   }
 

@@ -22,6 +22,7 @@ export class Line extends Base {
           minHeight: 0,
         },
       },
+      __constructor__: 'Line',
     }, dataSource))
 
     this.on('zoom', (cur, prev) => {

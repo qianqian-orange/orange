@@ -44,6 +44,7 @@ export class Rectangle extends Base {
           },
         },
       },
+      __constructor__: 'Rectangle',
     }, dataSource))
 
     this.children.forEach((item) => {

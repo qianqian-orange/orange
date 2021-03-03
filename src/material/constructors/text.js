@@ -46,6 +46,7 @@ export class Text extends Base {
           zoom: 1,
         },
       },
+      __constructor__: 'Text',
     }, dataSource))
     const {
       richText = '',

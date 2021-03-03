@@ -20,6 +20,7 @@ export class Radio extends Rectangle {
           zIndex: 0,
         },
       },
+      __constructor__: 'Radio',
     }, dataSource))
   }
 

@@ -18,7 +18,7 @@
 import createStore from './store'
 import OrangeProject from './components/project'
 import OrangeApperance from './components/apperance'
-import OrangeAttribute from './components/attribute'
+import OrangeAttribute from './components/props'
 import OrangeEvent from './components/event'
 
 export default {
