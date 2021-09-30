@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const outer = document.createElement('div')
+    outer.className = 'el-scrollbar__wrap'
+    outer.style.width = '100px'
+    outer.style.height = '100px'
+    outer.style.backgroundColor = 'red'
+    document.body.appendChild(outer)
+
+    const widthNoScroll = outer.offsetWidth
+    outer.style.overflow = 'scroll'
+
+    const inner = document.createElement('div')
+    inner.style.backgroundColor = 'green'
+    inner.style.width = '100%'
+    inner.style.height = '50px';
+    outer.appendChild(inner)
+  </script>
+</body>
+</html>

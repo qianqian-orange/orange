@@ -109,23 +109,21 @@ export default {
     },
     wrapStylePlus() {
       let style = this.wrapStyle
-      if (this.gutter) {
-        const gutterWith = `-${this.gutter}px`
-        const gutterStyle = `margin-bottom: ${gutterWith}; margin-right: ${gutterWith};`
+      const gutterWith = `-${this.gutter}px`
+      const gutterStyle = `margin-bottom: ${gutterWith}; margin-right: ${gutterWith};`
 
-        if (Array.isArray(this.wrapStyle)) {
-          style = toObject(this.wrapStyle)
-          style.marginRight = style.marginBottom = gutterWith
-        } else if (typeof this.wrapStyle === 'string') {
-          style += gutterStyle
-        } else {
-          style = gutterStyle
-        }
+      if (Array.isArray(this.wrapStyle)) {
+        style = toObject(this.wrapStyle)
+        style.marginRight = style.marginBottom = gutterWith
+      } else if (typeof this.wrapStyle === 'string') {
+        style += gutterStyle
+      } else {
+        style = gutterStyle
+      }
 
-        if (this.fitHeight) {
-          if (typeof style === 'string') style += `height: calc(100% + ${this.gutter}px);`
-          else style.height = `calc(100% + ${this.gutter}px)`
-        }
+      if (this.fitHeight) {
+        if (typeof style === 'string') style += `height: calc(100% + ${this.gutter}px);`
+        else style.height = `calc(100% + ${this.gutter}px)`
       }
       return style
     },
